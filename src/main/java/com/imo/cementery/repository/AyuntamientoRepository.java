@@ -1,6 +1,6 @@
 package com.imo.cementery.repository;
 
-import com.imo.cementery.model.Ayuntamiento;
+import com.imo.cementery.model.entity.Ayuntamiento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

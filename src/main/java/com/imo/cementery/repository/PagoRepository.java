@@ -1,7 +1,7 @@
 package com.imo.cementery.repository;
 
-import com.imo.cementery.model.Pago;
-import com.imo.cementery.model.PagoType;
+import com.imo.cementery.model.entity.Pago;
+import com.imo.cementery.model.enums.PagoType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

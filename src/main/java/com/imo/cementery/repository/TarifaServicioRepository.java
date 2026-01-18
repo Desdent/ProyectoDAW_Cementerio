@@ -1,7 +1,7 @@
 package com.imo.cementery.repository;
 
-import com.imo.cementery.model.ServicioType;
-import com.imo.cementery.model.TarifaServicio;
+import com.imo.cementery.model.enums.ServicioType;
+import com.imo.cementery.model.entity.TarifaServicio;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

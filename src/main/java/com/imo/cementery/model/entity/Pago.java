@@ -1,6 +1,7 @@
-package com.imo.cementery.model;
+package com.imo.cementery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.imo.cementery.model.enums.PagoType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

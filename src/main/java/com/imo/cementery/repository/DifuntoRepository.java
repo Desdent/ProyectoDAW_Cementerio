@@ -1,14 +1,12 @@
 package com.imo.cementery.repository;
 
-import com.imo.cementery.model.Cliente;
-import com.imo.cementery.model.Difunto;
+import com.imo.cementery.model.entity.Difunto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.time.Year;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface DifuntoRepository extends JpaRepository<Difunto, Long> {

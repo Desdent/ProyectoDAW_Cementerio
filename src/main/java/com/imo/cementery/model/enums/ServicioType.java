@@ -1,4 +1,4 @@
-package com.imo.cementery.model;
+package com.imo.cementery.model.enums;
 
 public enum ServicioType {
     INHUMAR,

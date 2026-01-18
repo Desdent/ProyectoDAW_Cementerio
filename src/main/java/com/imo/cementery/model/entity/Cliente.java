@@ -1,4 +1,4 @@
-package com.imo.cementery.model;
+package com.imo.cementery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -10,27 +10,34 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name="ayuntamiento")
+@Table(name="cliente")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Ayuntamiento extends User {
+public class Cliente extends User {
 
     // No necesitan id al ser especializaciones, lo heredan de User
 
     // >> COLUMNAS <<
+
+    @Column(nullable = false, unique = true)
+    private String dni;
+
     @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
+    private String apellido1;
+
+    @Column
+    private String apellido2;
 
     @Column(nullable = false, unique = true)
     private String telefono;
 
     @Column(nullable = false)
     private String direccion;
-
-    @Column
-    private String escudo;
 
     @Column(nullable = false)
     private String localidad;
@@ -39,12 +46,10 @@ public class Ayuntamiento extends User {
     private String provincia;
 
 
-
     // >> RELACIONES <<
-    @OneToMany(mappedBy = "ayuntamiento", fetch = FetchType.LAZY) //mappedBy se encarga de decirle a JPA que el dueño de la relacón indicada (quien hereda la FK) es esta entidad. Apunta al campo de la entidad asociada que se relaciona con esta
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Cementerio> cementerios;
-
-
+    private List<Concesion> concesiones;
 
 }

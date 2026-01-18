@@ -1,4 +1,4 @@
-package com.imo.cementery.model;
+package com.imo.cementery.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.Year;
-import java.util.List;
 
 @Entity
 @Table(name="difunto")

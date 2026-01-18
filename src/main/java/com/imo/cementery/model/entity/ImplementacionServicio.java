@@ -1,4 +1,4 @@
-package com.imo.cementery.model;
+package com.imo.cementery.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -6,34 +6,39 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Entity
-@Table(name="compra_servicio")
+@Table(name="implementacion_servicio")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TarifaServicio {
+public class ImplementacionServicio {
 
-    // >> COLUMNAS <<
+
+    // >> CAMPOS <<
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private Double precio;
+    private LocalDate fechaRealizacion;
 
 
     // >> RELACIONES <<
 
     @ManyToOne
-    @JoinColumn(name = "cementerio_id", nullable = false)
-    private Cementerio cementerio;
+    @JoinColumn(name = "parcela_id", nullable = false)
+    private Parcela parcela;
 
     @ManyToOne
     @JoinColumn(name = "servicio_id", nullable = false)
     private Servicio servicio;
 
-
+    @ManyToOne
+    @JoinColumn(name = "facturacion_id", nullable = false)
+    private Facturacion facturacion;
 
 }

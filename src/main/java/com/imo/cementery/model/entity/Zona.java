@@ -1,6 +1,7 @@
-package com.imo.cementery.model;
+package com.imo.cementery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.imo.cementery.model.enums.ZonaType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +11,14 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name="role")
+@Table(name="zona")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Zona {
+
+    // >> COLUMNAS <<
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,11 +26,19 @@ public class Role {
 
     @Enumerated(EnumType.STRING) // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación
     @Column(nullable = false)
-    private RoleType tipo;
+    private ZonaType tipo;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+
+    // >> RELACIONES <<
+
+    @OneToMany(mappedBy = "zona", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<User> users;
+    private List<Parcela> parcelas;
+
+    @ManyToOne
+    @JoinColumn(name = "cementerio_id", nullable = false)
+    private Cementerio cementerio;
+
 
 
 }

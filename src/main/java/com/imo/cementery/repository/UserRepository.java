@@ -1,7 +1,7 @@
 package com.imo.cementery.repository;
 
-import com.imo.cementery.model.RoleType;
-import com.imo.cementery.model.User;
+import com.imo.cementery.model.enums.RoleType;
+import com.imo.cementery.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
