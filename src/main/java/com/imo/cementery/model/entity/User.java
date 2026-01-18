@@ -3,6 +3,7 @@ package com.imo.cementery.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity // Le dice al framework que esto es una entidad. De JPA
 @Table(name = "users") // Nombre de la tabla. De JPA
@@ -14,6 +15,7 @@ import lombok.*;
 @Setter // Crea los setters. De Lombok
 @NoArgsConstructor // Crea constructor vacio. De Lombok
 @AllArgsConstructor // Crea constructor con argumentos. De Lombok
+@SuperBuilder // Permite usar .builder y .build en el mapper
 public class User {
 
     // >> COLUMNAS <<
