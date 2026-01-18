@@ -1,10 +1,13 @@
 package com.imo.cementery.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name="role")
@@ -21,5 +24,10 @@ public class Role {
     @Enumerated(EnumType.STRING) // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación
     @Column(nullable = false)
     private RoleType tipo;
+
+    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<User> users;
+
 
 }

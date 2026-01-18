@@ -24,6 +24,9 @@ public class Facturacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false) // No es unique para permitir varias facturaciones a un mismo dni
+    private String dni;
+
     @Column(nullable = false)
     private String nombre;
 
@@ -33,7 +36,7 @@ public class Facturacion {
     @Column(nullable = false)
     private String direccion;
 
-    @Column(nullable = false)
+    @Column(nullable = false) // El mismo caso que con dni
     private String telefono;
 
     @Column(nullable = false)

@@ -23,7 +23,7 @@ public class Ayuntamiento extends User {
     @Column(nullable = false)
     private String nombre;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String telefono;
 
     @Column(nullable = false)
@@ -43,7 +43,6 @@ public class Ayuntamiento extends User {
     // >> RELACIONES <<
     @OneToMany(mappedBy = "ayuntamiento", fetch = FetchType.LAZY) //mappedBy se encarga de decirle a JPA que el dueño de la relacón indicada (quien hereda la FK) es esta entidad. Apunta al campo de la entidad asociada que se relaciona con esta
     @JsonIgnore
-
     private List<Cementerio> cementerios;
 
 

@@ -33,7 +33,7 @@ public class Cliente extends User {
     @Column
     private String apellido2;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String telefono;
 
     @Column(nullable = false)

@@ -40,7 +40,7 @@ public class Difunto {
     private Year yearDefuncion;
 
     @Column(nullable = false)
-    private LocalDate fecha_entierro;
+    private LocalDate fechaEntierro;
 
     @Column
     private String mensaje;

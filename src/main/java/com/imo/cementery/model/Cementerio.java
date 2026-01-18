@@ -23,13 +23,13 @@ public class Cementerio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String nombre;
 
     @Column(nullable = false)
     private String direccion;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String telefono;
 
 

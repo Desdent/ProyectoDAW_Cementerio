@@ -30,10 +30,10 @@ public class Parcela {
     private double coordenadaY;
 
     @Column
-    private int fila; // Opcional porque solo se rellena para cuando esté en una fila de nichos
+    private Integer fila; // Opcional porque solo se rellena para cuando esté en una fila de nichos. Es Integer porque int no acepta nulos
 
     @Column
-    private int columna; // Opcional porque solo se rellena para cuadno esté en una fila de nichos
+    private Integer columna; // Opcional porque solo se rellena para cuadno esté en una fila de nichos
 
 
     // >> RELACIONES <<
