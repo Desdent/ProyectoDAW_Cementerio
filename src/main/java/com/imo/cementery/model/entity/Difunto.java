@@ -1,10 +1,7 @@
 package com.imo.cementery.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.Year;
@@ -15,6 +12,7 @@ import java.time.Year;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Difunto {
 
     // >> COLUMNAS <<
