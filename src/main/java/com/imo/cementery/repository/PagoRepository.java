@@ -14,8 +14,11 @@ import java.util.List;
 public interface PagoRepository extends JpaRepository<Pago, Long> {
 
     List<Pago> findAllByFecha(LocalDate fecha);
+
     List<Pago> findAllByMetodo(PagoType metodo);
+
     List<Pago> findAllByFechaAndMetodo(LocalDate fecha, PagoType metodo);
+
     // List<Pago> findAllByConcesionParcelaCementerioId(Long cementerioId);
     @Query("SELECT p FROM Pago p " +
             "JOIN p.concesion c " +

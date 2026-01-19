@@ -1,6 +1,7 @@
 package com.imo.cementery.model.dto.cementerio;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,12 +13,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CementerioCreateDTO {
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank
     private String nombre;
-    @NotBlank(message = "La dirección es obligatoria")
+    @NotBlank
     private String direccion;
-    @NotBlank(message = "El teléfono es obligatorio")
+    @NotBlank
     private String telefono;
+    @NotNull(message = "El cementerio debe estar vinculado a un ayuntamiento")
+    private Long ayuntamientoId; // Añadimos esto
 
 }
 

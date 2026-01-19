@@ -11,10 +11,15 @@ import java.util.Optional;
 public interface FacturacionRepository extends JpaRepository<Facturacion, Long> {
 
     List<Facturacion> findAllByDni(String dni);
-    List<Facturacion> findAllByNombre (String nombre);
-    List<Facturacion> findAllByApellido1 (String apellido1);
-    List<Facturacion> findAllByNombreAndApellido1 (String nombre, String apellido1);
+
+    List<Facturacion> findAllByNombre(String nombre);
+
+    List<Facturacion> findAllByApellido1(String apellido1);
+
+    List<Facturacion> findAllByNombreAndApellido1(String nombre, String apellido1);
+
     List<Facturacion> findAllByTelefono(String telefono);
+
     Optional<Facturacion> findByPagoId(Long id);
 
 }

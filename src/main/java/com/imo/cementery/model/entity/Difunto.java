@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.time.Year;
 
 @Entity
-@Table(name="difunto")
+@Table(name = "difunto")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -51,7 +51,6 @@ public class Difunto {
     @ManyToOne
     @JoinColumn(name = "parcela_id", nullable = false)
     private Parcela parcela;
-
 
 
 }

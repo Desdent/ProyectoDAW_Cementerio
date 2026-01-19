@@ -1,14 +1,17 @@
 package com.imo.cementery.model.dto.cliente;
 
-import com.imo.cementery.model.dto.user.UserCreateDTO;
 import com.imo.cementery.model.dto.user.UserResponseDTO;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuperBuilder // Hace lo mismo que builder pero es necesario usar este cuando se vayan a usar padres e hijos para que herede sus campos de dto
+@SuperBuilder
+// Hace lo mismo que builder pero es necesario usar este cuando se vayan a usar padres e hijos para que herede sus campos de dto
 @EqualsAndHashCode(callSuper = true) // Es aconsejable ponerlo cuando se use @SuperBuilder
 public class ClienteResponseDTO extends UserResponseDTO {
 

@@ -11,8 +11,11 @@ import java.util.List;
 public interface ImplementacionServicioRepository extends JpaRepository<ImplementacionServicio, Long> {
 
     List<ImplementacionServicio> findAllByFechaRealizacion(LocalDate fechaRealizacion);
+
     List<ImplementacionServicio> findAllByParcelaId(Long id);
+
     List<ImplementacionServicio> findAllByServicioId(Long id);
+
     List<ImplementacionServicio> findAllByFacturacionId(Long id);
 
 }

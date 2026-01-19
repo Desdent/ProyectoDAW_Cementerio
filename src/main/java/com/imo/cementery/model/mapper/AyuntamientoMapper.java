@@ -4,64 +4,28 @@ import com.imo.cementery.model.dto.ayuntamiento.AyuntamientoCreateDTO;
 import com.imo.cementery.model.dto.ayuntamiento.AyuntamientoResponseDTO;
 import com.imo.cementery.model.dto.ayuntamiento.AyuntamientoUpdateDTO;
 import com.imo.cementery.model.entity.Ayuntamiento;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class AyuntamientoMapper {
 
-    public Ayuntamiento toEntity(AyuntamientoCreateDTO dto)
-    {
-        Ayuntamiento res = null;
+    @Autowired
+    private ModelMapper modelMapper;
 
-        if(dto != null)
-        {
-            res = Ayuntamiento.builder()
-                    .email(dto.getEmail())
-                    .password(dto.getPassword())
-                    .nif(dto.getNif())
-                    .nombre(dto.getNombre())
-                    .telefono(dto.getTelefono())
-                    .direccion(dto.getDireccion())
-                    .escudo(dto.getEscudo())
-                    .localidad(dto.getLocalidad())
-                    .provincia(dto.getProvincia())
-                    .build();
-        }
-
-        return res;
+    // Mapea en el segundo arguneto lo que hay en el primero (el objeto que debe crear y buildear con los mismos campos que el primer argumento)
+    public Ayuntamiento toEntity(AyuntamientoCreateDTO dto) {
+        return (dto == null) ? null : modelMapper.map(dto, Ayuntamiento.class);
     }
 
-    public AyuntamientoResponseDTO toResponseDTO(Ayuntamiento entity)
-    {
-        AyuntamientoResponseDTO res = null;
-
-        if(entity != null)
-        {
-            res = AyuntamientoResponseDTO.builder()
-                    .id(entity.getId())
-                    .nif(entity.getNif())
-                    .nombre(entity.getNombre())
-                    .telefono(entity.getTelefono())
-                    .direccion(entity.getDireccion())
-                    .escudo(entity.getEscudo())
-                    .localidad(entity.getLocalidad())
-                    .provincia(entity.getProvincia())
-                    .build();
-        }
-
-        return res;
+    // Mapea en el segundo arguneto lo que hay en el primero (el objeto que debe crear y buildear con los mismos campos que el primer argumento)
+    public AyuntamientoResponseDTO toResponseDTO(Ayuntamiento entity) {
+        return (entity == null) ? null : modelMapper.map(entity, AyuntamientoResponseDTO.class);
     }
 
-    public void updateEntityFromDTO(Ayuntamiento entity, AyuntamientoUpdateDTO dto)
-    {
-        if(entity != null && dto != null)
-        {
-            entity.setNombre(dto.getNombre());
-            entity.setTelefono(dto.getTelefono());
-            entity.setDireccion(dto.getDireccion());
-            entity.setEscudo(dto.getEscudo());
-            entity.setLocalidad(dto.getLocalidad());
-            entity.setProvincia(dto.getProvincia());
-        }
+    // Mapea en el segundo arguneto lo que hay en el primero, pero en este caso no devuelve nada, solo lo edita
+    public void updateEntityFromDTO(Ayuntamiento entity, AyuntamientoUpdateDTO dto) {
+        if (entity != null && dto != null) modelMapper.map(dto, entity);
     }
 }

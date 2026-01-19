@@ -1,7 +1,7 @@
 package com.imo.cementery.repository;
 
-import com.imo.cementery.model.enums.RoleType;
 import com.imo.cementery.model.entity.User;
+import com.imo.cementery.model.enums.RoleType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,7 +12,9 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
+
     List<User> findAllByRoleTipo(RoleType role);
+
     boolean existsByEmail(String email);
 
 }

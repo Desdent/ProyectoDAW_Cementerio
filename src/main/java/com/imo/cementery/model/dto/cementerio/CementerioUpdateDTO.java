@@ -12,11 +12,11 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CementerioUpdateDTO {
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank
     private String nombre;
-    @NotBlank(message = "La dirección es obligatoria")
+    @NotBlank
     private String direccion;
-    @NotBlank(message = "El teléfono es obligatorio")
+    @NotBlank
     private String telefono;
 
 }

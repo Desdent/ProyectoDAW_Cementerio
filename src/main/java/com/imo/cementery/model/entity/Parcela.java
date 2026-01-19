@@ -10,7 +10,7 @@ import lombok.Setter;
 import java.util.List;
 
 @Entity
-@Table(name="parcela")
+@Table(name = "parcela")
 @Getter
 @Setter
 @NoArgsConstructor

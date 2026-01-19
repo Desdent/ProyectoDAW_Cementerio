@@ -12,9 +12,13 @@ import java.util.Optional;
 public interface ConcesionRepository extends JpaRepository<Concesion, Long> {
 
     List<Concesion> findAllByFechaInicio(LocalDate fechaInicio);
+
     List<Concesion> findAllByFechaFin(LocalDate fechaFin);
+
     List<Concesion> findAllByVencida(boolean vencida);
+
     Optional<Concesion> findByPagoId(Long id);
+
     List<Concesion> findAllByClienteId(Long clienteId);
 
 }

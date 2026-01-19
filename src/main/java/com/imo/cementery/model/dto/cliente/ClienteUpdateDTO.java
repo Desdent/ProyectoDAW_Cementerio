@@ -12,18 +12,18 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ClienteUpdateDTO {
 
-    @NotBlank(message = "El nombre es obligatorio")
+    @NotBlank
     private String nombre;
-    @NotBlank(message = "El apellido es obligatorio")
+    @NotBlank
     private String apellido1;
     private String apellido2;
-    @NotBlank(message = "El teléfono es obligatorio")
+    @NotBlank
     private String telefono;
-    @NotBlank(message = "La dirección es obligatoria")
+    @NotBlank
     private String direccion;
-    @NotBlank(message = "La localidad es obligatoria")
+    @NotBlank
     private String localidad;
-    @NotBlank(message = "La provincia es obligatoria")
+    @NotBlank
     private String provincia;
 
 }

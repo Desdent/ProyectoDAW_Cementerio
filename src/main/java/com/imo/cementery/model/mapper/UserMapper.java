@@ -5,12 +5,13 @@ import com.imo.cementery.model.dto.user.UserResponseDTO;
 import com.imo.cementery.model.entity.User;
 import org.springframework.stereotype.Component;
 
+// >>>>> ESTA CLASE SE QUEDA CON BUILDERS EXPLICITOS PARA TENER UN EJEMPLO VISUAL DE LO QUE SUCEDE POR DEBAJO DEL MODELMAPPER Y DE COMO HACER BUILDERS MANUALES <<<<<
+
 @Component // Con esto spring lo gestiona y permite su inyección en otras clases con @Autowired
 public class UserMapper {
 
     // De DTO de entrada a entity
-    public User toEntity(UserCreateDTO dto)
-    {
+    public User toEntity(UserCreateDTO dto) {
         return User.builder() // se puede usar builder gracias a que la clase User tiene el @Builder
                 .email(dto.getEmail())
                 .password(dto.getPassword())
@@ -20,8 +21,7 @@ public class UserMapper {
 
 
     // De entity a DTOa de salida
-    public UserResponseDTO toResponseDTO(User entity)
-    {
+    public UserResponseDTO toResponseDTO(User entity) {
         return UserResponseDTO.builder()
                 .id(entity.getId())
                 .email(entity.getEmail())

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="compra_servicio")
+@Table(name = "compraServicio")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -33,7 +33,6 @@ public class TarifaServicio {
     @ManyToOne
     @JoinColumn(name = "servicio_id", nullable = false)
     private Servicio servicio;
-
 
 
 }

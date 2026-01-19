@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 @Entity
-@Table(name="ayuntamiento")
+@Table(name = "ayuntamiento")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -44,12 +44,11 @@ public class Ayuntamiento extends User {
     private String provincia;
 
 
-
     // >> RELACIONES <<
-    @OneToMany(mappedBy = "ayuntamiento", fetch = FetchType.LAZY) //mappedBy se encarga de decirle a JPA que el dueño de la relacón indicada (quien hereda la FK) es esta entidad. Apunta al campo de la entidad asociada que se relaciona con esta
+    @OneToMany(mappedBy = "ayuntamiento", fetch = FetchType.LAZY)
+    //mappedBy se encarga de decirle a JPA que el dueño de la relacón indicada (quien hereda la FK) es esta entidad. Apunta al campo de la entidad asociada que se relaciona con esta
     @JsonIgnore
     private List<Cementerio> cementerios;
-
 
 
 }

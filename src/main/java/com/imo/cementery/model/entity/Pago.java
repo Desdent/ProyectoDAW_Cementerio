@@ -11,7 +11,7 @@ import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
-@Table(name="pago")
+@Table(name = "pago")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -31,7 +31,8 @@ public class Pago {
     @Column(nullable = false)
     private LocalDate fecha;
 
-    @Enumerated(EnumType.STRING) // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación
+    @Enumerated(EnumType.STRING)
+    // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación
     @Column(nullable = false)
     private PagoType metodo;
 

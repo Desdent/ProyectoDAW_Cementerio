@@ -7,7 +7,7 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Table(name="cementerio")
+@Table(name = "cementerio")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -45,5 +45,5 @@ public class Cementerio {
     @JoinColumn(name = "ayuntamiento_id", nullable = false)
     private Ayuntamiento ayuntamiento;
     // Esto hace que para la relacion 1:N con el objeto para el que se crea (Ayuntamiento) cree en esta entidad un campo una columna llamada "ayuntamiento_id"
-            // que heredará la PK del objeto con el que se crea (Ayuntamiento) y la usará como la FK de la relación
+    // que heredará la PK del objeto con el que se crea (Ayuntamiento) y la usará como la FK de la relación
 }

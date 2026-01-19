@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-@Table(name="concesion")
+@Table(name = "concesion")
 @Getter
 @Setter
 @NoArgsConstructor

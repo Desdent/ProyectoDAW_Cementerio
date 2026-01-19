@@ -11,9 +11,13 @@ import java.util.Optional;
 public interface CementerioRepository extends JpaRepository<Cementerio, Long> {
 
     Optional<Cementerio> findByNombre(String nombre);
+
     Optional<Cementerio> findByTelefono(String telefono);
+
     List<Cementerio> findAllByAyuntamientoLocalidad(String localidad); // Como la localidad viene de otra tabla de la relación, hay que indicarle de qué tabla y qué campo
+
     List<Cementerio> findAllByAyuntamientoProvincia(String provincia);
+
     List<Cementerio> findAllByAyuntamientoId(Long id); // Estos metodos se colocan en el lado "debil" de las relciones, las que heredan la FK
 
 }

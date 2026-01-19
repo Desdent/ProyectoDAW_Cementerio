@@ -16,14 +16,15 @@ import java.time.LocalDate;
 @Builder
 public class ConcesionUpdateDTO {
 
-    @NotNull(message = "El precio es obligatorio")
-    @Positive(message = "El precio debe ser positivo")
+    @NotNull
+    @Positive
     private Double precio;
-    @NotNull(message = "La fecha de inicio es obligatoria")
-    @FutureOrPresent(message = "La fecha de inicio no puede ser anterior a la fecha actual")
+    @NotNull
+    @FutureOrPresent
     private LocalDate fechaInicio;
-    @NotNull(message = "La fecha de inicio es obligatoria")
-    @FutureOrPresent(message = "La fecha de fin no puede ser anterior a la fecha actual") // #TODO Cambiar el validator por un mas tarde que la compra
+    @NotNull
+    @FutureOrPresent
+    // #TODO Cambiar el validator por un mas tarde que la compra
     private LocalDate fechaFin;
     @NotNull
     private Boolean vencida;
