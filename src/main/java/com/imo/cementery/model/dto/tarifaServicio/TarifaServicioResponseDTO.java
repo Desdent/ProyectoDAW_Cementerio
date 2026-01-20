@@ -1,4 +1,4 @@
-package com.imo.cementery.model.dto.implementacionServicio;
+package com.imo.cementery.model.dto.tarifaServicio;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -6,18 +6,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
+import java.math.BigDecimal;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ImplementacionServicioUpdateDTO {
+public class TarifaServicioResponseDTO {
 
+    private Long id;
+    private BigDecimal precio;
     @NotNull
-    private LocalDate fechaRealizacion;
-    private Long parcelaId;
+    private Long cementerioId;
+    @NotNull
     private Long servicioId;
-    private Long facturacionId;
 
 }

@@ -19,8 +19,9 @@ public class ParcelaCreateDTO {
     @NotNull
     @Digits(integer = 3, fraction = 6)
     private Double coordenadaY;
-    //Confirmar si fila y columna son solo para nichos y cripta o para todos
+    @NotNull
     private Integer fila;
+    @NotNull
     private Integer columna;
     @NotNull
     private Long concesionId;

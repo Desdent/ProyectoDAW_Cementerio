@@ -12,11 +12,20 @@ import org.mapstruct.MappingTarget;
 public interface ImplementacionServicioMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "parcela", ignore = true)
+    @Mapping(target = "servicio", ignore = true)
+    @Mapping(target = "facturacion", ignore = true)
     ImplementacionServicio toEntity(ImplementacionServicioCreateDTO dto);
 
+    @Mapping(source = "parcela.id", target = "parcelaId")
+    @Mapping(source = "servicio.id", target = "servicioId")
+    @Mapping(source = "facturacion.id", target = "facturacionId")
     ImplementacionServicioResponseDTO toResponseDTO(ImplementacionServicio entity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "parcela", ignore = true)
+    @Mapping(target = "servicio", ignore = true)
+    @Mapping(target = "facturacion", ignore = true)
     void updateEntityFromDTO(ImplementacionServicioUpdateDTO dto, @MappingTarget ImplementacionServicio entity);
 
 }

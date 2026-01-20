@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +24,8 @@ public class Concesion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Double precio; // PREGUNTAR A MANOLO SI AQUÍ TAMBIEN VA PRECIO
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio; // PREGUNTAR A MANOLO SI AQUÍ TAMBIEN VA PRECIO
 
     @Column(nullable = false)
     private LocalDate fechaInicio;

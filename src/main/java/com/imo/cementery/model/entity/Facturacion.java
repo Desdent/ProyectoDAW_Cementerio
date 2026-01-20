@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +39,8 @@ public class Facturacion {
     @Column(nullable = false) // El mismo caso que con dni
     private String telefono;
 
-    @Column(nullable = false)
-    private Double importe;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal importe; // Aparéntemente es recomendable usar este tipo de variable cuando se trata con valores económicos
 
 
     // >> RELACIONES <<

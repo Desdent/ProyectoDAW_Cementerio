@@ -8,7 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "parcela")
+@Table(name = "parcela", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"fila", "columna", "zona_id"}),
+        @UniqueConstraint(columnNames = {"coordenadaX", "coordenadaY"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -28,11 +31,11 @@ public class Parcela {
     @Column(nullable = false)
     private Double coordenadaY;
 
-    @Column
-    private Integer fila; // Opcional porque solo se rellena para cuando esté en una fila de nichos. Es Integer porque int no acepta nulos
+    @Column(nullable = false)
+    private Integer fila;
 
-    @Column
-    private Integer columna; // Opcional porque solo se rellena para cuadno esté en una fila de nichos
+    @Column(nullable = false)
+    private Integer columna;
 
 
     // >> RELACIONES <<
@@ -47,11 +50,11 @@ public class Parcela {
     @Builder.Default
     private List<Difunto> difuntos = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "concesion_id")
     private Concesion concesion;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zona_id")
     private Zona zona;
 

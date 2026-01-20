@@ -3,8 +3,13 @@ package com.imo.cementery.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "compraServicio")
+@Table(name = "tarifa_servicio", uniqueConstraints = {
+        // Esto impide que se repita la combinación de cementerio y servicio
+        @UniqueConstraint(columnNames = {"cementerio_id", "servicio_id"})
+})
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,8 +23,8 @@ public class TarifaServicio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Double precio;
+    @Column(nullable = false, precision = 10, scale = 2)
+    private BigDecimal precio;
 
 
     // >> RELACIONES <<

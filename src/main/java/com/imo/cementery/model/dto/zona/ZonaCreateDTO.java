@@ -15,5 +15,9 @@ public class ZonaCreateDTO {
 
     @NotNull
     private ZonaType tipo;
+    @NotNull
+    private String nombre;
+    @NotNull
+    private Long cementerioId;
 
 }

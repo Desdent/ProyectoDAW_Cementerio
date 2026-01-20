@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
@@ -14,7 +15,7 @@ import java.time.LocalDate;
 public class ConcesionResponseDTO {
 
     private Long id;
-    private Double precio;
+    private BigDecimal precio;
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private Boolean vencida;

@@ -23,6 +23,9 @@ public class Zona {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String nombre;
+
     @Enumerated(EnumType.STRING)
     // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación
     @Column(nullable = false)
@@ -36,7 +39,7 @@ public class Zona {
     @Builder.Default
     private List<Parcela> parcelas = new ArrayList<>();
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cementerio_id", nullable = false)
     private Cementerio cementerio;
 

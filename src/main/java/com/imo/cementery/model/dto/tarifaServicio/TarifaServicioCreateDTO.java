@@ -1,4 +1,4 @@
-package com.imo.cementery.model.dto.tatifaServicio;
+package com.imo.cementery.model.dto.tarifaServicio;
 
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
@@ -8,6 +8,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,7 +18,11 @@ public class TarifaServicioCreateDTO {
 
     @NotNull
     @Positive
-    @Digits(integer = 5, fraction = 2)
-    private Double precio;
+    @Digits(integer = 8, fraction = 2)
+    private BigDecimal precio;
+    @NotNull
+    private Long cementerioId;
+    @NotNull
+    private Long servicioId;
 
 }

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,10 +17,9 @@ public class FacturacionResponseDTO {
     private String dni;
     private String nombre;
     private String apellido1;
-    private String apellido2;
     private String direccion;
     private String telefono;
-    private Double importe;
+    private BigDecimal importe;
     private Long pagoId;
 
 }

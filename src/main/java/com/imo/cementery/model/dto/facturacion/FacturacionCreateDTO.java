@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,7 +24,6 @@ public class FacturacionCreateDTO {
     private String dni;
     @NotBlank
     private String apellido1;
-    private String apellido2;
     @NotBlank
     private String direccion;
     @NotBlank
@@ -30,8 +31,8 @@ public class FacturacionCreateDTO {
     private String telefono;
     @NotNull
     @Positive
-    @Digits(integer = 5, fraction = 2)
-    private Double importe;
+    @Digits(integer = 8, fraction = 2)
+    private BigDecimal importe;
     private Long pagoId;
 
 

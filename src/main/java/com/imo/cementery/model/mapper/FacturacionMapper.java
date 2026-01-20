@@ -12,6 +12,7 @@ public interface FacturacionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "implementacionServicios", ignore = true)
+    @Mapping(target = "pago", ignore = true)
     Facturacion toEntity(FacturacionCreateDTO dto);
 
     @Mapping(source = "pago.id", target = "pagoId")
@@ -20,5 +21,6 @@ public interface FacturacionMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "importe", ignore = true)
     @Mapping(target = "implementacionServicios", ignore = true)
+    @Mapping(target = "pago", ignore = true)
     void updateEntityFromDTO(FacturacionUpdateDTO dto, Facturacion entity);
 }

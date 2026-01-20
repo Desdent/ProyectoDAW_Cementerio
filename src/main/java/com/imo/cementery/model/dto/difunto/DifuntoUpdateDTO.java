@@ -1,6 +1,5 @@
 package com.imo.cementery.model.dto.difunto;
 
-import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -27,7 +26,7 @@ public class DifuntoUpdateDTO {
     @PastOrPresent
     private Year yearNacimiento;
     @NotNull
-    @FutureOrPresent
+    @PastOrPresent
     private Year yearDefuncion;
     @NotNull
     private LocalDate fechaEntierro;
@@ -35,5 +34,6 @@ public class DifuntoUpdateDTO {
     // #TODO añadir validador posterior a la fecha de defunción
     private String mensaje;
     private String foto;
+
 
 }

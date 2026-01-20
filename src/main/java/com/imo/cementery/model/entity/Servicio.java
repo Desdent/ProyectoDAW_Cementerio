@@ -26,7 +26,7 @@ public class Servicio {
 
     @Enumerated(EnumType.STRING)
     // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private ServicioType tipo;
 
 

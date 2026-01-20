@@ -27,15 +27,15 @@ public class ImplementacionServicio {
 
     // >> RELACIONES <<
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parcela_id", nullable = false)
     private Parcela parcela;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "servicio_id", nullable = false)
     private Servicio servicio;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "facturacion_id", nullable = false)
     private Facturacion facturacion;
 

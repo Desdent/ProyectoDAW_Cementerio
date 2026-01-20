@@ -29,5 +29,4 @@ public class AyuntamientoCreateDTO extends UserCreateDTO {
     @NotBlank
     private String provincia;
 
-
 }

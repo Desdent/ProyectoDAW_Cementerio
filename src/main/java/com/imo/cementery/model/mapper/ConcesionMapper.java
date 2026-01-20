@@ -13,6 +13,8 @@ public interface ConcesionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "parcelas", ignore = true)
+    @Mapping(target = "pago", ignore = true)
+    @Mapping(target = "cliente", ignore = true)
     Concesion toEntity(ConcesionCreateDTO dto);
 
     @Mapping(source = "pago.id", target = "pagoId")
@@ -21,5 +23,7 @@ public interface ConcesionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "parcelas", ignore = true)
+    @Mapping(target = "pago", ignore = true)
+    @Mapping(target = "cliente", ignore = true)
     void updateEntityFromDTO(ConcesionUpdateDTO dto, @MappingTarget Concesion entity);
 }
