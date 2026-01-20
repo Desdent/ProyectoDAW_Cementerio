@@ -6,12 +6,13 @@ import com.imo.cementery.model.dto.facturacion.FacturacionUpdateDTO;
 import com.imo.cementery.model.entity.Facturacion;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface FacturacionMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "implementacionServicios", ignore = true)
+    @Mapping(target = "implementacionesServicios", ignore = true)
     @Mapping(target = "pago", ignore = true)
     Facturacion toEntity(FacturacionCreateDTO dto);
 
@@ -20,7 +21,7 @@ public interface FacturacionMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "importe", ignore = true)
-    @Mapping(target = "implementacionServicios", ignore = true)
+    @Mapping(target = "implementacionesServicios", ignore = true)
     @Mapping(target = "pago", ignore = true)
-    void updateEntityFromDTO(FacturacionUpdateDTO dto, Facturacion entity);
+    void updateEntityFromDTO(FacturacionUpdateDTO dto, @MappingTarget Facturacion entity);
 }

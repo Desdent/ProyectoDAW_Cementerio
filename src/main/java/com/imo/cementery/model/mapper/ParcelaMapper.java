@@ -13,7 +13,7 @@ public interface ParcelaMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "difuntos", ignore = true)
-    @Mapping(target = "implementacionesEnParcela")
+    @Mapping(target = "implementacionesEnParcela", ignore = true)
     @Mapping(target = "concesion", ignore = true)
     @Mapping(target = "zona", ignore = true)
     Parcela toEntity(ParcelaCreateDTO dto);
@@ -24,7 +24,7 @@ public interface ParcelaMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "difuntos", ignore = true)
-    @Mapping(target = "implementacionesEnParcela")
+    @Mapping(target = "implementacionesEnParcela", ignore = true)
     @Mapping(target = "concesion", ignore = true)
     @Mapping(target = "zona", ignore = true)
     void updateEntityFromDTO(ParcelaUpdateDTO dto, @MappingTarget Parcela entity);

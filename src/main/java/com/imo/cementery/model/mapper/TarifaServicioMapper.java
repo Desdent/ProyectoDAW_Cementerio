@@ -17,7 +17,7 @@ public interface TarifaServicioMapper {
     TarifaServicio toEntity(TarifaServicioCreateDTO dto);
 
     @Mapping(source = "cementerio.id", target = "cementerioId")
-    @Mapping(source = "servicio.id", target = "servicioID")
+    @Mapping(source = "servicio.id", target = "servicioId")
     TarifaServicioResponseDTO toResponseDTO(TarifaServicio entity);
 
     @Mapping(target = "id", ignore = true)
