@@ -18,5 +18,7 @@ public class ConcesionResponseDTO {
     private LocalDate fechaInicio;
     private LocalDate fechaFin;
     private Boolean vencida;
+    private Long clienteId;
+    private Long pagoId;
 
 }

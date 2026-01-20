@@ -4,26 +4,24 @@ import com.imo.cementery.model.dto.cliente.ClienteCreateDTO;
 import com.imo.cementery.model.dto.cliente.ClienteResponseDTO;
 import com.imo.cementery.model.dto.cliente.ClienteUpdateDTO;
 import com.imo.cementery.model.entity.Cliente;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class ClienteMapper {
+@Mapper(componentModel = "spring")
+public interface ClienteMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "concesiones", ignore = true)
+    Cliente toEntity(ClienteCreateDTO dto);
 
-    public Cliente toEntity(ClienteCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Cliente.class);
-    }
+    ClienteResponseDTO toResponseDTO(Cliente cliente);
 
-    public ClienteResponseDTO toResponseDTO(Cliente entity) {
-        return (entity == null) ? null : modelMapper.map(entity, ClienteResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Cliente entity, ClienteUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
-
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "email", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "role", ignore = true)
+    @Mapping(target = "dni", ignore = true)
+    @Mapping(target = "concesiones", ignore = true)
+    void updateEntityFromDto(ClienteUpdateDTO dto, @MappingTarget Cliente cliente);
 }

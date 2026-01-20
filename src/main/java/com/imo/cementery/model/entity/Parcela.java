@@ -2,11 +2,9 @@ package com.imo.cementery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Parcela {
 
     // >> COLUMNAS <<
@@ -24,10 +23,10 @@ public class Parcela {
     private Long id;
 
     @Column(nullable = false)
-    private double coordenadaX;
+    private Double coordenadaX;
 
     @Column(nullable = false)
-    private double coordenadaY;
+    private Double coordenadaY;
 
     @Column
     private Integer fila; // Opcional porque solo se rellena para cuando esté en una fila de nichos. Es Integer porque int no acepta nulos
@@ -40,11 +39,13 @@ public class Parcela {
 
     @OneToMany(mappedBy = "parcela", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ImplementacionServicio> implementacionesEnParcela;
+    @Builder.Default
+    private List<ImplementacionServicio> implementacionesEnParcela = new ArrayList<>();
 
     @OneToMany(mappedBy = "parcela", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Difunto> difuntos;
+    @Builder.Default
+    private List<Difunto> difuntos = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "concesion_id")

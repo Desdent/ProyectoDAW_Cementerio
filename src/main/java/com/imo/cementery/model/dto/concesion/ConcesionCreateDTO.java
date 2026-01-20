@@ -27,6 +27,7 @@ public class ConcesionCreateDTO {
     // #TODO Cambiar el validator por un mas tarde que la compra
     private LocalDate fechaFin;
     @NotNull
-    private Boolean vencida;
-
+    private Long clienteId;
+    @NotNull
+    private Long pagoId;
 }

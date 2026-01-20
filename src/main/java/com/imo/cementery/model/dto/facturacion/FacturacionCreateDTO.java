@@ -1,5 +1,6 @@
 package com.imo.cementery.model.dto.facturacion;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -29,7 +30,9 @@ public class FacturacionCreateDTO {
     private String telefono;
     @NotNull
     @Positive
+    @Digits(integer = 5, fraction = 2)
     private Double importe;
+    private Long pagoId;
 
 
 }

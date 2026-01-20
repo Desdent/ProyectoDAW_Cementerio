@@ -19,5 +19,6 @@ public class FacturacionResponseDTO {
     private String direccion;
     private String telefono;
     private Double importe;
+    private Long pagoId;
 
 }

@@ -4,26 +4,22 @@ import com.imo.cementery.model.dto.concesion.ConcesionCreateDTO;
 import com.imo.cementery.model.dto.concesion.ConcesionResponseDTO;
 import com.imo.cementery.model.dto.concesion.ConcesionUpdateDTO;
 import com.imo.cementery.model.entity.Concesion;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class ConcesionMapper {
+@Mapper(componentModel = "spring")
+public interface ConcesionMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "parcelas", ignore = true)
+    Concesion toEntity(ConcesionCreateDTO dto);
 
-    public Concesion toEntity(ConcesionCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Concesion.class);
-    }
+    @Mapping(source = "pago.id", target = "pagoId")
+    @Mapping(source = "cliente.id", target = "clienteId")
+    ConcesionResponseDTO toResponseDTO(Concesion entity);
 
-    public ConcesionResponseDTO toResponseDTO(Concesion entity) {
-        return (entity == null) ? null : modelMapper.map(entity, ConcesionResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Concesion entity, ConcesionUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
-
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "parcelas", ignore = true)
+    void updateEntityFromDTO(ConcesionUpdateDTO dto, @MappingTarget Concesion entity);
 }

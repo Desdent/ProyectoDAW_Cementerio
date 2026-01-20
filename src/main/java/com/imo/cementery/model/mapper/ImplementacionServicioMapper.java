@@ -4,26 +4,19 @@ import com.imo.cementery.model.dto.implementacionServicio.ImplementacionServicio
 import com.imo.cementery.model.dto.implementacionServicio.ImplementacionServicioResponseDTO;
 import com.imo.cementery.model.dto.implementacionServicio.ImplementacionServicioUpdateDTO;
 import com.imo.cementery.model.entity.ImplementacionServicio;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class ImplementacionServicioMapper {
+@Mapper(componentModel = "spring")
+public interface ImplementacionServicioMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    ImplementacionServicio toEntity(ImplementacionServicioCreateDTO dto);
 
-    public ImplementacionServicio toEntity(ImplementacionServicioCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, ImplementacionServicio.class);
-    }
+    ImplementacionServicioResponseDTO toResponseDTO(ImplementacionServicio entity);
 
-    public ImplementacionServicioResponseDTO toResponseDTO(ImplementacionServicio entity) {
-        return (entity == null) ? null : modelMapper.map(entity, ImplementacionServicioResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(ImplementacionServicio entity, ImplementacionServicioUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDTO(ImplementacionServicioUpdateDTO dto, @MappingTarget ImplementacionServicio entity);
 
 }

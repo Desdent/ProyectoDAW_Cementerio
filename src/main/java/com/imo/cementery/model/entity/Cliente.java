@@ -2,12 +2,10 @@ package com.imo.cementery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -52,6 +50,7 @@ public class Cliente extends User {
 
     @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Concesion> concesiones;
+    @Builder.Default
+    private List<Concesion> concesiones = new ArrayList<>();
 
 }

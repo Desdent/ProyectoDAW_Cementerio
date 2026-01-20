@@ -22,5 +22,9 @@ public class ParcelaCreateDTO {
     //Confirmar si fila y columna son solo para nichos y cripta o para todos
     private Integer fila;
     private Integer columna;
+    @NotNull
+    private Long concesionId;
+    @NotNull
+    private Long zonaId;
 
 }

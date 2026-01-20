@@ -3,11 +3,9 @@ package com.imo.cementery.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.imo.cementery.model.enums.RoleType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Role {
 
     @Id
@@ -29,7 +28,8 @@ public class Role {
 
     @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<User> users;
+    @Builder.Default
+    private List<User> users = new ArrayList<>();
 
 
 }

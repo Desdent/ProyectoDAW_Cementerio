@@ -19,4 +19,5 @@ public class CementerioUpdateDTO {
     @NotBlank
     private String telefono;
 
+
 }

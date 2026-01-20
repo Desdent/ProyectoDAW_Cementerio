@@ -1,5 +1,6 @@
 package com.imo.cementery.model.dto.facturacion;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -17,9 +18,6 @@ public class FacturacionUpdateDTO {
     @NotBlank
     private String nombre;
     @NotBlank
-    //#TODO: Añadir validator de dni
-    private String dni;
-    @NotBlank
     private String apellido1;
     private String apellido2;
     @NotBlank
@@ -29,6 +27,7 @@ public class FacturacionUpdateDTO {
     private String telefono;
     @NotNull
     @Positive
+    @Digits(integer = 5, fraction = 2)
     private Double importe;
 
 }

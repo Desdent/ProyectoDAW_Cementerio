@@ -3,11 +3,9 @@ package com.imo.cementery.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.imo.cementery.model.enums.ZonaType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Zona {
 
     // >> COLUMNAS <<
@@ -34,7 +33,8 @@ public class Zona {
 
     @OneToMany(mappedBy = "zona", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Parcela> parcelas;
+    @Builder.Default
+    private List<Parcela> parcelas = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "cementerio_id", nullable = false)

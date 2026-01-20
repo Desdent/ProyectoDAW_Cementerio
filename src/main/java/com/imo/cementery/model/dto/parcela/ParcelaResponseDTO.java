@@ -16,5 +16,7 @@ public class ParcelaResponseDTO {
     private Double coordenadaY;
     private Integer fila;
     private Integer columna;
+    private Long concesionId;
+    private Long zonaId;
 
 }

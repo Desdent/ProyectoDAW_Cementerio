@@ -4,26 +4,21 @@ import com.imo.cementery.model.dto.role.RoleCreateDTO;
 import com.imo.cementery.model.dto.role.RoleResponseDTO;
 import com.imo.cementery.model.dto.role.RoleUpdateDTO;
 import com.imo.cementery.model.entity.Role;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class RoleMapper {
+@Mapper(componentModel = "spring")
+public interface RoleMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "users", ignore = true)
+    Role toEntity(RoleCreateDTO dto);
 
-    public Role toEntity(RoleCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Role.class);
-    }
+    RoleResponseDTO toResponseDTO(Role entity);
 
-    public RoleResponseDTO toResponseDTO(Role entity) {
-        return (entity == null) ? null : modelMapper.map(entity, RoleResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Role entity, RoleUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "users", ignore = true)
+    void updateEntityFromDTO(RoleUpdateDTO dto, @MappingTarget Role entity);
 
 }

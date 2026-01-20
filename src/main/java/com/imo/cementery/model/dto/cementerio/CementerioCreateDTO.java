@@ -20,7 +20,7 @@ public class CementerioCreateDTO {
     @NotBlank
     private String telefono;
     @NotNull(message = "El cementerio debe estar vinculado a un ayuntamiento")
-    private Long ayuntamientoId; // Añadimos esto
+    private Long ayuntamientoId;
 
 }
 

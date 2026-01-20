@@ -4,26 +4,21 @@ import com.imo.cementery.model.dto.facturacion.FacturacionCreateDTO;
 import com.imo.cementery.model.dto.facturacion.FacturacionResponseDTO;
 import com.imo.cementery.model.dto.facturacion.FacturacionUpdateDTO;
 import com.imo.cementery.model.entity.Facturacion;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Component
-public class FacturacionMapper {
+@Mapper(componentModel = "spring")
+public interface FacturacionMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "implementacionServicios", ignore = true)
+    Facturacion toEntity(FacturacionCreateDTO dto);
 
-    public Facturacion toEntity(FacturacionCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Facturacion.class);
-    }
+    @Mapping(source = "pago.id", target = "pagoId")
+    FacturacionResponseDTO toResponseDTO(Facturacion entity);
 
-    public FacturacionResponseDTO toResponseDTO(Facturacion entity) {
-        return (entity == null) ? null : modelMapper.map(entity, FacturacionResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Facturacion entity, FacturacionUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
-
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "importe", ignore = true)
+    @Mapping(target = "implementacionServicios", ignore = true)
+    void updateEntityFromDTO(FacturacionUpdateDTO dto, Facturacion entity);
 }

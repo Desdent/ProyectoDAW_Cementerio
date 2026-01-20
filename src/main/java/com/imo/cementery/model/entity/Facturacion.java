@@ -2,11 +2,9 @@ package com.imo.cementery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -15,6 +13,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Facturacion {
 
 
@@ -40,14 +39,15 @@ public class Facturacion {
     private String telefono;
 
     @Column(nullable = false)
-    private double importe;
+    private Double importe;
 
 
     // >> RELACIONES <<
 
     @OneToMany(mappedBy = "facturacion", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ImplementacionServicio> implementacionesServicios;
+    @Builder.Default
+    private List<ImplementacionServicio> implementacionesServicios = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pago_id")  // Facturacion tiene la FK

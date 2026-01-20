@@ -15,5 +15,8 @@ public class ImplementacionServicioResponseDTO {
 
     private Long id;
     private LocalDate fechaRealizacion;
+    private Long parcelaId;
+    private Long servicioId;
+    private Long facturacionId;
 
 }

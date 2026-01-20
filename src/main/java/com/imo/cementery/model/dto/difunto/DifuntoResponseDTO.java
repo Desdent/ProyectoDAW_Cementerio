@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.Year;
 
 @Data
@@ -19,7 +20,9 @@ public class DifuntoResponseDTO {
     private String apellido2;
     private Year yearNacimiento;
     private Year yearDefuncion;
+    private LocalDate fechaEntierro;
     private String mensaje;
     private String foto;
+    private Long parcelaId;
 
 }

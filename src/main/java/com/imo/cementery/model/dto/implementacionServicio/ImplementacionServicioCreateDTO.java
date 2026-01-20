@@ -16,5 +16,11 @@ public class ImplementacionServicioCreateDTO {
 
     @NotNull
     private LocalDate fechaRealizacion;
+    @NotNull
+    private Long parcelaId;
+    @NotNull
+    private Long servicioId;
+    @NotNull
+    private Long facturacionId;
 
 }

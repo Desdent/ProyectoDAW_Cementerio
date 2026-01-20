@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -23,7 +24,7 @@ public class Concesion {
     private Long id;
 
     @Column(nullable = false)
-    private double precio; // PREGUNTAR A MANOLO SI AQUÍ TAMBIEN VA PRECIO
+    private Double precio; // PREGUNTAR A MANOLO SI AQUÍ TAMBIEN VA PRECIO
 
     @Column(nullable = false)
     private LocalDate fechaInicio;
@@ -32,14 +33,16 @@ public class Concesion {
     private LocalDate fechaFin;
 
     @Column(nullable = false)
-    private boolean vencida;
+    @Builder.Default
+    private Boolean vencida = false;
 
 
     // >> RELACIONES <<
 
     @OneToMany(mappedBy = "concesion", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Parcela> parcelas;
+    @Builder.Default
+    private List<Parcela> parcelas = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinColumn(name = "pago_id")  // Concesion tiene la FK

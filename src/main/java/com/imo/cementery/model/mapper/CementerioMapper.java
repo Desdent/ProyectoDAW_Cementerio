@@ -4,26 +4,24 @@ import com.imo.cementery.model.dto.cementerio.CementerioCreateDTO;
 import com.imo.cementery.model.dto.cementerio.CementerioResponseDTO;
 import com.imo.cementery.model.dto.cementerio.CementerioUpdateDTO;
 import com.imo.cementery.model.entity.Cementerio;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class CementerioMapper {
+@Mapper(componentModel = "spring")
+public interface CementerioMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "zonas", ignore = true)
+    @Mapping(target = "serviciosOfrecidos", ignore = true)
+    Cementerio toEntity(CementerioCreateDTO dto);
 
-    public Cementerio toEntity(CementerioCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Cementerio.class);
-    }
+    @Mapping(source = "ayuntamiento.id", target = "ayuntamientoId")
+    CementerioResponseDTO toResponseDTO(Cementerio entity);
 
-    public CementerioResponseDTO toResponseDTO(Cementerio entity) {
-        return (entity == null) ? null : modelMapper.map(entity, CementerioResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Cementerio entity, CementerioUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "zonas", ignore = true)
+    @Mapping(target = "serviciosOfrecidos", ignore = true)
+    void updateEntityFromDTO(CementerioUpdateDTO dto, @MappingTarget Cementerio entity);
 
 }

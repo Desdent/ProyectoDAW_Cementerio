@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.Year;
 
 @Data
@@ -28,6 +29,8 @@ public class DifuntoUpdateDTO {
     @NotNull
     @FutureOrPresent
     private Year yearDefuncion;
+    @NotNull
+    private LocalDate fechaEntierro;
     @NotNull
     // #TODO añadir validador posterior a la fecha de defunción
     private String mensaje;

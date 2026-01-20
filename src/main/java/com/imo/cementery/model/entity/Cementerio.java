@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -35,11 +36,13 @@ public class Cementerio {
 
     @OneToMany(mappedBy = "cementerio", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<Zona> zonas;
+    @Builder.Default
+    private List<Zona> zonas = new ArrayList<>();
 
     @OneToMany(mappedBy = "cementerio", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<TarifaServicio> serviciosOfrecidos;
+    @Builder.Default
+    private List<TarifaServicio> serviciosOfrecidos = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "ayuntamiento_id", nullable = false)

@@ -4,26 +4,25 @@ import com.imo.cementery.model.dto.parcela.ParcelaCreateDTO;
 import com.imo.cementery.model.dto.parcela.ParcelaResponseDTO;
 import com.imo.cementery.model.dto.parcela.ParcelaUpdateDTO;
 import com.imo.cementery.model.entity.Parcela;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class ParcelaMapper {
+@Mapper(componentModel = "spring")
+public interface ParcelaMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "difuntos", ignore = true)
+    @Mapping(target = "implementacionesEnParcela")
+    Parcela toEntity(ParcelaCreateDTO dto);
 
-    public Parcela toEntity(ParcelaCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Parcela.class);
-    }
+    @Mapping(source = "concesion.id", target = "concesionId")
+    @Mapping(source = "zona.id", target = "zonaId")
+    ParcelaResponseDTO toResponseDTO(Parcela entity);
 
-    public ParcelaResponseDTO toResponseDTO(Parcela entity) {
-        return (entity == null) ? null : modelMapper.map(entity, ParcelaResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Parcela entity, ParcelaUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "difuntos", ignore = true)
+    @Mapping(target = "implementacionesEnParcela")
+    void updateEntityFromDTO(ParcelaUpdateDTO dto, @MappingTarget Parcela entity);
 
 }

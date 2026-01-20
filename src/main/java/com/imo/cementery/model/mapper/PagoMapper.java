@@ -4,26 +4,23 @@ import com.imo.cementery.model.dto.pago.PagoCreateDTO;
 import com.imo.cementery.model.dto.pago.PagoResponseDTO;
 import com.imo.cementery.model.dto.pago.PagoUpdateDTO;
 import com.imo.cementery.model.entity.Pago;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class PagoMapper {
+@Mapper(componentModel = "spring")
+public interface PagoMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "facturacion", ignore = true)
+    @Mapping(target = "concesion", ignore = true)
+    Pago toEntity(PagoCreateDTO dto);
 
-    public Pago toEntity(PagoCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Pago.class);
-    }
+    PagoResponseDTO toResponseDTO(Pago entity);
 
-    public PagoResponseDTO toResponseDTO(Pago entity) {
-        return (entity == null) ? null : modelMapper.map(entity, PagoResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Pago entity, PagoUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "facturacion", ignore = true)
+    @Mapping(target = "concesion", ignore = true)
+    void updateEntityFromDTO(PagoUpdateDTO dto, @MappingTarget Pago entity);
 
 }

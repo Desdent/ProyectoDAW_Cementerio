@@ -2,12 +2,10 @@ package com.imo.cementery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.SuperBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -48,7 +46,8 @@ public class Ayuntamiento extends User {
     @OneToMany(mappedBy = "ayuntamiento", fetch = FetchType.LAZY)
     //mappedBy se encarga de decirle a JPA que el dueño de la relacón indicada (quien hereda la FK) es esta entidad. Apunta al campo de la entidad asociada que se relaciona con esta
     @JsonIgnore
-    private List<Cementerio> cementerios;
+    @Builder.Default
+    private List<Cementerio> cementerios = new ArrayList<>();
 
 
 }

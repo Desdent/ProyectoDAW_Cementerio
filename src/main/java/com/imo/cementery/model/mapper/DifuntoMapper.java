@@ -4,26 +4,22 @@ import com.imo.cementery.model.dto.difunto.DifuntoCreateDTO;
 import com.imo.cementery.model.dto.difunto.DifuntoResponseDTO;
 import com.imo.cementery.model.dto.difunto.DifuntoUpdateDTO;
 import com.imo.cementery.model.entity.Difunto;
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
-@Component
-public class DifuntoMapper {
+@Mapper(componentModel = "spring")
+public interface DifuntoMapper {
 
-    @Autowired
-    private ModelMapper modelMapper;
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "parcela", ignore = true)
+    Difunto toEntity(DifuntoCreateDTO dto);
 
-    public Difunto toEntity(DifuntoCreateDTO dto) {
-        return (dto == null) ? null : modelMapper.map(dto, Difunto.class);
-    }
+    @Mapping(source = "parcela.id", target = "parcelaId")
+    DifuntoResponseDTO toResponseDTO(Difunto entity);
 
-    public DifuntoResponseDTO toResponseDTO(Difunto entity) {
-        return (entity == null) ? null : modelMapper.map(entity, DifuntoResponseDTO.class);
-    }
-
-    public void updateEntityFromDTO(Difunto entity, DifuntoUpdateDTO dto) {
-        if (entity != null && dto != null) modelMapper.map(dto, entity);
-    }
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "parcela", ignore = true)
+    void updateEntityFromDTO(DifuntoUpdateDTO dto, @MappingTarget Difunto entity);
 
 }

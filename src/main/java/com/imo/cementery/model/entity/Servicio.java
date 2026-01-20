@@ -3,11 +3,9 @@ package com.imo.cementery.model.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.imo.cementery.model.enums.ServicioType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,6 +14,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Servicio {
 
 
@@ -35,10 +34,12 @@ public class Servicio {
 
     @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<TarifaServicio> disponibilidadEnCementerios;
+    @Builder.Default
+    private List<TarifaServicio> disponibilidadEnCementerios = new ArrayList<>();
 
     @OneToMany(mappedBy = "servicio", fetch = FetchType.LAZY)
     @JsonIgnore
-    private List<ImplementacionServicio> implementacionesServicios;
+    @Builder.Default
+    private List<ImplementacionServicio> implementacionesServicios = new ArrayList<>();
 
 }
