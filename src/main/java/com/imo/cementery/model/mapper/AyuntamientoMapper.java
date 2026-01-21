@@ -23,5 +23,5 @@ public interface AyuntamientoMapper {
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "nif", ignore = true)
     @Mapping(target = "cementerios", ignore = true)
-    void updateEntityFromDto(AyuntamientoUpdateDTO dto, @MappingTarget Ayuntamiento ayuntamiento);
+    void updateEntityFromDTO(AyuntamientoUpdateDTO dto, @MappingTarget Ayuntamiento ayuntamiento);
 }

@@ -23,5 +23,5 @@ public interface ClienteMapper {
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "dni", ignore = true)
     @Mapping(target = "concesiones", ignore = true)
-    void updateEntityFromDto(ClienteUpdateDTO dto, @MappingTarget Cliente cliente);
+    void updateEntityFromDTO(ClienteUpdateDTO dto, @MappingTarget Cliente cliente);
 }

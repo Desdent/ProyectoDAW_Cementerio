@@ -9,7 +9,7 @@
         <relativePath/>
     </parent>
     <groupId>com.imo</groupId>
-    <artifactId>cementery</artifactId>
+    <artifactId>cemetery</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>cementery</name>
     <description>Proyecto Cementerio</description>
