@@ -1,0 +1,18 @@
+package com.imo.cemetery.model.dto.role;
+
+import com.imo.cemetery.model.enums.RoleType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class RoleResponseDTO {
+
+    private Long id;
+    private RoleType tipo;
+
+}

@@ -1,0 +1,25 @@
+package com.imo.cemetery.model.dto.concesion;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ConcesionResponseDTO {
+
+    private Long id;
+    private BigDecimal precio;
+    private LocalDate fechaInicio;
+    private LocalDate fechaFin;
+    private Boolean vencida;
+    private Long clienteId;
+    private Long pagoId;
+
+}
