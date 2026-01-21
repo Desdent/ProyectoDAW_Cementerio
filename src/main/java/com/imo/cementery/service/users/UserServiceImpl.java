@@ -7,18 +7,23 @@ import com.imo.cementery.model.mapper.UserMapper;
 import com.imo.cementery.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository repo;
     private final UserMapper userMapper;
+
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<UserResponseDTO> findAll() {
@@ -32,8 +37,13 @@ public class UserServiceImpl implements UserService {
     // -> una vez transformado, lo coge con collect y lo hace una lista con Collectors.toList, la cual esta vez es de objetos UserResponseDTO
 
     @Override
-    public Optional<UserResponseDTO> findById(Long id) {
-        return this.repo.findById(id).map(userMapper::toResponseDTO);
+    public User findById(Long id) {
+        return repo.findById(id).orElseThrow(() -> new UsernameNotFoundException("ID no encontrada: " + id));
+    }
+
+    @Override
+    public User findByEmail(String email) {
+        return repo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email no encontrado: " + email));
     }
 
     @Override
@@ -41,7 +51,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseDTO create(UserCreateDTO dto) {
         // Se crea una entity
         User entity = userMapper.toEntity(dto);
-
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
         // Se guarda la entidad en la base de datos para poder usarla
         // El repo devuelve la entidad guardada (ya con su ID generado)
         User savedUser = repo.save(entity);
@@ -59,4 +69,10 @@ public class UserServiceImpl implements UserService {
         repo.deleteById(id);
     }
 
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return repo.findByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+    }
 }

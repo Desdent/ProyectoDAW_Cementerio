@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,7 @@ public class UserController {
 
     private final UserServiceImpl service;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAll() {
 
@@ -33,6 +35,7 @@ public class UserController {
         // Devolvemos 201 porque se ha creado un nuevo recurso
         return ResponseEntity.status(HttpStatus.CREATED).body(response); // HttpStatus.CREATED envía un código 201 en el header y .build crea el cuerpo de la respuesta en el que incluye el UserResponseDTO
     }
+
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
