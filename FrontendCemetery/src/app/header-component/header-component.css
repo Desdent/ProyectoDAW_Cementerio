@@ -1,0 +1,26 @@
+.header-bg-beige {
+  background-color: var(--kelpie-cream) !important;
+  border-bottom: 1px solid rgba(0, 48, 73, 0.1);
+  margin-bottom: 0 !important; /* Prohibido dejar hueco abajo */
+}
+
+.logo-brand {
+  color: var(--kelpie-burgundy) !important;
+  letter-spacing: 4px;
+  font-weight: 600;
+}
+
+.link-navy {
+  color: var(--kelpie-navy) !important;
+  font-weight: 600;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+}
+
+.login-text {
+  color: var(--kelpie-navy);
+  text-decoration: none;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}

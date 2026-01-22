@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;600&display=swap');
+
+:root {
+  --kelpie-burgundy: #780000;
+  --kelpie-red: #c1121f;
+  --kelpie-cream: #dfd3bd; /* El Beige para Header y Footer */
+  --kelpie-navy: #003049; /* Para el degradado y textos en beige */
+  --kelpie-blue: #669bbc;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Crimson Text', serif;
+  background-color: var(--kelpie-cream); /* El fondo base es crema */
+}
+
+/* Botón Institucional */
+.btn-kelpie {
+  background-color: var(--kelpie-burgundy);
+  color: white !important;
+  border: none;
+  border-radius: 0;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 0.8rem;
+}
+
+.btn-kelpie:hover {
+  background-color: var(--kelpie-red);
+}

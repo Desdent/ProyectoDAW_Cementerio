@@ -1,0 +1,48 @@
+.home-gradient-wrapper {
+  /* TU DEGRADADO ORIGINAL */
+  background: linear-gradient(
+    135deg,
+    #0a0a0a 0%,
+    var(--kelpie-navy) 50%,
+    var(--kelpie-burgundy) 100%
+  );
+  min-height: 100vh;
+  color: #ffffff;
+}
+
+.hero-tag {
+  color: var(--kelpie-blue);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.hero-title {
+  color: #fdf0d5; /* El crema clarito original para el texto */
+  line-height: 1.1;
+}
+
+.hero-subtitle {
+  color: #fdf0d5;
+  opacity: 0.7;
+  max-width: 650px;
+}
+
+.glass-card {
+  background-color: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(253, 240, 213, 0.15);
+  color: #fdf0d5;
+}
+
+.border-burgundy {
+  border-top: 3px solid var(--kelpie-burgundy) !important;
+}
+
+.card-tag {
+  text-transform: uppercase;
+  opacity: 0.5;
+  font-size: 0.75rem;
+  letter-spacing: 2px;
+  display: block;
+}
