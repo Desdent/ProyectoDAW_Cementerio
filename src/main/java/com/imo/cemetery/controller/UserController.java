@@ -1,10 +1,11 @@
-package com.imo.cemetery.api;
+package com.imo.cemetery.controller;
 
 import com.imo.cemetery.model.dto.user.UserCreateDTO;
 import com.imo.cemetery.model.dto.user.UserResponseDTO;
 import com.imo.cemetery.service.users.UserServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin("*") // Permite entrar desde cualquier puerto distinto al de la aplicación
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("controller/users")
 @RequiredArgsConstructor
+@Slf4j // Permite usar el objeto log para crear mensajes en consola
 public class UserController {
 
     private final UserServiceImpl service;

@@ -19,5 +19,6 @@ public interface CementerioRepository extends JpaRepository<Cementerio, Long> {
     List<Cementerio> findAllByAyuntamientoProvincia(String provincia);
 
     List<Cementerio> findAllByAyuntamientoId(Long id); // Estos metodos se colocan en el lado "debil" de las relciones, las que heredan la FK
+    
 
 }

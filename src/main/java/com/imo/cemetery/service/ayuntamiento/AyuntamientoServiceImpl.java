@@ -4,10 +4,14 @@ import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoCreateDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoResponseDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoUpdateDTO;
 import com.imo.cemetery.model.entity.Ayuntamiento;
+import com.imo.cemetery.model.entity.Role;
+import com.imo.cemetery.model.enums.RoleType;
 import com.imo.cemetery.model.mapper.AyuntamientoMapper;
 import com.imo.cemetery.repository.AyuntamientoRepository;
+import com.imo.cemetery.repository.RoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +23,9 @@ import java.util.stream.Collectors;
 public class AyuntamientoServiceImpl implements AyuntamientoService {
 
     private final AyuntamientoRepository repo;
+    private final RoleRepository roleRepo;
     private final AyuntamientoMapper ayuntamientoMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public List<AyuntamientoResponseDTO> findAll() {
@@ -37,8 +43,13 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
     @Override
     @Transactional
     public AyuntamientoResponseDTO create(AyuntamientoCreateDTO dto) {
-
         Ayuntamiento entity = ayuntamientoMapper.toEntity(dto);
+
+        Role role = roleRepo.findByTipo(RoleType.ROLE_AYUNTAMIENTO)
+                .orElseThrow(() -> new RuntimeException("Rol ROLE_AYUNTAMIENTO no encontrado"));
+        entity.setRole(role);
+
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 
         Ayuntamiento entitySaved = repo.save(entity);
 
@@ -67,5 +78,10 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
         repo.save(entity);
 
         return ayuntamientoMapper.toResponseDTO(entity);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return repo.existsByEmail(email);
     }
 }

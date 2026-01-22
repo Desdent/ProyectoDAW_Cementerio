@@ -13,6 +13,8 @@ public interface AyuntamientoMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "cementerios", ignore = true)
+    @Mapping(target = "password", ignore = true)
+    @Mapping(target = "role", ignore = true)
     Ayuntamiento toEntity(AyuntamientoCreateDTO dto);
 
     AyuntamientoResponseDTO toResponseDTO(Ayuntamiento ayuntamiento);

@@ -20,5 +20,7 @@ public interface AyuntamientoRepository extends JpaRepository<Ayuntamiento, Long
 
     List<Ayuntamiento> findAllByProvincia(String provincia);
 
+    boolean existsByEmail(String email);
+
 
 }

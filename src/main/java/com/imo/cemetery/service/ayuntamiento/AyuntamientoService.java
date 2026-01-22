@@ -21,4 +21,6 @@ public interface AyuntamientoService {
         return null;
     }
 
+    boolean existsByEmail(String email);
+
 }

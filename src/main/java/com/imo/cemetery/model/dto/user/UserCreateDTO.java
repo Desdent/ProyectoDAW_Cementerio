@@ -1,9 +1,7 @@
 package com.imo.cemetery.model.dto.user;
 
-import com.imo.cemetery.model.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +20,5 @@ public class UserCreateDTO {
     @NotBlank
     @Size(min = 6, max = 20, message = "Mínimo 6 caracteres. Máximo 20 caracteres")
     private String password;
-    @NotNull
-    private Role role;
 
 }
