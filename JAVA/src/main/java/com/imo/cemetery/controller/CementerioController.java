@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/cementerios")
 @RequiredArgsConstructor
 public class CementerioController {
 
@@ -26,14 +26,13 @@ public class CementerioController {
 
     @PostMapping
     public ResponseEntity<CementerioResponseDTO> create(@RequestBody @Valid CementerioCreateDTO dto) {
-        // 1. Obtenemos el email de quien está logueado (desde el token JWT)
+        // Obtenemos el email de quien está logueado (desde el token JWT)
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
 
-        // 2. Le pasamos el DTO y el EMAIL al servicio para que él haga el trabajo
+        // Le pasamos el DTO y el EMAIL al servicio para que él haga el trabajo
         CementerioResponseDTO response = service.create(dto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Otros métodos
 }

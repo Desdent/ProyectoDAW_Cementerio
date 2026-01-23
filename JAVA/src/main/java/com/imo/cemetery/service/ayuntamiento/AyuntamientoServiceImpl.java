@@ -9,6 +9,7 @@ import com.imo.cemetery.model.enums.RoleType;
 import com.imo.cemetery.model.mapper.AyuntamientoMapper;
 import com.imo.cemetery.repository.AyuntamientoRepository;
 import com.imo.cemetery.repository.RoleRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -35,9 +36,10 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
     }
 
     @Override
-    public Optional<AyuntamientoResponseDTO> findById(Long id) {
+    public AyuntamientoResponseDTO findById(Long id) {
         return repo.findById(id)
-                .map(ayuntamientoMapper::toResponseDTO);
+                .map(ayuntamientoMapper::toResponseDTO)
+                .orElseThrow(() -> new EntityNotFoundException("ff"));
     }
 
     @Override

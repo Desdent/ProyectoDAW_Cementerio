@@ -11,7 +11,7 @@ public interface AyuntamientoService {
 
     List<AyuntamientoResponseDTO> findAll();
 
-    Optional<AyuntamientoResponseDTO> findById(Long id);
+    AyuntamientoResponseDTO findById(Long id);
 
     AyuntamientoResponseDTO create(AyuntamientoCreateDTO dto);
 
