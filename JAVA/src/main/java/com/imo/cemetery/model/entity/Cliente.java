@@ -39,12 +39,6 @@ public class Cliente extends User {
     @Column(nullable = false)
     private String direccion;
 
-    @Column(nullable = false)
-    private String localidad;
-
-    @Column(nullable = false)
-    private String provincia;
-
 
     // >> RELACIONES <<
 
@@ -52,5 +46,9 @@ public class Cliente extends User {
     @JsonIgnore
     @Builder.Default
     private List<Concesion> concesiones = new ArrayList<>();
+
+    @ManyToOne
+    @JoinColumn(name = "ciudad_id", nullable = false)
+    private Ciudad ciudad;
 
 }

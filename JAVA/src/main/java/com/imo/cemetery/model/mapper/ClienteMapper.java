@@ -13,8 +13,11 @@ public interface ClienteMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "concesiones", ignore = true)
+    @Mapping(target = "ciudad", ignore = true)
     Cliente toEntity(ClienteCreateDTO dto);
 
+    @Mapping(source = "ciudad.nombre", target = "nombreCiudad")
+    @Mapping(source = "ciudad.provincia.nombre", target = "nombreProvincia")
     ClienteResponseDTO toResponseDTO(Cliente cliente);
 
     @Mapping(target = "id", ignore = true)
@@ -23,5 +26,6 @@ public interface ClienteMapper {
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "dni", ignore = true)
     @Mapping(target = "concesiones", ignore = true)
+    @Mapping(target = "ciudad", ignore = true)
     void updateEntityFromDTO(ClienteUpdateDTO dto, @MappingTarget Cliente cliente);
 }

@@ -19,7 +19,7 @@ public class AyuntamientoResponseDTO extends UserResponseDTO {
     private String telefono;
     private String direccion;
     private String escudo;
-    private String localidad;
-    private String provincia;
+    private String nombreCiudad;
+    private String nombreProvincia;
 
 }

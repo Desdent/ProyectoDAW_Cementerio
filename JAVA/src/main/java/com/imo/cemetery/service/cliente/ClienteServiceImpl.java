@@ -3,9 +3,17 @@ package com.imo.cemetery.service.cliente;
 import com.imo.cemetery.model.dto.cliente.ClienteCreateDTO;
 import com.imo.cemetery.model.dto.cliente.ClienteResponseDTO;
 import com.imo.cemetery.model.dto.cliente.ClienteUpdateDTO;
+import com.imo.cemetery.model.entity.Ciudad;
 import com.imo.cemetery.model.entity.Cliente;
+import com.imo.cemetery.model.entity.Role;
+import com.imo.cemetery.model.enums.RoleType;
+import com.imo.cemetery.model.mapper.CiudadMapper;
 import com.imo.cemetery.model.mapper.ClienteMapper;
+import com.imo.cemetery.repository.CiudadRepository;
 import com.imo.cemetery.repository.ClienteRepository;
+import com.imo.cemetery.repository.RoleRepository;
+import com.imo.cemetery.service.ciudad.CiudadService;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +28,9 @@ public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository repo;
     private final ClienteMapper clienteMapper;
+    private final RoleRepository roleRepo;
+    private final CiudadService ciudadService;
+    private final CiudadRepository ciudadRepo;
 
     @Override
     public List<ClienteResponseDTO> findAll() {
@@ -29,8 +40,9 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public Optional<ClienteResponseDTO> findById(Long id) {
-        return repo.findById(id).map(clienteMapper::toResponseDTO);
+    public ClienteResponseDTO findById(Long id) {
+        return repo.findById(id).map(clienteMapper::toResponseDTO)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado: " +  id));
     }
 
     @Override
@@ -38,6 +50,12 @@ public class ClienteServiceImpl implements ClienteService {
     public ClienteResponseDTO create(ClienteCreateDTO dto) {
 
         Cliente entity = clienteMapper.toEntity(dto);
+
+        Role role = roleRepo.findByTipo(RoleType.ROLE_CLIENTE)
+                .orElseThrow(() -> new RuntimeException("Rol ROLE_CLIENTE no encontrado"));
+        entity.setRole(role);
+
+        entity.setCiudad(ciudadRepo.getReferenceById(dto.getCiudadId()));
 
         Cliente entitySaved = repo.save(entity);
 
@@ -64,5 +82,11 @@ public class ClienteServiceImpl implements ClienteService {
         repo.save(entity);
 
         return clienteMapper.toResponseDTO(entity);
+    }
+
+    @Override
+    public Cliente getEntityById(Long id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Error interno: Cliente con ID " + id + " no existe"));
     }
 }

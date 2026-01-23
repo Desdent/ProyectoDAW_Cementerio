@@ -2,6 +2,8 @@ package com.imo.cemetery.model.dto.ayuntamiento;
 
 import com.imo.cemetery.model.dto.user.UserCreateDTO;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,9 +26,8 @@ public class AyuntamientoCreateDTO extends UserCreateDTO {
     @NotBlank
     private String direccion;
     private String escudo;
-    @NotBlank
-    private String localidad;
-    @NotBlank
-    private String provincia;
+    @NotNull
+    @Positive
+    private Long ciudadId;
 
 }

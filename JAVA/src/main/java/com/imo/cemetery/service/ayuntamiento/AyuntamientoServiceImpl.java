@@ -4,11 +4,14 @@ import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoCreateDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoResponseDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoUpdateDTO;
 import com.imo.cemetery.model.entity.Ayuntamiento;
+import com.imo.cemetery.model.entity.Ciudad;
 import com.imo.cemetery.model.entity.Role;
 import com.imo.cemetery.model.enums.RoleType;
 import com.imo.cemetery.model.mapper.AyuntamientoMapper;
 import com.imo.cemetery.repository.AyuntamientoRepository;
+import com.imo.cemetery.repository.CiudadRepository;
 import com.imo.cemetery.repository.RoleRepository;
+import com.imo.cemetery.service.ciudad.CiudadService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -27,6 +30,8 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
     private final RoleRepository roleRepo;
     private final AyuntamientoMapper ayuntamientoMapper;
     private final PasswordEncoder passwordEncoder;
+    private final CiudadService ciudadService;
+    private final CiudadRepository ciudadRepo;
 
     @Override
     public List<AyuntamientoResponseDTO> findAll() {
@@ -50,6 +55,8 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
         Role role = roleRepo.findByTipo(RoleType.ROLE_AYUNTAMIENTO)
                 .orElseThrow(() -> new RuntimeException("Rol ROLE_AYUNTAMIENTO no encontrado"));
         entity.setRole(role);
+
+        entity.setCiudad(ciudadRepo.getReferenceById(dto.getCiudadId()));
 
         entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 

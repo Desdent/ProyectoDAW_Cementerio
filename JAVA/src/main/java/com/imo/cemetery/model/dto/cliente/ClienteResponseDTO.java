@@ -23,5 +23,7 @@ public class ClienteResponseDTO extends UserResponseDTO {
     private String direccion;
     private String localidad;
     private String provincia;
+    private String nombreCiudad;
+    private String nombreProvincia;
 
 }

@@ -35,19 +35,17 @@ public class Ayuntamiento extends User {
     @Column
     private String escudo;
 
-    @Column(nullable = false)
-    private String localidad;
-
-    @Column(nullable = false)
-    private String provincia;
-
 
     // >> RELACIONES <<
+
     @OneToMany(mappedBy = "ayuntamiento", fetch = FetchType.LAZY)
     //mappedBy se encarga de decirle a JPA que el dueño de la relacón indicada (quien hereda la FK) es esta entidad. Apunta al campo de la entidad asociada que se relaciona con esta
     @JsonIgnore
     @Builder.Default
     private List<Cementerio> cementerios = new ArrayList<>();
 
+    @OneToOne
+    @JoinColumn(name = "ciudad_id", unique = true) // El 'unique' fuerza el 1:1 real
+    private Ciudad ciudad;
 
 }

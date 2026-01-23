@@ -15,8 +15,11 @@ public interface AyuntamientoMapper {
     @Mapping(target = "cementerios", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "role", ignore = true)
+    @Mapping(target = "ciudad", ignore = true)
     Ayuntamiento toEntity(AyuntamientoCreateDTO dto);
 
+    @Mapping(source = "ciudad.nombre", target = "nombreCiudad")
+    @Mapping(source = "ciudad.provincia.nombre", target = "nombreProvincia")
     AyuntamientoResponseDTO toResponseDTO(Ayuntamiento ayuntamiento);
 
     @Mapping(target = "id", ignore = true)
@@ -25,5 +28,6 @@ public interface AyuntamientoMapper {
     @Mapping(target = "role", ignore = true)
     @Mapping(target = "nif", ignore = true)
     @Mapping(target = "cementerios", ignore = true)
+    @Mapping(target = "ciudad", ignore = true)
     void updateEntityFromDTO(AyuntamientoUpdateDTO dto, @MappingTarget Ayuntamiento ayuntamiento);
 }

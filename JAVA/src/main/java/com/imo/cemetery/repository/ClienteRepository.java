@@ -26,8 +26,14 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     Optional<Cliente> findByTelefono(String telefono);
 
-    List<Cliente> findAllByLocalidad(String localidad);
+    List<Cliente> findAllByCiudadProvinciaNombre(String nombreProvincia);
 
-    List<Cliente> findAllByProvincia(String provincia);
+    List<Cliente> findAllByCiudadProvinciaId(Long provinciaId);
+
+    boolean existsByEmail(String email);
+
+    boolean existsByDni(String dni);
+
+
 
 }
