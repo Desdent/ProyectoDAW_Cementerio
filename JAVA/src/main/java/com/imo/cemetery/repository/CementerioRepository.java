@@ -1,6 +1,7 @@
 package com.imo.cemetery.repository;
 
 import com.imo.cemetery.model.entity.Cementerio;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,15 +11,18 @@ import java.util.Optional;
 @Repository
 public interface CementerioRepository extends JpaRepository<Cementerio, Long> {
 
-    Optional<Cementerio> findByNombre(String nombre);
 
-    Optional<Cementerio> findByTelefono(String telefono);
+    // Para el findAllByLoggedAyuntamiento() del service
+    List<Cementerio> findAllByAyuntamientoEmail(String email);
+    Optional<Cementerio> findByEmail(String email);
 
-    List<Cementerio> findAllByAyuntamientoCiudadProvinciaNombre(String nombreProvincia);
-
-    List<Cementerio> findAllByAyuntamientoCiudadProvinciaId(Long provinciaId);
-
-    List<Cementerio> findAllByAyuntamientoId(Long id); // Estos metodos se colocan en el lado "debil" de las relciones, las que heredan la FK
-    
+    // Buscador
+    List<Cementerio> findAllByNombreContainingIgnoreCaseOrEmailContainingIgnoreCaseOrTelefonoContaining(String nombre, String email, String telefono);
+    List<Cementerio> findAllByAyuntamientoCiudadProvinciaNombre(String nombre);
+    List<Cementerio> findAllByAyuntamientoCiudadProvinciaId(Long id);
+    List<Cementerio> findAllByAyuntamientoCiudadNombre(String nombre);
+    List<Cementerio> findAllByAyuntamientoCiudadId(Long id);
+    List<Cementerio> findAllByAyuntamientoId(Long id);
+    Long countByAyuntamientoId(Long id);
 
 }

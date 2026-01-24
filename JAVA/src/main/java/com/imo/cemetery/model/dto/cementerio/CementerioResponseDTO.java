@@ -15,6 +15,7 @@ public class CementerioResponseDTO {
     private String nombre;
     private String direccion;
     private String telefono;
+    private String email;
     private Long ayuntamientoId;
 
 }

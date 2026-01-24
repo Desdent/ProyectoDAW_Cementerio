@@ -11,27 +11,18 @@ import java.util.Optional;
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     Optional<Cliente> findByEmail(String email); // Al parecer spring es capaz de hacer el join hacia atrás por si mismo
-
     Optional<Cliente> findByDni(String dni);
 
-    List<Cliente> findAllByNombre(String nombre);
+    //Buscador
+    List<Cliente> findAllByNombreContainingIgnoreCaseOrApellido1ContainingIgnoreCaseOrApellido2ContainingIgnoreCaseOrTelefonoContaining(String nombre, String ap1, String ap2, String telefono);
 
-    List<Cliente> findAllByApellido1(String apellido1);
-
-    List<Cliente> findAllByApellido2(String apellido2);
-
-    Optional<Cliente> findByNombreAndApellido1(String nombre, String apellido1);
-
-    Optional<Cliente> findByNombreAndApellido1AndApellido2(String nombre, String apellido1, String apellido2);
-
-    Optional<Cliente> findByTelefono(String telefono);
-
-    List<Cliente> findAllByCiudadProvinciaNombre(String nombreProvincia);
-
+    // Localización
+    List<Cliente> findAllByCiudadProvinciaNombreIgnoreCase(String nombreProvincia);
     List<Cliente> findAllByCiudadProvinciaId(Long provinciaId);
+    List<Cliente> findAllByCiudadId(Long ciudadId);
+    List<Cliente> findAllByCiudadNombreIgnoreCase(String ciudadNombre);
 
     boolean existsByEmail(String email);
-
     boolean existsByDni(String dni);
 
 

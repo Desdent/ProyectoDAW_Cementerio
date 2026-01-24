@@ -11,14 +11,19 @@ import java.util.Optional;
 @Repository
 public interface ConcesionRepository extends JpaRepository<Concesion, Long> {
 
-    List<Concesion> findAllByFechaInicio(LocalDate fechaInicio);
 
-    List<Concesion> findAllByFechaFin(LocalDate fechaFin);
-
-    List<Concesion> findAllByVencida(boolean vencida);
-
-    Optional<Concesion> findByPagoId(Long id);
-
+    List<Concesion> findAllByParcelaId(Long id);
     List<Concesion> findAllByClienteId(Long clienteId);
+    List<Concesion> findAllByClienteDniContainsIgnoreCase(String dni);
+
+    List<Concesion> findAllByFechaInicio(LocalDate fechaInicio);
+    List<Concesion> findAllByFechaFin(LocalDate fechaFin);
+    List<Concesion> findAllByFechaFinBetween(LocalDate fecha1, LocalDate fecha2);
+    List<Concesion> findAllByFechaFinBefore(LocalDate fecha);
+    List<Concesion> findAllByFechaFinBeforeAndVencidaFalse(LocalDate today);
+    List<Concesion> findAllByVencidaFalse();
+    List<Concesion> findAllByVencida(boolean vencida);
+    Optional<Concesion> findByPagoId(Long id);
+    List<Concesion> findAllByCementerioId(Long id);
 
 }

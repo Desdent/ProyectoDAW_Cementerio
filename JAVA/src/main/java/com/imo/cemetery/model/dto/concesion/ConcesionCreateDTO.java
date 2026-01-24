@@ -1,9 +1,6 @@
 package com.imo.cemetery.model.dto.concesion;
 
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -33,4 +31,7 @@ public class ConcesionCreateDTO {
     private Long clienteId;
     @NotNull
     private Long pagoId;
+    @NotNull
+    @Size(min = 1, message = "Una concesión debe tener al menos una parcela")
+    private List<Long> parcelaIds;
 }

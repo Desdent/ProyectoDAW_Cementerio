@@ -1,6 +1,7 @@
 package com.imo.cemetery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.imo.cemetery.model.enums.EstadoType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -37,6 +38,10 @@ public class Parcela {
     @Column(nullable = false)
     private Integer columna;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private EstadoType estado;
+
 
     // >> RELACIONES <<
 
@@ -57,6 +62,11 @@ public class Parcela {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "zona_id")
     private Zona zona;
+
+    public boolean isLibre() {
+
+        return this.estado == EstadoType.LIBRE && this.concesion == null;
+    }
 
 
 }

@@ -31,6 +31,9 @@ public class Cementerio {
     @Column(nullable = false, unique = true)
     private String telefono;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
 
     // >> RELACIONES <<
 

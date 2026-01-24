@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/users/register").permitAll()
                         .requestMatchers("/api/ayuntamientos/register").permitAll()
-                        .requestMatchers("/controller/auth/**").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/controller/cemetery/**").permitAll()
                         .requestMatchers("/controller/cemetery/**").hasRole("ADMIN") // Ya le añade automaticamente el filtro el "ROLE_"
                         // En estas rutas es donde deberia estar el login y tal

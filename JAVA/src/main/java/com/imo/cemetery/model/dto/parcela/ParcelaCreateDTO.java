@@ -1,5 +1,6 @@
 package com.imo.cemetery.model.dto.parcela;
 
+import com.imo.cemetery.model.enums.EstadoType;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -27,5 +28,7 @@ public class ParcelaCreateDTO {
     private Long concesionId;
     @NotNull
     private Long zonaId;
+    @NotNull
+    private EstadoType estado;
 
 }
