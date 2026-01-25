@@ -168,7 +168,7 @@ public class CementerioServiceImpl implements CementerioService {
     }
 
     @Override
-    public List<CementerioResponseDTO> findALlByCiudadId(Long id) {
+    public List<CementerioResponseDTO> findAllByCiudadId(Long id) {
         return repo.findAllByAyuntamientoCiudadId(id)
                 .stream()
                 .map(cementerioMapper::toResponseDTO)

@@ -26,7 +26,7 @@ public interface CementerioService {
     List<CementerioResponseDTO> findAllByProvinciaNombre(String nombre);
     List<CementerioResponseDTO> findAllByProvinciaId(Long id);
     List<CementerioResponseDTO> findAllByCiudadNombre(String nombre);
-    List<CementerioResponseDTO> findALlByCiudadId(Long id);
+    List<CementerioResponseDTO> findAllByCiudadId(Long id);
     List<CementerioResponseDTO> findAllByAyuntamientoId(Long id);
     Long countByAyuntamientoId(Long id);
     List<CementerioResponseDTO> findAllByAyuntamientoEmail(String email);

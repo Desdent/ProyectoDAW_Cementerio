@@ -6,6 +6,7 @@ import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoUpdateDTO;
 import com.imo.cemetery.service.ayuntamiento.AyuntamientoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/ayuntamientos")
 @RequiredArgsConstructor
+@Slf4j
+@CrossOrigin
 public class AyuntamientoController {
 
     private final AyuntamientoService service;
-    // Se inyecta ek servicio en lugar del service por desacoplamiento (poder cambiar el funcionamiento sin afectar al servicio)
+    // Se inyecta el servicio en lugar del service por desacoplamiento (poder cambiar el funcionamiento sin afectar al servicio)
                                     // e inversion de dependencias (modulos de alto nivel no se comunican con los de bajo nivel)
 
-    // >> OPERACIONES CRUD BÁSICAS <<
+    // CRUD
 
     @PostMapping
     public ResponseEntity<AyuntamientoResponseDTO> create(@Valid @RequestBody AyuntamientoCreateDTO dto) {
@@ -40,9 +43,7 @@ public class AyuntamientoController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AyuntamientoResponseDTO> update(
-            @PathVariable Long id,
-            @Valid @RequestBody AyuntamientoUpdateDTO dto) {
+    public ResponseEntity<AyuntamientoResponseDTO> update(@PathVariable Long id, @Valid @RequestBody AyuntamientoUpdateDTO dto) {
         return ResponseEntity.ok(service.update(dto, id));
     }
 
@@ -52,7 +53,7 @@ public class AyuntamientoController {
         return ResponseEntity.noContent().build();
     }
 
-    // >> BÚSQUEDAS Y FILTROS ESPECÍFICOS <<
+    // BÚSQUEDAS Y FILTROS
 
     @GetMapping("/search")
     public ResponseEntity<List<AyuntamientoResponseDTO>> search(@RequestParam String term) {

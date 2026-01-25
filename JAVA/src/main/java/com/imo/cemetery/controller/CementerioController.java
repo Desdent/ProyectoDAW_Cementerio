@@ -1,38 +1,111 @@
 package com.imo.cemetery.controller;
 
+
 import com.imo.cemetery.model.dto.cementerio.CementerioCreateDTO;
 import com.imo.cemetery.model.dto.cementerio.CementerioResponseDTO;
-import com.imo.cemetery.model.mapper.CementerioMapper;
-import com.imo.cemetery.repository.AyuntamientoRepository;
-import com.imo.cemetery.service.cementerio.CementerioServiceImpl;
+import com.imo.cemetery.model.dto.cementerio.CementerioUpdateDTO;
+import com.imo.cemetery.service.cementerio.CementerioService;
+
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("/api/cementerios")
+@RequestMapping("/api/v1/cementerios")
 @RequiredArgsConstructor
+@Slf4j // Para ver logs
+@CrossOrigin
 public class CementerioController {
 
-    private final CementerioServiceImpl service;
-    private final AyuntamientoRepository ayuntamientoRepository;
-    private final CementerioMapper cementerioMapper;
+    private final CementerioService service;
+
+
+    // CRUD
 
     @PostMapping
-    public ResponseEntity<CementerioResponseDTO> create(@RequestBody @Valid CementerioCreateDTO dto) {
-        // Obtenemos el email de quien está logueado (desde el token JWT)
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        // Le pasamos el DTO y el EMAIL al servicio para que él haga el trabajo
-        CementerioResponseDTO response = service.create(dto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    public ResponseEntity<CementerioResponseDTO> create(@Valid @RequestBody CementerioCreateDTO dto)
+    {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    @GetMapping
+    public ResponseEntity<List<CementerioResponseDTO>> findAll()
+    {
+        return ResponseEntity.ok(service.findAll());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CementerioResponseDTO> findById(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findById(id));
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<CementerioResponseDTO> findByEmail(@PathVariable String email)
+    {
+        return ResponseEntity.ok(service.findByEmail(email));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CementerioResponseDTO> update(@PathVariable Long id, @Valid @RequestBody CementerioUpdateDTO dto)
+    {
+        return ResponseEntity.ok(service.update(dto, id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id)
+    {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+
+    // BÚSQUEDAS Y FILTROS
+
+    @GetMapping("/search")
+    public ResponseEntity<List<CementerioResponseDTO>> search(@RequestParam String term)
+    {
+        return ResponseEntity.ok(service.findAllBySearchingTerm(term));
+    }
+
+    @GetMapping("/filter-provincia/{id}")
+    public ResponseEntity<List<CementerioResponseDTO>> filterByProvincia(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByProvinciaId(id));
+    }
+
+    @GetMapping("/filter-ciudad/{id}")
+    public ResponseEntity<List<CementerioResponseDTO>> filterByCiudad(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByCiudadId(id));
+    }
+
+    @GetMapping("/filter-ayuntamiento/{id}")
+    public ResponseEntity<List<CementerioResponseDTO>> filterByAyuntamientoId(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByAyuntamientoId(id));
+    }
+
+    @GetMapping("/filter-ayuntamiento-email/{email}")
+    public ResponseEntity<List<CementerioResponseDTO>> filterByAyuntamientoEmail(@PathVariable String email)
+    {
+        return ResponseEntity.ok(service.findAllByAyuntamientoEmail(email));
+    }
+
+    @GetMapping("/count/{aytoId}")
+    public ResponseEntity<Long> countByAyuntamientoId(@PathVariable Long aytoId)
+    {
+        return ResponseEntity.ok(service.countByAyuntamientoId(aytoId));
+    }
+
+    @GetMapping("/my-cementerios")
+    public ResponseEntity<List<CementerioResponseDTO>> myCementerios()
+    {
+        return ResponseEntity.ok(service.findAllByLoggedAyuntamiento());
+    }
 }
