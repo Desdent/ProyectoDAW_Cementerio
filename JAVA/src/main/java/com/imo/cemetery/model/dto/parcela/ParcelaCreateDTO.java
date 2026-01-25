@@ -31,4 +31,5 @@ public class ParcelaCreateDTO {
     @NotNull
     private EstadoType estado;
 
+
 }

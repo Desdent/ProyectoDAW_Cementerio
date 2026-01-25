@@ -20,16 +20,18 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class ConcesionServiceImpl implements ConcesionService{
 
-    private ConcesionRepository repo;
-    private ClienteRepository clienteRepository;
-    private ConcesionMapper concesionMapper;
-    private ParcelaRepository parcelaRepository;
+    private final ConcesionRepository repo;
+    private final ClienteRepository clienteRepository;
+    private final ConcesionMapper concesionMapper;
+    private final ParcelaRepository parcelaRepository;
 
 
     // CRUD
@@ -111,46 +113,80 @@ public class ConcesionServiceImpl implements ConcesionService{
 
     @Override
     public List<ConcesionResponseDTO> findAllByParcelaId(Long id) {
-        return List.of();
+        return repo.findAllByParcelaId(id)
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
     }
 
     @Override
     public List<ConcesionResponseDTO> findAllByClienteId(Long id) {
-        return List.of();
+        return repo.findAllByClienteId(id)
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
     }
 
     @Override
-    public List<ConcesionResponseDTO> findAllByVencida(boolean vencida) {
-        return List.of();
+    public List<ConcesionResponseDTO> findAllByVencidaTrue() {
+        return repo.findAllByVencidaTrue()
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
     }
 
     @Override
     public List<ConcesionResponseDTO> findAllActivas() {
-        return List.of();
+        return repo.findAllByVencidaFalse()
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
     }
 
     @Override
     public List<ConcesionResponseDTO> findAllByFechaFinBefore(LocalDate fecha) {
-        return List.of();
+        return repo.findAllByFechaFinBefore(fecha)
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
     }
 
     @Override
     public List<ConcesionResponseDTO> findAllByFechaFinBetween(LocalDate fecha1, LocalDate fecha2) {
-        return List.of();
+        return repo.findAllByFechaFinBetween(fecha1, fecha2)
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
     }
 
     @Override
     public List<ConcesionResponseDTO> findAllCasiVencidas() {
-        return List.of();
+
+        List<ConcesionResponseDTO> response;
+        LocalDate hoy = LocalDate.now();
+
+        response = repo.findAllByVencidaFalse()
+                .stream()
+                .filter(concesion -> ChronoUnit.DAYS.between(hoy, concesion.getFechaFin()) >= 0 &&
+                        ChronoUnit.DAYS.between(hoy, concesion.getFechaFin()) <= 30)
+                .map(concesionMapper::toResponseDTO)
+                .toList();
+
+        return response;
     }
 
     @Override
     public ConcesionResponseDTO findAllByPagoId(Long id) {
-        return null;
+        return repo.findByPagoId(id)
+                .map(concesionMapper::toResponseDTO)
+                .orElseThrow(() -> new EntityNotFoundException("No existe pago con ID: " + id));
     }
 
     @Override
     public List<ConcesionResponseDTO> findAllByCementerioId(Long id) {
-        return List.of();
+        return repo.findAllByCementerioId(id)
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
     }
 }

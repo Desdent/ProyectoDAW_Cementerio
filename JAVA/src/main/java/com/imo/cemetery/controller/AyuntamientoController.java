@@ -3,79 +3,74 @@ package com.imo.cemetery.controller;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoCreateDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoResponseDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoUpdateDTO;
-import com.imo.cemetery.model.dto.cementerio.CementerioResponseDTO;
-import com.imo.cemetery.model.mapper.AyuntamientoMapper;
-import com.imo.cemetery.repository.AyuntamientoRepository;
-import com.imo.cemetery.service.ayuntamiento.AyuntamientoServiceImpl;
+import com.imo.cemetery.service.ayuntamiento.AyuntamientoService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * The type Ayuntamiento controller.
- */
-@CrossOrigin("*")
 @RestController
-@RequestMapping("api/ayuntamientos")
+@RequestMapping("/api/v1/ayuntamientos")
 @RequiredArgsConstructor
-@Slf4j
 public class AyuntamientoController {
 
-    private final AyuntamientoServiceImpl service;
-    private final PasswordEncoder passwordEncoder;
-    private final AyuntamientoMapper mapper;
+    private final AyuntamientoService service;
+    // Se inyecta ek servicio en lugar del service por desacoplamiento (poder cambiar el funcionamiento sin afectar al servicio)
+                                    // e inversion de dependencias (modulos de alto nivel no se comunican con los de bajo nivel)
 
+    // >> OPERACIONES CRUD BÁSICAS <<
 
-    @GetMapping("/get/{id}")
-    public ResponseEntity<AyuntamientoResponseDTO> obtainById(@PathVariable Long id){
-
-        return ResponseEntity.ok(service.findById(id)); // Esto hace el equivalente a lo de arriba
+    @PostMapping
+    public ResponseEntity<AyuntamientoResponseDTO> create(@Valid @RequestBody AyuntamientoCreateDTO dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
-    /**
-     * Obtain all ayuntamientosResponseDTO entity.
-     *
-     * @return the response list
-     */
-    @GetMapping("/getAll")
-    public ResponseEntity<List<AyuntamientoResponseDTO>> obtainAllAyuntamientos(){
-        // return new ResponseEntity<>(service.findAll(), HttpStatus.OK);
-        return ResponseEntity.ok(service.findAll()); // Esto hace el equivalente a lo de arriba
+    @GetMapping
+    public ResponseEntity<List<AyuntamientoResponseDTO>> findAll() {
+        List<AyuntamientoResponseDTO> response = service.findAll();
+        return response.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(response);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerAyuntamiento(@RequestBody AyuntamientoCreateDTO ayuntamientoCreateDTO) {
-
-        if (this.service.existsByEmail(ayuntamientoCreateDTO.getEmail())) {
-            throw new RuntimeException("Email ocupado");
-        }
-
-        this.service.create(ayuntamientoCreateDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Ayuntamiento registrado existosamente.");
-
+    @GetMapping("/{id}")
+    public ResponseEntity<AyuntamientoResponseDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 
-    @PutMapping("/edit/{id}")
-    public ResponseEntity<AyuntamientoResponseDTO> update(@PathVariable Long id, @RequestBody AyuntamientoUpdateDTO ayuntamientoUpdateDTO)
-    {
-        AyuntamientoResponseDTO updated = service.update(ayuntamientoUpdateDTO, id);
-        // Si el service devuelve null, esto lanza una excepción
-        if (updated == null) return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(updated);
+    @PutMapping("/{id}")
+    public ResponseEntity<AyuntamientoResponseDTO> update(
+            @PathVariable Long id,
+            @Valid @RequestBody AyuntamientoUpdateDTO dto) {
+        return ResponseEntity.ok(service.update(dto, id));
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable Long id)
-    {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteById(id);
-
-        return ResponseEntity.ok("Ayuntamiento borrado exitosamente.");
+        return ResponseEntity.noContent().build();
     }
 
+    // >> BÚSQUEDAS Y FILTROS ESPECÍFICOS <<
+
+    @GetMapping("/search")
+    public ResponseEntity<List<AyuntamientoResponseDTO>> search(@RequestParam String term) {
+        return ResponseEntity.ok(service.findAllBySearchingTerm(term));
+    }
+
+    @GetMapping("/nif/{nif}")
+    public ResponseEntity<AyuntamientoResponseDTO> findByNif(@PathVariable String nif) {
+        return ResponseEntity.ok(service.findByNif(nif));
+    }
+
+    @GetMapping("/provincia/{id}")
+    public ResponseEntity<List<AyuntamientoResponseDTO>> findAllByProvincia(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findAllByProvinciaId(id));
+    }
+
+    @GetMapping("/ciudad/{id}")
+    public ResponseEntity<AyuntamientoResponseDTO> findByCiudad(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findByCiudadId(id));
+    }
 }

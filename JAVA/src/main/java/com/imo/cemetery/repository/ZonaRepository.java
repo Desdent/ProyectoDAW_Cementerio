@@ -11,12 +11,10 @@ import java.util.Optional;
 @Repository
 public interface ZonaRepository extends JpaRepository<Zona, Long> {
 
-    // Para listar todas las zonas de un cementerio
     List<Zona> findAllByCementerioId(Long cementerioId);
-
-    // Para buscar una zona específica de un cementerio por su tipo/nombre
-    Optional<Zona> findByTipoAndCementerioId(ZonaType tipo, Long cementerioId);
-
-    // Para validar que no se duplique un tipo de zona en el mismo cementerio
+    List<Zona> findAllByNombreContainingIgnoreCase(String nombre);
+    List<Zona> findAllByTipo(ZonaType tipo);
+    Optional<Zona> findByNombreAndCementerioId(String nombre, Long cementerioId);
     boolean existsByTipoAndCementerioId(ZonaType tipo, Long cementerioId);
+    boolean existsByNombreAndCementerioId(String nombre, Long cementerioId);
 }

@@ -22,7 +22,7 @@ public interface ConcesionRepository extends JpaRepository<Concesion, Long> {
     List<Concesion> findAllByFechaFinBefore(LocalDate fecha);
     List<Concesion> findAllByFechaFinBeforeAndVencidaFalse(LocalDate today);
     List<Concesion> findAllByVencidaFalse();
-    List<Concesion> findAllByVencida(boolean vencida);
+    List<Concesion> findAllByVencidaTrue();
     Optional<Concesion> findByPagoId(Long id);
     List<Concesion> findAllByCementerioId(Long id);
 

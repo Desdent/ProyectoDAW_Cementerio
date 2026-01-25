@@ -3,6 +3,7 @@ package com.imo.cemetery.service.cliente;
 import com.imo.cemetery.model.dto.cliente.ClienteCreateDTO;
 import com.imo.cemetery.model.dto.cliente.ClienteResponseDTO;
 import com.imo.cemetery.model.dto.cliente.ClienteUpdateDTO;
+import com.imo.cemetery.model.entity.Ciudad;
 import com.imo.cemetery.model.entity.Cliente;
 import com.imo.cemetery.model.entity.Role;
 import com.imo.cemetery.model.enums.RoleType;
@@ -14,6 +15,7 @@ import com.imo.cemetery.service.ciudad.CiudadService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,29 +30,34 @@ public class ClienteServiceImpl implements ClienteService {
     private final RoleRepository roleRepo;
     private final CiudadService ciudadService;
     private final CiudadRepository ciudadRepo;
+    private final PasswordEncoder passwordEncoder;
 
     // CRUD
     @Override
     @Transactional
     public ClienteResponseDTO create(ClienteCreateDTO dto) {
+        ClienteResponseDTO response;
 
         Cliente entity = clienteMapper.toEntity(dto);
 
         Role role = roleRepo.findByTipo(RoleType.ROLE_CLIENTE)
-                .orElseThrow(() -> new RuntimeException("Rol ROLE_CLIENTE no encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Rol ROLE_CLIENTE no encontrado"));
         entity.setRole(role);
 
-        entity.setCiudad(ciudadRepo.getReferenceById(dto.getCiudadId()));
+        entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 
-        Cliente entitySaved = repo.save(entity);
+        Ciudad ciudad = ciudadRepo.findById(dto.getCiudadId())
+                .orElseThrow(() -> new EntityNotFoundException("Ciudad no encontrada"));
+        entity.setCiudad(ciudad);
 
-        return clienteMapper.toResponseDTO(entitySaved);
+        response = clienteMapper.toResponseDTO(repo.save(entity));
+        return response;
     }
 
     @Override
     public void deleteById(Long id) {
         if (!repo.existsById(id)) {
-            throw new RuntimeException("No existe el ID: " + id); // #TODO cambiar por excepcion personaizada
+            throw new EntityNotFoundException("No existe el ID: " + id); // #TODO cambiar por excepcion personaizada
         }
         repo.deleteById(id);
     }

@@ -19,7 +19,6 @@ public interface PagoRepository extends JpaRepository<Pago, Long> {
 
     List<Pago> findAllByFechaAndMetodo(LocalDate fecha, PagoType metodo);
 
-    // List<Pago> findAllByConcesionParcelaCementerioId(Long cementerioId);
     @Query("SELECT p FROM Pago p " +
             "JOIN p.concesion c " +
             "JOIN c.parcelas parc " +

@@ -45,7 +45,7 @@ public class CementerioServiceImpl implements CementerioService {
 
         // Buscamos el Ayuntamiento completo en la base de datos
         Ayuntamiento ayuntamiento = ayuntamientoRepo.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Ayuntamiento no encontrado con email: " + email));
+                .orElseThrow(() -> new EntityNotFoundException("Ayuntamiento no encontrado con email: " + email));
 
         // Mapeamos el DTO a la entidad Cementerio
         Cementerio entity = cementerioMapper.toEntity(dto);
@@ -64,7 +64,7 @@ public class CementerioServiceImpl implements CementerioService {
     @Transactional
     public CementerioResponseDTO update(CementerioUpdateDTO dto, Long id) {
         Cementerio entity = repo.findById(id)
-                .orElseThrow(() -> new RuntimeException("No existe el Cementerio con ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("No existe el Cementerio con ID: " + id));
 
         // Actualizamos los campos (ubicación, nombre, etc.) desde el DTO
         cementerioMapper.updateEntityFromDTO(dto, entity);

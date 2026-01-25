@@ -5,6 +5,7 @@ import com.imo.cemetery.model.dto.user.UserResponseDTO;
 import com.imo.cemetery.model.entity.User;
 import com.imo.cemetery.model.mapper.UserMapper;
 import com.imo.cemetery.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,12 +39,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User findById(Long id) {
-        return repo.findById(id).orElseThrow(() -> new UsernameNotFoundException("ID no encontrada: " + id));
+        return repo.findById(id).orElseThrow(() -> new EntityNotFoundException("ID no encontrada: " + id));
     }
 
     @Override
     public User findByEmail(String email) {
-        return repo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Email no encontrado: " + email));
+        return repo.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("Email no encontrado: " + email));
     }
 
     @Override
@@ -64,7 +65,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Transactional
     public void deleteById(Long id) {
         if (!repo.existsById(id)) {
-            throw new RuntimeException("No existe el ID: " + id); // #TODO cambiar por excepcion personaizada
+            throw new EntityNotFoundException("No existe el ID: " + id); // #TODO cambiar por excepcion personaizada
         }
         repo.deleteById(id);
     }
@@ -73,6 +74,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repo.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado: " + username));
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado: " + username));
     }
 }

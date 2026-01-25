@@ -18,6 +18,8 @@ import java.time.Year;
 public class DifuntoUpdateDTO {
 
     @NotBlank
+    private Long id;
+    @NotBlank
     private String nombre;
     @NotBlank
     private String apellido1;
@@ -34,6 +36,8 @@ public class DifuntoUpdateDTO {
     // #TODO añadir validador posterior a la fecha de defunción
     private String mensaje;
     private String foto;
+    @NotNull
+    private Long parcelaId;
 
 
 }

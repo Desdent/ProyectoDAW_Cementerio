@@ -18,7 +18,7 @@ public interface ConcesionService {
     // Consultas
     List<ConcesionResponseDTO> findAllByParcelaId(Long id);
     List<ConcesionResponseDTO> findAllByClienteId(Long id);
-    List<ConcesionResponseDTO> findAllByVencida(boolean vencida);
+    List<ConcesionResponseDTO> findAllByVencidaTrue();
     List<ConcesionResponseDTO> findAllActivas();
     List<ConcesionResponseDTO> findAllByFechaFinBefore(LocalDate fecha);
     List<ConcesionResponseDTO> findAllByFechaFinBetween(LocalDate fecha1, LocalDate fecha2);
