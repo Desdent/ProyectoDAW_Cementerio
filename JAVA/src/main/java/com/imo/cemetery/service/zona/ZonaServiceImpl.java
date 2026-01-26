@@ -121,10 +121,11 @@ public class ZonaServiceImpl implements ZonaService {
 
     @Override
     @Transactional(readOnly = true)
-    public ZonaResponseDTO findByNombreEnCementerio(String nombre, Long cementerioId) {
-        ZonaResponseDTO response = repo.findByNombreAndCementerioId(nombre, cementerioId)
+    public List<ZonaResponseDTO> findByNombreEnCementerio(String nombre, Long cementerioId) {
+        List<ZonaResponseDTO> response = repo.findByNombreContainingIgnoreCaseAndCementerioId(nombre, cementerioId)
+                .stream()
                 .map(zonaMapper::toResponseDTO)
-                .orElseThrow(() -> new EntityNotFoundException("No se encontró la zona '" + nombre + "' en este cementerio"));
+                .toList();
         return response;
     }
 }

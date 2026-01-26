@@ -14,7 +14,7 @@ public interface ZonaRepository extends JpaRepository<Zona, Long> {
     List<Zona> findAllByCementerioId(Long cementerioId);
     List<Zona> findAllByNombreContainingIgnoreCase(String nombre);
     List<Zona> findAllByTipo(ZonaType tipo);
-    Optional<Zona> findByNombreAndCementerioId(String nombre, Long cementerioId);
+    List<Zona> findByNombreContainingIgnoreCaseAndCementerioId(String nombre, Long cementerioId);
     boolean existsByTipoAndCementerioId(ZonaType tipo, Long cementerioId);
     boolean existsByNombreAndCementerioId(String nombre, Long cementerioId);
 }

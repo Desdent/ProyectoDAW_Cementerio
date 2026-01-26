@@ -45,7 +45,7 @@ public class ParcelaController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ParcelaResponseDTO> update(@PathVariable Long id, @RequestBody ParcelaUpdateDTO dto)
+    public ResponseEntity<ParcelaResponseDTO> update(@PathVariable Long id, @RequestBody @Valid ParcelaUpdateDTO dto)
     {
         return ResponseEntity.ok(service.update(id, dto));
     }

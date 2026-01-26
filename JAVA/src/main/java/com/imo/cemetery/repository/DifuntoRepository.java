@@ -15,7 +15,7 @@ public interface DifuntoRepository extends JpaRepository<Difunto, Long> {
     List<Difunto> findAllByApellido1ContainingIgnoreCase(String apellido1);
     List<Difunto> findAllByApellido2ContainingIgnoreCase(String apellido2);
     List<Difunto> findByNombreAndApellido1(String nombre, String apellido1);
-    List<Difunto> findByNombreAndApellido1AndApellido2(String nombre, String apellido1, String apellido2);
+    List<Difunto> findByNombreContainingIgnoreCaseOrApellido1ContainingIgnoreCaseOrApellido2ContainingIgnoreCase(String nombre, String apellido1, String apellido2);
     List<Difunto> findAllByYearNacimiento(Year yearNacimiento);
     List<Difunto> findAllByYearDefuncion(Year yearDefuncion);
     List<Difunto> findAllByYearNacimientoAndYearDefuncion(Year yearNacimiento, Year yearDefuncion);

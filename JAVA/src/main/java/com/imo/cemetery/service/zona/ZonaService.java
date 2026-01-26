@@ -14,5 +14,5 @@ public interface ZonaService {
     List<ZonaResponseDTO> findAll();
     List<ZonaResponseDTO> findAllByCementerioId(Long cementerioId);
     List<ZonaResponseDTO> searchByNombre(String nombre);
-    ZonaResponseDTO findByNombreEnCementerio(String nombre, Long cementerioId);
+    List<ZonaResponseDTO> findByNombreEnCementerio(String nombre, Long cementerioId);
 }

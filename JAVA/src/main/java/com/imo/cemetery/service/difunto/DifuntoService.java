@@ -13,7 +13,7 @@ public interface DifuntoService {
     void deleteById(Long id);
     DifuntoResponseDTO findById(Long id);
     List<DifuntoResponseDTO> findAll();
-    List<DifuntoResponseDTO> findByNombreCompleto(String nombre, String ape1, String ape2);
+    List<DifuntoResponseDTO> findByFullName(String nombre, String ape1, String ape2);
     List<DifuntoResponseDTO> findAllByParcela(Long parcelaId);
     List<DifuntoResponseDTO> findAllByYearDefuncion(Year year);
 }

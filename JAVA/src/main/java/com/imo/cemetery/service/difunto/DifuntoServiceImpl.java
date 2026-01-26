@@ -106,8 +106,8 @@ public class DifuntoServiceImpl implements DifuntoService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DifuntoResponseDTO> findByNombreCompleto(String nombre, String ape1, String ape2) {
-        List<DifuntoResponseDTO> response = repo.findByNombreAndApellido1AndApellido2(nombre, ape1, ape2)
+    public List<DifuntoResponseDTO> findByFullName(String nombre, String ape1, String ape2) {
+        List<DifuntoResponseDTO> response = repo.findByNombreContainingIgnoreCaseOrApellido1ContainingIgnoreCaseOrApellido2ContainingIgnoreCase(nombre, ape1, ape2)
                 .stream()
                 .map(difuntoMapper::toResponseDTO)
                 .toList();
