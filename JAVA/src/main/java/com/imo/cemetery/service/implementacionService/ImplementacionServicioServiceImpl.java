@@ -94,6 +94,16 @@ public class ImplementacionServicioServiceImpl implements ImplementacionServicio
 
     @Override
     @Transactional(readOnly = true)
+    public List<ImplementacionServicioResponseDTO> findAll() {
+        List<ImplementacionServicioResponseDTO> response = repo.findAll()
+                .stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<ImplementacionServicioResponseDTO> findAllByParcela(Long parcelaId) {
         List<ImplementacionServicioResponseDTO> response = repo.findAllByParcelaId(parcelaId)
                 .stream()

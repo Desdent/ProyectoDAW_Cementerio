@@ -12,6 +12,7 @@ public interface ImplementacionServicioService {
     ImplementacionServicioResponseDTO update(Long id, ImplementacionServicioUpdateDTO dto);
     void deleteById(Long id);
     ImplementacionServicioResponseDTO findById(Long id);
+    List<ImplementacionServicioResponseDTO> findAll();
     List<ImplementacionServicioResponseDTO> findAllByParcela(Long parcelaId);
     List<ImplementacionServicioResponseDTO> findAllByFechaRange(LocalDate inicio, LocalDate fin);
 }

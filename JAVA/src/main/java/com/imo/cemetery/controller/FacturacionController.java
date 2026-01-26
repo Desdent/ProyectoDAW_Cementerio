@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/facturaciones")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
+
 public class FacturacionController {
 
     private final FacturacionService service;

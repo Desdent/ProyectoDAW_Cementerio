@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/v1/ayuntamientos")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class AyuntamientoController {
 
     private final AyuntamientoService service;

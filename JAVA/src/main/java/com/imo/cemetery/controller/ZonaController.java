@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/v1/zonas")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class ZonaController {
 
     private final ZonaService service;

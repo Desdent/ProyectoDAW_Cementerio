@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/v1/parcelas")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class ParcelaController {
 
 

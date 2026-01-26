@@ -20,7 +20,6 @@ import java.util.List;
 @RequestMapping("/api/v1/cementerios")
 @RequiredArgsConstructor
 @Slf4j // Para ver logs
-@CrossOrigin
 public class CementerioController {
 
     private final CementerioService service;
@@ -75,25 +74,25 @@ public class CementerioController {
         return ResponseEntity.ok(service.findAllBySearchingTerm(term));
     }
 
-    @GetMapping("/filter-provincia/{id}")
+    @GetMapping("/provincia/{id}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByProvincia(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByProvinciaId(id));
     }
 
-    @GetMapping("/filter-ciudad/{id}")
+    @GetMapping("/ciudad/{id}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByCiudad(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByCiudadId(id));
     }
 
-    @GetMapping("/filter-ayuntamiento/{id}")
+    @GetMapping("/ayuntamiento/{id}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByAyuntamientoId(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByAyuntamientoId(id));
     }
 
-    @GetMapping("/filter-ayuntamiento-email/{email}")
+    @GetMapping("/ayuntamiento/email/{email}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByAyuntamientoEmail(@PathVariable String email)
     {
         return ResponseEntity.ok(service.findAllByAyuntamientoEmail(email));

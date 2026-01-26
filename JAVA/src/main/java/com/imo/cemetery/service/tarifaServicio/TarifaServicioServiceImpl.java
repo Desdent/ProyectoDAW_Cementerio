@@ -97,6 +97,16 @@ public class TarifaServicioServiceImpl implements TarifaServicioService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<TarifaServicioResponseDTO> findAll() {
+        List<TarifaServicioResponseDTO> response = repo.findAll()
+                .stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<TarifaServicioResponseDTO> findAllByCementerio(Long cementerioId) {
         List<TarifaServicioResponseDTO> response = repo.findAllByCementerioId(cementerioId)
                 .stream()

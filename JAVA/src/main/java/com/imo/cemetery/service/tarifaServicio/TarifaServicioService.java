@@ -12,6 +12,7 @@ public interface TarifaServicioService {
     TarifaServicioResponseDTO update(Long id, TarifaServicioUpdateDTO dto);
     void deleteById(Long id);
     TarifaServicioResponseDTO findById(Long id);
+    List<TarifaServicioResponseDTO> findAll();
     List<TarifaServicioResponseDTO> findAllByCementerio(Long cementerioId);
     TarifaServicioResponseDTO findPrecioServicio(Long cementerioId, ServicioType tipo);
 }

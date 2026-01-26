@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/v1/difuntos")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class DifuntoController {
 
     private final DifuntoService service;

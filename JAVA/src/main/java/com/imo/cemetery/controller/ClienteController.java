@@ -18,7 +18,6 @@ import java.util.List;
 @RequestMapping("/api/v1/clientes")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin
 public class ClienteController {
 
     private final ClienteService service;
