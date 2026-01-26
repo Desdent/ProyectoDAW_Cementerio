@@ -1,6 +1,7 @@
 package com.imo.cemetery.controller;
 
 
+import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoResponseDTO;
 import com.imo.cemetery.model.dto.cementerio.CementerioCreateDTO;
 import com.imo.cemetery.model.dto.cementerio.CementerioResponseDTO;
 import com.imo.cemetery.model.dto.cementerio.CementerioUpdateDTO;
@@ -36,7 +37,8 @@ public class CementerioController {
     @GetMapping
     public ResponseEntity<List<CementerioResponseDTO>> findAll()
     {
-        return ResponseEntity.ok(service.findAll());
+        List<CementerioResponseDTO> response = service.findAll();
+        return response.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(response);
     }
 
     @GetMapping("/{id}")

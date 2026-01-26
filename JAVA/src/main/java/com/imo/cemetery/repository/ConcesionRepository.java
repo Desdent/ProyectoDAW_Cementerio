@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ConcesionRepository extends JpaRepository<Concesion, Long> {
 
 
-    List<Concesion> findAllByParcelaId(Long id);
+    Optional<Concesion> findByParcelaId(Long id);
     List<Concesion> findAllByClienteId(Long clienteId);
     List<Concesion> findAllByClienteDniContainsIgnoreCase(String dni);
 

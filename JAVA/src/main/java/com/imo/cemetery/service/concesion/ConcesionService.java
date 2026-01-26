@@ -16,14 +16,16 @@ public interface ConcesionService {
 
 
     // Consultas
-    List<ConcesionResponseDTO> findAllByParcelaId(Long id);
+    List<ConcesionResponseDTO> findAll();
+    ConcesionResponseDTO findById(Long id);
+    ConcesionResponseDTO findByParcelaId(Long id);
     List<ConcesionResponseDTO> findAllByClienteId(Long id);
     List<ConcesionResponseDTO> findAllByVencidaTrue();
     List<ConcesionResponseDTO> findAllActivas();
     List<ConcesionResponseDTO> findAllByFechaFinBefore(LocalDate fecha);
     List<ConcesionResponseDTO> findAllByFechaFinBetween(LocalDate fecha1, LocalDate fecha2);
     List<ConcesionResponseDTO> findAllCasiVencidas(); // Un mes? Un año? de lejanía a la fechaFin
-    ConcesionResponseDTO findAllByPagoId(Long id);
+    ConcesionResponseDTO findByPagoId(Long id);
     List<ConcesionResponseDTO> findAllByCementerioId(Long id);
 
 }

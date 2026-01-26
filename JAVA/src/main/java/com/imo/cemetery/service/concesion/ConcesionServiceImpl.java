@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -112,11 +111,26 @@ public class ConcesionServiceImpl implements ConcesionService{
     // Consultas
 
     @Override
-    public List<ConcesionResponseDTO> findAllByParcelaId(Long id) {
-        return repo.findAllByParcelaId(id)
+    public List<ConcesionResponseDTO> findAll()
+    {
+        return repo.findAll()
                 .stream()
                 .map(concesionMapper::toResponseDTO)
                 .toList();
+    }
+
+    @Override
+    public ConcesionResponseDTO findById(Long id)
+    {
+        return repo.findById(id).map(concesionMapper::toResponseDTO)
+                .orElseThrow(() -> new EntityNotFoundException("No existe concesion con ID: " + id));
+    }
+
+    @Override
+    public ConcesionResponseDTO findByParcelaId(Long id) {
+        return repo.findByParcelaId(id)
+                .map(concesionMapper::toResponseDTO)
+                .orElseThrow(() -> new EntityNotFoundException("No existe una concesión para la parcela: " + id));
     }
 
     @Override
@@ -176,7 +190,7 @@ public class ConcesionServiceImpl implements ConcesionService{
     }
 
     @Override
-    public ConcesionResponseDTO findAllByPagoId(Long id) {
+    public ConcesionResponseDTO findByPagoId(Long id) {
         return repo.findByPagoId(id)
                 .map(concesionMapper::toResponseDTO)
                 .orElseThrow(() -> new EntityNotFoundException("No existe pago con ID: " + id));

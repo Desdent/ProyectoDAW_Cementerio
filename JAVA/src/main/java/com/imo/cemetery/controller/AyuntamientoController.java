@@ -50,7 +50,7 @@ public class AyuntamientoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.notFound().build();
     }
 
     // BÚSQUEDAS Y FILTROS
