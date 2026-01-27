@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
-import { HeaderComponent } from './header-component/header-component';
-import { BodyComponent } from './body-component/body-component';
-import { FooterComponent } from './footer-component/footer-component';
+import { HeaderComponent } from './shared/components/header-component/header-component';
+import { BodyComponent } from './layout/body-component/body-component';
+import { FooterComponent } from './shared/components/footer-component/footer-component';
 
 @Component({
   selector: 'app-root',

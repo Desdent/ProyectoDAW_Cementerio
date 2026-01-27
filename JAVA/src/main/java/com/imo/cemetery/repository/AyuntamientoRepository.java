@@ -15,12 +15,12 @@ public interface AyuntamientoRepository extends JpaRepository<Ayuntamiento, Long
     Optional<Ayuntamiento> findByEmail(String email);
 
     //Buscador
-    List<Ayuntamiento> findAllByNombreContainingIgnoreCaseOrTelefonoContaining(String term);
+    List<Ayuntamiento> findAllByNombreContainingIgnoreCaseOrTelefonoContaining(String term, String telefono);
 
     // Localización
     List<Ayuntamiento> findAllByCiudadProvinciaNombreIgnoreCase(String nombre);
     List<Ayuntamiento> findAllByCiudadProvinciaId(Long id);
-    Optional<Ayuntamiento> findByCiudadByNombreIgnoreCase(String nombre);
+    Optional<Ayuntamiento> findByCiudadNombreIgnoreCase(String nombre);
     Optional<Ayuntamiento> findByCiudadId(Long id);
 
     boolean existsByEmail(String email);

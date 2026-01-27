@@ -4,7 +4,6 @@ import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoCreateDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoResponseDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoUpdateDTO;
 import com.imo.cemetery.model.entity.Ayuntamiento;
-import com.imo.cemetery.model.entity.Ciudad;
 import com.imo.cemetery.model.entity.Role;
 import com.imo.cemetery.model.enums.RoleType;
 import com.imo.cemetery.model.mapper.AyuntamientoMapper;
@@ -19,7 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,7 +113,7 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
     @Override
     // La idea de este metodo es que se aplique cada vez que el usuario teclea algo en el buscador
     public List<AyuntamientoResponseDTO> findAllBySearchingTerm(String term){
-        return repo.findAllByNombreContainingIgnoreCaseOrTelefonoContaining(term)
+        return repo.findAllByNombreContainingIgnoreCaseOrTelefonoContaining(term, term)
                 .stream()
                 .map(ayuntamientoMapper::toResponseDTO)
                 .toList();
@@ -139,7 +137,7 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
 
     @Override
     public AyuntamientoResponseDTO findByCiudadNombre(String nombre) {
-        return repo.findByCiudadByNombreIgnoreCase(nombre)
+        return repo.findByCiudadNombreIgnoreCase(nombre)
                 .map(ayuntamientoMapper::toResponseDTO)
                 .orElseThrow(() -> new EntityNotFoundException("No existe ayuntamiento en la  ciudad con nombre: " + nombre));
     }

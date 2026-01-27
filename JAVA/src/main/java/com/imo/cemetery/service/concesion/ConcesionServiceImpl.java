@@ -128,7 +128,7 @@ public class ConcesionServiceImpl implements ConcesionService{
 
     @Override
     public ConcesionResponseDTO findByParcelaId(Long id) {
-        return repo.findByParcelaId(id)
+        return repo.findByParcelas_Id(id)
                 .map(concesionMapper::toResponseDTO)
                 .orElseThrow(() -> new EntityNotFoundException("No existe una concesión para la parcela: " + id));
     }
@@ -198,7 +198,7 @@ public class ConcesionServiceImpl implements ConcesionService{
 
     @Override
     public List<ConcesionResponseDTO> findAllByCementerioId(Long id) {
-        return repo.findAllByCementerioId(id)
+        return repo.findAllByParcelas_Zona_Cementerio_Id(id)
                 .stream()
                 .map(concesionMapper::toResponseDTO)
                 .toList();

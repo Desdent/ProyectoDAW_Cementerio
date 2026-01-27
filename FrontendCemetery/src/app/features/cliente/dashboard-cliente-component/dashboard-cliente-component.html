@@ -1,0 +1,247 @@
+<div class="dashboard-admin">
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <!-- Sidebar -->
+      <div class="col-lg-2 col-md-3 sidebar">
+        <div class="sidebar-header"></div>
+
+        <nav class="sidebar-nav">
+          <a class="nav-item active">
+            <span class="nav-label">Mi panel</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-label">Cementerios</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-label">Ayuntamientos</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-label">Clientes</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-label">Estadísticas</span>
+          </a>
+          <a class="nav-item">
+            <span class="nav-label">Configuración</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <div class="user-info">
+            <div class="user-avatar">AD</div>
+            <div class="user-details">
+              <div class="user-name">Admin</div>
+              <div class="user-role">Administrador</div>
+            </div>
+          </div>
+          <button class="btn-logout" type="button">Salir</button>
+        </div>
+      </div>
+
+      <!-- Main Content -->
+      <div class="col-lg-10 col-md-9 col-12 main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+          <div class="d-flex justify-content-between align-items-center">
+            <h1 class="page-title mb-0">Panel de Cliente</h1>
+          </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+          <!-- Stats Row -->
+          <div class="row g-4 mb-4">
+            <div class="col-xl-3 col-lg-6 col-12">
+              <div class="stat-card">
+                <div class="stat-content">
+                  <div class="stat-label">Cementerios Registrados</div>
+                  <div class="stat-value">0</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-12">
+              <div class="stat-card">
+                <div class="stat-content">
+                  <div class="stat-label">Ayuntamientos Registradas</div>
+                  <div class="stat-value">45,230</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-12">
+              <div class="stat-card">
+                <div class="stat-content">
+                  <div class="stat-label">Clientes Registrados</div>
+                  <div class="stat-value">2,340</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6 col-12">
+              <div class="stat-card">
+                <div class="stat-content">
+                  <div class="stat-label">Servicios dados de alta</div>
+                  <div class="stat-value">€128,450</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Data Cards Row -->
+          <div class="row g-4">
+            <div class="col-lg-8 col-12">
+              <div class="data-card">
+                <div class="card-header-custom">
+                  <h3>Actividad Reciente</h3>
+                  <button class="btn-card-action" type="button">Ver todo</button>
+                </div>
+                <div class="card-body-custom">
+                  <div class="activity-list">
+                    <div class="activity-item">
+                      <div class="activity-dot"></div>
+                      <div class="activity-content">
+                        <div class="activity-title">Nueva familia registrada: García Martínez</div>
+                        <div class="activity-meta">Hace 5 min · Sistema</div>
+                      </div>
+                    </div>
+                    <div class="activity-item">
+                      <div class="activity-dot"></div>
+                      <div class="activity-content">
+                        <div class="activity-title">
+                          Servicio contratado en Camposanto San Miguel
+                        </div>
+                        <div class="activity-meta">Hace 1 hora · Juan Pérez</div>
+                      </div>
+                    </div>
+                    <div class="activity-item">
+                      <div class="activity-dot"></div>
+                      <div class="activity-content">
+                        <div class="activity-title">
+                          Actualización de capacidad - Memorial del Prado
+                        </div>
+                        <div class="activity-meta">Hace 2 horas · Admin</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-4 col-12">
+              <div class="data-card">
+                <div class="card-header-custom">
+                  <h3>Alertas Pendientes</h3>
+                </div>
+                <div class="card-body-custom">
+                  <div class="alert-list">
+                    <div class="alert-item priority-high">
+                      <div class="alert-content">
+                        <div class="alert-title">Capacidad crítica</div>
+                        <div class="alert-description">Cementerio San Miguel al 95%</div>
+                      </div>
+                    </div>
+                    <div class="alert-item priority-medium">
+                      <div class="alert-content">
+                        <div class="alert-title">Pago pendiente</div>
+                        <div class="alert-description">3 familias con pagos vencidos</div>
+                      </div>
+                    </div>
+                    <div class="alert-item priority-low">
+                      <div class="alert-content">
+                        <div class="alert-title">Mantenimiento programado</div>
+                        <div class="alert-description">Parque de la Paz - Próxima semana</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table Example -->
+          <div class="row g-4 mt-4">
+            <div class="col-12">
+              <div class="data-card">
+                <div class="card-header-custom">
+                  <h3>Cementerios Recientes</h3>
+                  <button class="btn-primary-custom" type="button">Nuevo Cementerio</button>
+                </div>
+                <div class="card-body-custom">
+                  <div class="table-responsive">
+                    <table class="table-custom">
+                      <thead>
+                        <tr>
+                          <th>Nombre</th>
+                          <th>Ubicación</th>
+                          <th>Capacidad</th>
+                          <th>Ocupación</th>
+                          <th>Estado</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>
+                            <div class="d-flex align-items-center gap-2">
+                              <div class="item-avatar">C</div>
+                              <span class="fw-medium">Camposanto San Miguel</span>
+                            </div>
+                          </td>
+                          <td>Madrid</td>
+                          <td>8,500</td>
+                          <td>
+                            <div class="progress-bar-custom">
+                              <div class="progress-fill" style="width: 65%"></div>
+                            </div>
+                            <span class="progress-label">65%</span>
+                          </td>
+                          <td>
+                            <span class="badge-status status-active">Activo</span>
+                          </td>
+                          <td>
+                            <div class="d-flex gap-2">
+                              <button class="btn-action" type="button">Ver</button>
+                              <button class="btn-action" type="button">Editar</button>
+                              <button class="btn-action" type="button">Eliminar</button>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <div class="d-flex align-items-center gap-2">
+                              <div class="item-avatar">M</div>
+                              <span class="fw-medium">Memorial del Prado</span>
+                            </div>
+                          </td>
+                          <td>Barcelona</td>
+                          <td>5,000</td>
+                          <td>
+                            <div class="progress-bar-custom">
+                              <div class="progress-fill" style="width: 78%"></div>
+                            </div>
+                            <span class="progress-label">78%</span>
+                          </td>
+                          <td>
+                            <span class="badge-status status-active">Activo</span>
+                          </td>
+                          <td>
+                            <div class="d-flex gap-2">
+                              <button class="btn-action" type="button">Ver</button>
+                              <button class="btn-action" type="button">Editar</button>
+                              <button class="btn-action" type="button">Eliminar</button>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
