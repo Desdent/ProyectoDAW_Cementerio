@@ -11,7 +11,7 @@
 }
 
 .sidebar {
-  background: linear-gradient(180deg, var(--kelpie-navy) 0%, #001a2e 100%);
+  background: var(--kelpie-ash);
   min-height: 100vh;
   border-right: 1px solid rgba(0, 0, 0, 0.1);
   position: relative;
@@ -46,7 +46,7 @@
 }
 
 .nav-label {
-  font-size: 0.95rem;
+  font-size: 1rem;
   letter-spacing: 1px;
 }
 

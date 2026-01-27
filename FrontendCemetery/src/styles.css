@@ -6,6 +6,7 @@
   --kelpie-cream: #dfd3bd; /* El Beige para Header y Footer */
   --kelpie-navy: #003049; /* Para el degradado y textos en beige */
   --kelpie-blue: #669bbc;
+  --kelpie-ash: rgba(0, 0, 0, 0.8);
 }
 
 html,
