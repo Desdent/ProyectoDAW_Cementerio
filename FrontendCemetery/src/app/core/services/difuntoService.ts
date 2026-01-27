@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Difunto } from '../../models/difunto';
+import { Difunto } from '../../interfaces/difunto';
 
 @Injectable({
   providedIn: 'root',

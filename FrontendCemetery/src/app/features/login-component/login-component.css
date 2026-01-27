@@ -1,0 +1,215 @@
+:root {
+  --kelpie-burgundy: #780000;
+  --kelpie-red: #c1121f;
+  --kelpie-cream: #dfd3bd;
+  --kelpie-navy: #003049;
+  --kelpie-blue: #669bbc;
+}
+
+.login-page {
+  font-family: 'Crimson Text', 'Georgia', serif;
+  min-height: 100vh;
+}
+
+/* Background */
+.login-background-wrapper {
+  min-height: 100vh;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.login-background-wrapper::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background-image: url('/jardin.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Aplicamos el filtro y escalamos para evitar bordes blancos */
+  filter: blur(8px);
+  transform: scale(1.1);
+}
+
+.login-container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Login Card */
+.login-card {
+  background: rgba(223, 211, 189, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.login-header {
+  text-align: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  color: var(--kelpie-navy);
+  letter-spacing: 4px;
+  font-weight: 300;
+}
+
+.login-title {
+  font-size: 2.5rem;
+  color: var(--kelpie-navy);
+  font-weight: 300;
+  letter-spacing: 1px;
+  margin-bottom: 1rem;
+}
+
+.login-subtitle {
+  font-size: 1rem;
+  color: var(--kelpie-navy);
+  opacity: 0.6;
+  letter-spacing: 0.5px;
+}
+
+/* Form Styles */
+.login-form {
+  margin-top: 3rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 0.85rem;
+  color: var(--kelpie-navy);
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 0.8rem;
+  font-weight: 400;
+}
+
+.form-control-login {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0;
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  color: var(--kelpie-navy);
+  font-family: inherit;
+  transition: all 0.3s;
+}
+
+.form-control-login:focus {
+  outline: none;
+  border-color: var(--kelpie-burgundy);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.form-control-login::placeholder {
+  color: var(--kelpie-navy);
+  opacity: 0.4;
+}
+
+/* Form Options */
+.form-options {
+  font-size: 0.9rem;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-check-input-custom {
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  cursor: pointer;
+  accent-color: var(--kelpie-burgundy);
+}
+
+.form-check-label {
+  color: var(--kelpie-navy);
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.forgot-password {
+  color: var(--kelpie-burgundy);
+  text-decoration: none;
+  transition: opacity 0.3s;
+  letter-spacing: 0.5px;
+}
+
+.forgot-password:hover {
+  opacity: 0.7;
+}
+
+/* Button */
+.btn-login {
+  background: var(--kelpie-burgundy);
+  border: none;
+  color: var(--kelpie-cream);
+  padding: 1.2rem 2rem;
+  border-radius: 0;
+  cursor: pointer;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: all 0.3s;
+  font-family: inherit;
+  font-weight: 400;
+}
+
+.btn-login:hover {
+  background: var(--kelpie-red);
+}
+
+/* Footer */
+.login-footer {
+  text-align: center;
+  color: var(--kelpie-navy);
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.signup-link {
+  color: var(--kelpie-burgundy);
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.3s;
+}
+
+.signup-link:hover {
+  opacity: 0.7;
+}
+
+/* Error */
+.error-msg {
+  color: var(--kelpie-error-color);
+}
+
+.central-error {
+  text-align: center;
+  padding-bottom: 2em;
+}

@@ -169,11 +169,15 @@
 .slider-wrapper {
   display: flex;
   transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%; /* El contenedor ocupa el 100% */
+  will-change: transform;
 }
 
 .profile-slide {
-  min-width: 100%;
-  flex-shrink: 0;
+  min-width: 100%; /* Obliga a cada slide a medir exactamente el ancho del contenedor */
+  max-width: 100%;
+  flex-shrink: 0; /* Evita que los slides se compriman para caber en la fila */
+  box-sizing: border-box;
 }
 
 .profile-showcase {
@@ -345,9 +349,9 @@
 
 .btn-view-all {
   padding: 1.3rem 3rem;
-  background: transparent;
+  background: var(--kelpie-burgundy);
   color: var(--kelpie-cream);
-  border: 2px solid var(--kelpie-burgundy);
+  border: none;
   font-size: 0.9rem;
   letter-spacing: 2px;
   text-transform: uppercase;
@@ -358,6 +362,53 @@
 }
 
 .btn-view-all:hover {
-  background: var(--kelpie-burgundy);
+  background: var(--kelpie-red);
   color: var(--kelpie-cream);
+}
+
+@media (max-width: 1024px) {
+  .section-header {
+    grid-template-columns: 1fr; /* Apilar título y descripción */
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .workflow {
+    grid-template-columns: 1fr; /* Pasamos de 3 columnas a 1 */
+  }
+
+  .workflow-step {
+    border-right: 2px solid rgba(253, 240, 213, 0.1);
+    border-bottom: none;
+  }
+
+  .profile-showcase {
+    flex-direction: column; /* La sidebar del slider se va abajo */
+  }
+
+  .profile-main {
+    padding: 2rem;
+    border-right: none;
+    border-bottom: 1px solid rgba(253, 240, 213, 0.1);
+  }
+
+  .profile-sidebar {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .how-it-works,
+  .cemetery-slider {
+    padding: 4rem 1.5rem; /* Reducir paddings laterales exagerados */
+  }
+
+  .section-header h2,
+  .section-intro h2 {
+    font-size: 2.5rem; /* Texto más pequeño en móvil */
+  }
+
+  .slider-btn {
+    display: none; /* Ocultar flechas en móvil si estorban, usar dots */
+  }
 }

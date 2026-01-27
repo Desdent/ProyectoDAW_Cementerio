@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Cementerio } from '../../models/cementerio';
+import { Cementerio } from '../../interfaces/cementerio';
 
 @Injectable({
   providedIn: 'root',

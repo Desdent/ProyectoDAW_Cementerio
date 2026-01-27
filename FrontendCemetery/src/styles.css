@@ -7,6 +7,7 @@
   --kelpie-navy: #003049; /* Para el degradado y textos en beige */
   --kelpie-blue: #669bbc;
   --kelpie-ash: rgba(0, 0, 0, 0.8);
+  --kelpie-error-color: rgb(177, 26, 26);
 }
 
 html,
