@@ -16,7 +16,7 @@
       </ul>
       <div class="d-flex gap-3 align-items-center">
         @if (obtainEmail() != null) {
-          <span class="bi bi-person-circle"></span>
+          <div class="user-avatar">{{ initials() }}</div>
           <a routerLink="/perfil" class="login-text">{{ obtainEmail() }}</a>
           <button class="btn btn-kelpie px-4 py-2" (click)="deleteEmail()" routerLink="/logout">
             Cerrar Sesión

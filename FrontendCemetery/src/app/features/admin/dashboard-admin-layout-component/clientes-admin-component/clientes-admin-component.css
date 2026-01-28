@@ -1,0 +1,131 @@
+/* // ESTILO PARA LA TABLA CRUD */
+.table-custom {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0px;
+}
+
+.table-custom thead th {
+  background-color: #f8f9fa;
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  padding: 12px 16px;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.table-custom tbody tr {
+  transition: all 0.2s ease;
+}
+
+.table-custom tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.5);
+}
+.table-custom tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.table-custom tbody tr:hover {
+  filter: brightness(0.9);
+}
+
+.table-custom td {
+  padding: 16px;
+  vertical-align: middle;
+  color: var(--kelpie-ash);
+  border-bottom: 1px solid #edf2f7;
+}
+
+/* // BADGES DE ESTADO */
+.badge-status {
+  padding: 4px 12px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-active {
+  background-color: #e6fffa;
+  color: #2d3748;
+}
+
+/* // BOTONES DE ACCIÓN */
+.btn-action {
+  border: 1px solid #e2e8f0;
+  background: white;
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.btn-action:hover {
+  background: #f8fafc;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+/* // BOTÓN PRINCIPAL (NUEVO REGISTRO) */
+.btn-primary-custom {
+  background-color: var(--kelpie-ash); /* O el color principal que prefieras */
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  border-radius: 8px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary-custom:hover {
+  filter: brightness(1.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* // ESTILO PAGINACIÓN */
+.pagination-custom .page-link {
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #e2e8f0;
+  color: var(--kelpie-ash);
+  padding: 8px 14px;
+  margin: 0 2px;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.pagination-custom .page-item.active .page-link {
+  background-color: var(--kelpie-ash);
+  border-color: var(--kelpie-ash);
+  color: white;
+}
+
+.pagination-custom .page-link:hover:not(.active) {
+  background-color: #f1f4f9;
+  border-color: #cbd5e1;
+  color: var(--kelpie-ash);
+}
+
+.pagination-custom .page-item.disabled .page-link {
+  background-color: transparent;
+  color: #cbd5e1;
+  border-color: #edf2f7;
+}
+.pagination-custom .page-link {
+  /* ... tus estilos de antes ... */
+  border: 1px solid #e2e8f0;
+  outline: none; /* Quita el borde de enfoque feo */
+  box-shadow: none; /* Quita sombras por defecto */
+  cursor: pointer;
+}
+
+.pagination-custom .page-item.disabled .page-link {
+  cursor: not-allowed; /* Cambia el cursor cuando no puedes pulsar */
+  opacity: 0.5;
+}

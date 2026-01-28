@@ -6,4 +6,6 @@ export interface Ayuntamiento {
   telefono: string;
   direccion: string;
   escudo?: string;
+  nombreCiudad: string;
+  nombreProvincia: string;
 }

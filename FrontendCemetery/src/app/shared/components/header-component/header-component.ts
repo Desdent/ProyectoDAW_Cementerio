@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { LoginService } from '../../../core/services/loginService';
 
 @Component({
   selector: 'app-header-component',
@@ -8,7 +9,10 @@ import { RouterLink } from '@angular/router';
   styleUrl: './header-component.css',
 })
 export class HeaderComponent {
+  public loginService = inject(LoginService);
+
   email = signal<string | null>(localStorage.getItem('email'));
+  initials = signal<string>((localStorage.getItem('email') || '').substring(0, 2).toUpperCase());
 
   constructor() {}
 
