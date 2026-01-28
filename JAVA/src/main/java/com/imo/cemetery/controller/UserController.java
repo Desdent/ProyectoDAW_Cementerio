@@ -32,6 +32,7 @@ public class UserController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateDTO dto) { // @Valid se encarga de interceptar la peticion y aplicarlelos validators del dto
         //@RequestBody se encarga de decirle que coja el JSON del body de la peticion POST y lo convierta a UserCreateDTO
         UserResponseDTO response = service.create(dto);
@@ -41,6 +42,7 @@ public class UserController {
 
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         service.deleteById(id);
         return ResponseEntity.noContent().build(); //Devuelve un 204 que significa que ha sido exitoso pero que no hay nada que devolver al ser null

@@ -63,8 +63,8 @@
             <div class="col-xl-3 col-lg-6 col-12">
               <div class="stat-card">
                 <div class="stat-content">
-                  <div class="stat-label">Ayuntamientos Registradas</div>
-                  <div class="stat-value">6</div>
+                  <div class="stat-label">Ayuntamientos Registrados</div>
+                  <div class="stat-value">{{ ayuntamientoService.amount() }}</div>
                 </div>
               </div>
             </div>
@@ -73,7 +73,7 @@
               <div class="stat-card">
                 <div class="stat-content">
                   <div class="stat-label">Clientes Registrados</div>
-                  <div class="stat-value">8</div>
+                  <div class="stat-value">{{ clienteService.amount() }}</div>
                 </div>
               </div>
             </div>
@@ -82,7 +82,7 @@
               <div class="stat-card">
                 <div class="stat-content">
                   <div class="stat-label">Servicios dados de alta</div>
-                  <div class="stat-value">4</div>
+                  <div class="stat-value">{{ servicioService.amount() }}</div>
                 </div>
               </div>
             </div>

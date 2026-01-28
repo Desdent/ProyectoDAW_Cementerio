@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Year;
@@ -26,6 +27,7 @@ public class DifuntoController {
     // CRUD y básicos
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DifuntoResponseDTO> create(@RequestBody @Valid DifuntoCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
@@ -44,12 +46,14 @@ public class DifuntoController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<DifuntoResponseDTO> update(@PathVariable Long id, @Valid @RequestBody DifuntoUpdateDTO dto)
     {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
         service.deleteById(id);

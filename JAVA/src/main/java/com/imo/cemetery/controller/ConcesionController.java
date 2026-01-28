@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class ConcesionController {
     // CRUD y básicass
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ConcesionResponseDTO> create(@RequestBody @Valid ConcesionCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
@@ -49,6 +51,7 @@ public class ConcesionController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ConcesionResponseDTO> update(@PathVariable Long id, @RequestBody ConcesionUpdateDTO dto)
     {
         return ResponseEntity.ok(service.update(dto, id));

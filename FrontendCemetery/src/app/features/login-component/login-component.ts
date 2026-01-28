@@ -4,6 +4,7 @@ import { User } from '../../entity/user';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Validadores } from '../../validators/validadores';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-component',
@@ -13,7 +14,7 @@ import { CommonModule } from '@angular/common';
 })
 export class LoginComponent {
   public loginService = inject(LoginService);
-
+  private router = inject(Router);
   user!: User;
   formUser!: FormGroup;
   error = signal(false);
@@ -27,25 +28,26 @@ export class LoginComponent {
   }
 
   login(): void {
-    {
-      if (this.formUser.invalid) {
-        this.formUser.markAllAsTouched();
-        return;
-      }
-
-      this.loginService.login(this.formUser.value).subscribe({
-        next: (response) => {
-          console.log('Éxito:', response);
-          localStorage.setItem('token', JSON.stringify(response.token));
-          this.error.set(false);
-        },
-        error: (err) => {
-          console.error('Error:', err);
-          if (err.status === 401) {
-            this.error.set(true);
-          }
-        },
-      });
+    if (this.formUser.invalid) {
+      this.formUser.markAllAsTouched();
+      return;
     }
+
+    this.loginService.login(this.formUser.value).subscribe({
+      next: (response) => {
+        console.log('Éxito:', response);
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('role', response.role);
+        localStorage.setItem('email', response.email);
+        this.router.navigate(['/perfil']);
+        this.error.set(false);
+      },
+      error: (err) => {
+        console.error('Error:', err);
+        if (err.status === 401) {
+          this.error.set(true);
+        }
+      },
+    });
   }
 }

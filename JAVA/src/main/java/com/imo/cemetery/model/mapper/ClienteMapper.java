@@ -16,8 +16,8 @@ public interface ClienteMapper {
     @Mapping(target = "ciudad", ignore = true)
     Cliente toEntity(ClienteCreateDTO dto);
 
-    @Mapping(source = "ciudad.nombre", target = "nombreCiudad")
-    @Mapping(source = "ciudad.provincia.nombre", target = "nombreProvincia")
+    @Mapping(source = "ciudad.nombre", target = "localidad")
+    @Mapping(source = "ciudad.provincia.nombre", target = "provincia")
     ClienteResponseDTO toResponseDTO(Cliente cliente);
 
     @Mapping(target = "id", ignore = true)

@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class CementerioController {
     // CRUD
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CementerioResponseDTO> create(@Valid @RequestBody CementerioCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
@@ -53,12 +55,14 @@ public class CementerioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CementerioResponseDTO> update(@PathVariable Long id, @Valid @RequestBody CementerioUpdateDTO dto)
     {
         return ResponseEntity.ok(service.update(dto, id));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
         service.deleteById(id);
@@ -105,6 +109,7 @@ public class CementerioController {
     }
 
     @GetMapping("/my-cementerios")
+    @PreAuthorize("hasRole('AYUNTAMIENTO')")
     public ResponseEntity<List<CementerioResponseDTO>> myCementerios()
     {
         return ResponseEntity.ok(service.findAllByLoggedAyuntamiento());

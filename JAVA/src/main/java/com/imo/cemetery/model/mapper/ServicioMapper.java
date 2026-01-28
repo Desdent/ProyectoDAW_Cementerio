@@ -1,5 +1,8 @@
-package com.imo.cemetery.model.dto.servicio;
+package com.imo.cemetery.model.mapper;
 
+import com.imo.cemetery.model.dto.servicio.ServicioCreateDTO;
+import com.imo.cemetery.model.dto.servicio.ServicioResponseDTO;
+import com.imo.cemetery.model.dto.servicio.ServicioUpdateDTO;
 import com.imo.cemetery.model.entity.Servicio;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

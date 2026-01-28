@@ -8,9 +8,10 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-public class TokenResponse {
+public class LoginResponse {
 
     private final String token;
     private final RoleType role;
+    private final String email;
 
 }

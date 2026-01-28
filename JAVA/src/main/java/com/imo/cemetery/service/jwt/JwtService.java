@@ -34,8 +34,8 @@ public class JwtService {
         claims.put("roles", List.of(user.getRole().getTipo()));
 
         return jwtBuilder
-                // id del usuario
-                .subject(String.valueOf(user.getId()))
+                // email del usuario
+                .subject(String.valueOf(user.getEmail()))
                 // La clave secreta para firmar el token y saber que es nuestro cuando lleguen las peticiones del frontend
                 .signWith(secretKey, SignatureAlgorithm.HS256)
                 // Fecha emisión del token
@@ -45,6 +45,7 @@ public class JwtService {
                 // información personalizada: rol o roles, username, email, avatar...
                 // .claim("role", user.getRole())
                 .claim("email", user.getEmail())
+                .claim("role", user.getRole().getTipo())
                 //.claim("avatar", user.getAvatarUrl())
                 // Construye el token
                 .compact();

@@ -1,8 +1,9 @@
 package com.imo.cemetery.controller;
 
 import com.imo.cemetery.model.entity.LoginRequest;
-import com.imo.cemetery.model.entity.TokenResponse;
+import com.imo.cemetery.model.entity.LoginResponse;
 import com.imo.cemetery.model.entity.User;
+import com.imo.cemetery.model.enums.RoleType;
 import com.imo.cemetery.service.jwt.JwtService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class AuthController {
     private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
+    public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest) {
         log.info("Datos recibidos en el API: {}", loginRequest);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -37,7 +38,9 @@ public class AuthController {
 
         User user = (User) authentication.getPrincipal();
         String token = jwtService.generateToken(user);
+        RoleType role = user.getRole().getTipo();
+        String email = user.getEmail();
 
-        return ResponseEntity.ok(new TokenResponse(token));
+        return ResponseEntity.ok(new LoginResponse(token, role, email));
     }
 }

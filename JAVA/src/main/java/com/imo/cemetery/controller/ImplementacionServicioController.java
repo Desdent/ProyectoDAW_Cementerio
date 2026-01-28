@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -27,6 +28,7 @@ public class ImplementacionServicioController {
     // CRUD
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ImplementacionServicioResponseDTO> create(@Valid @RequestBody ImplementacionServicioCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
@@ -45,6 +47,7 @@ public class ImplementacionServicioController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ImplementacionServicioResponseDTO> update(@PathVariable Long id,
                                                                     @Valid @RequestBody ImplementacionServicioUpdateDTO dto)
     {
@@ -52,6 +55,7 @@ public class ImplementacionServicioController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
         service.deleteById(id);

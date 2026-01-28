@@ -15,8 +15,16 @@
         </li>
       </ul>
       <div class="d-flex gap-3 align-items-center">
-        <a routerLink="/login" class="login-text">Acceso</a>
-        <button class="btn btn-kelpie px-4 py-2" routerLink="/pago">COMPRAR</button>
+        @if (obtainEmail() != null) {
+          <span class="bi bi-person-circle"></span>
+          <a routerLink="/perfil" class="login-text">{{ obtainEmail() }}</a>
+          <button class="btn btn-kelpie px-4 py-2" (click)="deleteEmail()" routerLink="/logout">
+            Cerrar Sesión
+          </button>
+        } @else {
+          <a routerLink="/login" class="login-text">Acceso</a>
+          <button class="btn btn-kelpie px-4 py-2" routerLink="/pago">COMPRAR</button>
+        }
       </div>
     </div>
   </div>
