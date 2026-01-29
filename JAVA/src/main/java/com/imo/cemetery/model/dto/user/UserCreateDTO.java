@@ -18,7 +18,7 @@ public class UserCreateDTO {
     @Email
     private String email;
     @NotBlank
-    @Size(min = 6, max = 20, message = "Mínimo 6 caracteres. Máximo 20 caracteres")
+    @Size(min = 5, max = 20, message = "Mínimo 5 caracteres. Máximo 20 caracteres")
     private String password;
 
 }

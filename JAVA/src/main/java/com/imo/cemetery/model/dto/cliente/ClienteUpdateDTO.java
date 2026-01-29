@@ -15,6 +15,8 @@ public class ClienteUpdateDTO {
     @NotBlank
     private String nombre;
     @NotBlank
+    private String dni;
+    @NotBlank
     private String apellido1;
     private String apellido2;
     @NotBlank

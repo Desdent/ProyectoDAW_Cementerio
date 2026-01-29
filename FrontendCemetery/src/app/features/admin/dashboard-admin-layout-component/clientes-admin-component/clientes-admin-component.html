@@ -41,13 +41,13 @@
               <td>{{ cli.telefono }}</td>
               <td>
                 <div class="d-flex gap-2 justify-content-end">
-                  <button class="btn-action" title="Ver detalles" (click)="abrirModal_ver()">
+                  <button class="btn-action" title="Ver detalles" (click)="abrirModal_ver(cli)">
                     <i class="bi bi-eye"></i>
                   </button>
-                  <button class="btn-action" (click)="abrirModal_editar()">
+                  <button class="btn-action" (click)="abrirModal_editar(cli)">
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button class="btn-action text-danger" (click)="abrirModal_delete()">
+                  <button class="btn-action text-danger" (click)="abrirModal_delete(cli)">
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
@@ -74,9 +74,11 @@
             </button>
           </li>
 
-          <li class="page-item active">
-            <button class="page-link">{{ paginaActual() }}</button>
-          </li>
+          @for (n of paginas(); track n) {
+            <li class="page-item" [class.active]="paginaActual() === n">
+              <button class="page-link" (click)="cambiarPagina(n)">{{ n }}</button>
+            </li>
+          }
 
           <li class="page-item">
             <button
@@ -110,33 +112,86 @@
         <div class="modal-body p-4 bg-light">
           <form id="formCliente" class="row g-3">
             <div class="col-md-6">
-              <label class="form-label-custom">Nombre</label>
-              <input type="text" class="form-control-custom" placeholder="Ej. Juan" required />
+              <label class="form-label-custom">Nombre *</label>
+              <input
+                [(ngModel)]="nuevoCliente.nombre"
+                name="nombre"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. Juan"
+                required
+              />
             </div>
             <div class="col-md-6">
-              <label class="form-label-custom">Primer Apellido</label>
-              <input type="text" class="form-control-custom" placeholder="Ej. Pérez" required />
+              <label class="form-label-custom">DNI *</label>
+              <input
+                [(ngModel)]="nuevoCliente.dni"
+                name="dni"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. 11111111X"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Email *</label>
+              <input
+                [(ngModel)]="nuevoCliente.email"
+                name="email"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. email@gmail.com"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Primer Apellido * </label>
+              <input
+                [(ngModel)]="nuevoCliente.apellido1"
+                name="apellido1"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. Pérez"
+                required
+              />
             </div>
 
             <div class="col-md-6">
               <label class="form-label-custom">Segundo Apellido</label>
-              <input type="text" class="form-control-custom" placeholder="Ej. García" />
+              <input
+                [(ngModel)]="nuevoCliente.apellido2"
+                name="apellido2"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. García"
+              />
             </div>
             <div class="col-md-6">
-              <label class="form-label-custom">Teléfono</label>
-              <input type="tel" class="form-control-custom" placeholder="600 000 000" required />
+              <label class="form-label-custom">Teléfono *</label>
+              <input
+                [(ngModel)]="nuevoCliente.telefono"
+                type="tel"
+                name="telefono"
+                class="form-control-custom"
+                placeholder="600 000 000"
+                required
+              />
             </div>
 
             <div class="col-12">
-              <label class="form-label-custom">Dirección Completa</label>
+              <label class="form-label-custom">Dirección *</label>
               <input
+                [(ngModel)]="nuevoCliente.direccion"
                 type="text"
+                name="direccion"
                 class="form-control-custom"
                 placeholder="C/ Mayor, 12, 2ºB"
                 required
               />
             </div>
 
+            <!-- ignorar input provincia -->
             <div class="col-md-6">
               <label class="form-label-custom">Provincia *</label>
               <select
@@ -155,8 +210,9 @@
             <div class="col-md-6">
               <label class="form-label-custom">Localidad *</label>
               <select
+                [(ngModel)]="nuevoCliente.ciudadId"
                 class="form-select-custom"
-                name="localidad"
+                name="idCiudad"
                 [disabled]="!provinciaSeleccionadaId()"
               >
                 <option value="" disabled selected>
@@ -177,7 +233,11 @@
           <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
             Cancelar
           </button>
-          <button type="button" class="btn-primary-custom px-4 py-2 m-0 shadow-sm">
+          <button
+            type="button"
+            class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+            (click)="guardarCliente()"
+          >
             <i class="bi bi-save"></i> Guardar Cliente
           </button>
         </div>
@@ -203,27 +263,67 @@
         <div class="modal-body p-4 bg-light">
           <form id="formClienteEditar" class="row g-3">
             <div class="col-md-6">
-              <label class="form-label-custom">Nombre</label>
-              <input type="text" class="form-control-custom" placeholder="Ej. Juan" required />
+              <label class="form-label-custom">Nombre *</label>
+              <input
+                type="text"
+                [(ngModel)]="clienteEditar.nombre"
+                name="nombre"
+                class="form-control-custom"
+                placeholder="Ej. Juan"
+                required
+              />
             </div>
             <div class="col-md-6">
-              <label class="form-label-custom">Primer Apellido</label>
-              <input type="text" class="form-control-custom" placeholder="Ej. Pérez" required />
+              <label class="form-label-custom">DNI *</label>
+              <input
+                type="text"
+                [(ngModel)]="clienteEditar.dni"
+                name="dni"
+                class="form-control-custom"
+                placeholder="Ej. Juan"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Primer Apellido *</label>
+              <input
+                type="text"
+                [(ngModel)]="clienteEditar.apellido1"
+                name="apellido1"
+                class="form-control-custom"
+                placeholder="Ej. Pérez"
+                required
+              />
             </div>
 
             <div class="col-md-6">
               <label class="form-label-custom">Segundo Apellido</label>
-              <input type="text" class="form-control-custom" placeholder="Ej. García" />
+              <input
+                type="text"
+                [(ngModel)]="clienteEditar.apellido2"
+                name="apellido2"
+                class="form-control-custom"
+                placeholder="Ej. García"
+              />
             </div>
             <div class="col-md-6">
-              <label class="form-label-custom">Teléfono</label>
-              <input type="tel" class="form-control-custom" placeholder="600 000 000" required />
+              <label class="form-label-custom">Teléfono *</label>
+              <input
+                type="tel"
+                [(ngModel)]="clienteEditar.telefono"
+                name="telefono"
+                class="form-control-custom"
+                placeholder="600 000 000"
+                required
+              />
             </div>
 
             <div class="col-12">
-              <label class="form-label-custom">Dirección Completa</label>
+              <label class="form-label-custom">Dirección *</label>
               <input
                 type="text"
+                [(ngModel)]="clienteEditar.direccion"
+                name="direccion"
                 class="form-control-custom"
                 placeholder="C/ Mayor, 12, 2ºB"
                 required
@@ -234,13 +334,14 @@
               <label class="form-label-custom">Provincia *</label>
               <select
                 class="form-select-custom"
-                name="provincia"
+                name="provinciaEdit"
+                [(ngModel)]="clienteEditar.provincia"
                 #provSelectEdit
                 (change)="onProvinciaChange(provSelectEdit.value)"
               >
-                <option value="" disabled selected>Seleccione provincia</option>
+                <option value="" disabled>Seleccione provincia</option>
                 @for (p of provinciaService.provincias(); track p.id) {
-                  <option [value]="p.id">{{ p.nombre }}</option>
+                  <option [value]="p.nombre">{{ p.nombre }}</option>
                 }
               </select>
             </div>
@@ -249,16 +350,17 @@
               <label class="form-label-custom">Localidad *</label>
               <select
                 class="form-select-custom"
-                name="localidad"
+                name="localidadEdit"
+                [(ngModel)]="clienteEditar.localidad"
                 [disabled]="!provinciaSeleccionadaId()"
               >
-                <option value="" disabled selected>
+                <option value="" disabled>
                   {{
                     provinciaSeleccionadaId() ? 'Seleccione localidad' : 'Primero elija provincia'
                   }}
                 </option>
                 @for (ciu of ciudadService.ciudades(); track ciu.id) {
-                  <option [value]="ciu.id">{{ ciu.nombre }}</option>
+                  <option [value]="ciu.nombre">{{ ciu.nombre }}</option>
                 }
               </select>
             </div>
@@ -269,7 +371,11 @@
           <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
             Cancelar
           </button>
-          <button type="button" class="btn-primary-custom px-4 py-2 m-0 shadow-sm">
+          <button
+            type="button"
+            class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+            (click)="actuCliente(id)"
+          >
             <i class="bi bi-save"></i> Guardar Cambios
           </button>
         </div>
@@ -296,35 +402,95 @@
           <form id="formClienteVer" class="row g-3">
             <div class="col-md-6">
               <label class="form-label-custom">Nombre</label>
-              <input type="text" class="form-control-custom" readonly />
+              <input
+                readonly
+                type="text"
+                [(ngModel)]="clienteEditar.nombre"
+                name="nombre"
+                class="form-control-custom"
+                placeholder="Ej. Juan"
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">DNI</label>
+              <input
+                readonly
+                type="text"
+                [(ngModel)]="clienteEditar.dni"
+                name="dni"
+                class="form-control-custom"
+                placeholder="Ej. Juan"
+              />
             </div>
             <div class="col-md-6">
               <label class="form-label-custom">Primer Apellido</label>
-              <input type="text" class="form-control-custom" readonly />
+              <input
+                readonly
+                type="text"
+                [(ngModel)]="clienteEditar.apellido1"
+                name="apellido1"
+                class="form-control-custom"
+                placeholder="Ej. Pérez"
+              />
             </div>
 
             <div class="col-md-6">
               <label class="form-label-custom">Segundo Apellido</label>
-              <input type="text" class="form-control-custom" readonly />
+              <input
+                readonly
+                type="text"
+                [(ngModel)]="clienteEditar.apellido2"
+                name="apellido2"
+                class="form-control-custom"
+                placeholder="Ej. García"
+              />
             </div>
             <div class="col-md-6">
               <label class="form-label-custom">Teléfono</label>
-              <input type="tel" class="form-control-custom" readonly />
+              <input
+                readonly
+                type="tel"
+                [(ngModel)]="clienteEditar.telefono"
+                name="telefono"
+                class="form-control-custom"
+                placeholder="600 000 000"
+              />
             </div>
 
             <div class="col-12">
-              <label class="form-label-custom">Dirección Completa</label>
-              <input type="text" class="form-control-custom" readonly />
+              <label class="form-label-custom">Dirección</label>
+              <input
+                readonly
+                type="text"
+                [(ngModel)]="clienteEditar.direccion"
+                name="direccion"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+              />
             </div>
 
-            <div class="col-md-6">
+            <div class="col-12">
+              <label class="form-label-custom">Ciudad</label>
+              <input
+                readonly
+                type="text"
+                [(ngModel)]="clienteEditar.localidad"
+                name="localidad"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+              />
+            </div>
+
+            <div class="col-12">
               <label class="form-label-custom">Provincia</label>
-              <input type="text" class="form-control-custom" readonly />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label-custom">Localidad</label>
-              <input type="text" class="form-control-custom" readonly />
+              <input
+                readonly
+                type="text"
+                [(ngModel)]="clienteEditar.provincia"
+                name="provincia"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+              />
             </div>
           </form>
         </div>
@@ -360,8 +526,12 @@
           <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
             Cancelar
           </button>
-          <button type="button" class="btn btn-danger px-4 py-2 shadow-sm rounded-3">
-            Eliminar permanentemente
+          <button
+            type="button"
+            class="btn btn-danger px-4 py-2 shadow-sm rounded-3"
+            (click)="delete(id)"
+          >
+            Eliminar
           </button>
         </div>
       </div>

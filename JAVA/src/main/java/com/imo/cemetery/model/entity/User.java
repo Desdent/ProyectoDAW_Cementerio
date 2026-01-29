@@ -42,7 +42,7 @@ public class User implements UserDetails {
 
 
     @Column(nullable = false)
-    private String password;
+    private String password ="admin"; // password por defecto para cuando se creen clientes desde el panel
 
 
     // >> RELACIONES <<

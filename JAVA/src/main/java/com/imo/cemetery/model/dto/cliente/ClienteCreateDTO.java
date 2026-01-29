@@ -30,8 +30,6 @@ public class ClienteCreateDTO extends UserCreateDTO {
     private String telefono;
     @NotBlank
     private String direccion;
-    @NotBlank
-    private String localidad;
     @NotNull
     @Positive
     private Long ciudadId;

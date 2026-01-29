@@ -59,6 +59,14 @@ public class ClienteController {
         return ResponseEntity.ok(service.update(dto, id));
     }
 
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> delete(@PathVariable Long id)
+    {
+        service.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
     // BÚSQUEDAS Y FILTROS
 
