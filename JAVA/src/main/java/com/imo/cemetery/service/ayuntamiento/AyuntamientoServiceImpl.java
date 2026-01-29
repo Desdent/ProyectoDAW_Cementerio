@@ -68,11 +68,21 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
     @Override
     @Transactional
     public void deleteById(Long id) {
-        if (!repo.existsById(id)) {
-            // #TODO: Cambiar por ResourceNotFoundException cuando tengas el paquete exception
-            throw new EntityNotFoundException("No existe el Ayuntamiento con ID: " + id);
+        // Buscamos la entidad completa, no solo el ID, para poder manejar sus relaciones
+        Ayuntamiento ayu = repo.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No existe el Ayuntamiento con ID: " + id));
+
+        // ROMPER EL VÍNCULO:
+        // Si el ayuntamiento tiene una ciudad asignada, hay que avisarle a la ciudad
+        // que su ayuntamiento va a desaparecer.
+        if (ayu.getCiudad() != null) {
+            // Accedemos a la ciudad y ponemos su ayuntamiento a null
+            ayu.getCiudad().setAyuntamiento(null);
+
+            //quitamos la ciudad del ayuntamiento para limpiar la sesión de Hibernate
+            ayu.setCiudad(null);
         }
-        repo.deleteById(id);
+        repo.delete(ayu);
     }
 
 

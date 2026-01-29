@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Cementerio } from '../../interfaces/cementerio';
+import { Cementerio } from '../../interfaces/cementerio/cementerio';
+import { CementerioPost } from '../../interfaces/cementerio/cementerioPost';
+import { CementerioUpdate } from '../../interfaces/cementerio/cementerioUpdate';
 
 @Injectable({
   providedIn: 'root',
@@ -22,5 +24,21 @@ export class CementerioService {
       console.log(data);
       console.log(this.amount);
     });
+  }
+
+  save(cementerio: CementerioPost) {
+    return this.http.post<Cementerio>(this.apiUrl, cementerio);
+  }
+
+  find(id: number) {
+    return this.http.get<Cementerio>(`${this.apiUrl}/${id}`);
+  }
+
+  update(cementerio: CementerioUpdate, id: number) {
+    return this.http.put<Cementerio>(`${this.apiUrl}/${id}`, cementerio);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

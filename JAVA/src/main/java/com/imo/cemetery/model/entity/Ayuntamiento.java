@@ -44,7 +44,7 @@ public class Ayuntamiento extends User {
     @Builder.Default
     private List<Cementerio> cementerios = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ciudad_id", unique = true) // El 'unique' fuerza el 1:1 real
     private Ciudad ciudad;
 

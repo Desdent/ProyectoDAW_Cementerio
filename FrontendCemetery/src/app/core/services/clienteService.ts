@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Cliente } from '../../interfaces/cliente';
-import { ClientePost } from '../../interfaces/clientePost';
-import { ClienteUpdate } from '../../interfaces/clienteUpdate';
+import { Cliente } from '../../interfaces/cliente/cliente';
+import { ClientePost } from '../../interfaces/cliente/clientePost';
+import { ClienteUpdate } from '../../interfaces/cliente/clienteUpdate';
 
 @Injectable({
   providedIn: 'root',

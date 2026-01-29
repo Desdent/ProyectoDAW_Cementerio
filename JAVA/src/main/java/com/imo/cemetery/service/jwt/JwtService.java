@@ -28,7 +28,7 @@ public class JwtService {
 
     public String generateToken(User user) {
         Instant now = Instant.now();
-        Date expiryDate = Date.from(now.plus(1, ChronoUnit.HOURS));
+        Date expiryDate = Date.from(now.plus(24, ChronoUnit.HOURS));
 
         Map<String, Object> claims = new HashMap<>();
         claims.put("roles", List.of(user.getRole().getTipo()));

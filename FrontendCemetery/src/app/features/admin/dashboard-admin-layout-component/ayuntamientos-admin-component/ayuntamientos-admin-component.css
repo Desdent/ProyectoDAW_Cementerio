@@ -129,3 +129,54 @@
   cursor: not-allowed; /* Cambia el cursor cuando no puedes pulsar */
   opacity: 0.5;
 }
+
+/* --- CONFIGURACIÓN DEL MODAL --- */
+.modal-custom-border {
+  overflow: hidden;
+}
+
+.header-custom-modal {
+  background-color: var(--kelpie-ash);
+  color: white;
+}
+
+.modal-title-text {
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+/* --- FORMULARIO DENTRO DEL MODAL --- */
+.form-label-custom {
+  color: #6c757d;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.form-control-custom {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: white;
+  color: #1e293b;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.form-control-custom:focus {
+  outline: none;
+  border-color: var(--kelpie-ash);
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.1);
+}
+
+.table-custom {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0px;
+}

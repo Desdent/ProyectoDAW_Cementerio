@@ -3,9 +3,9 @@ import { ClienteService } from '../../../../core/services/clienteService';
 import * as bootstrap from 'bootstrap';
 import { CiudadService } from '../../../../core/services/ciudadService';
 import { ProvinciaService } from '../../../../core/services/provinciaService';
-import { ClientePost } from '../../../../interfaces/clientePost';
+import { ClientePost } from '../../../../interfaces/cliente/clientePost';
 import { FormsModule } from '@angular/forms';
-import { ClienteUpdate } from '../../../../interfaces/clienteUpdate';
+import { ClienteUpdate } from '../../../../interfaces/cliente/clienteUpdate';
 
 @Component({
   selector: 'app-clientes-admin-component',

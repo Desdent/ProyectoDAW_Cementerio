@@ -1,7 +1,7 @@
 <div class="data-card">
   <div class="card-header-custom d-flex justify-content-between align-items-center">
     <h3>Gestión de Cementerios</h3>
-    <button class="btn-primary-custom" type="button">
+    <button class="btn-primary-custom" type="button" (click)="abrirModal()">
       <i class="bi bi-plus-lg"></i> Nuevo Cementerio
     </button>
   </div>
@@ -45,13 +45,25 @@
 
               <td>
                 <div class="d-flex gap-2 justify-content-end">
-                  <button class="btn-action" title="Ver detalles">
+                  <button
+                    class="btn-action"
+                    title="Ver detalles"
+                    (click)="abrirModal_ver(cementerio)"
+                  >
                     <i class="bi bi-eye"></i>
                   </button>
-                  <button class="btn-action" title="Editar registro">
+                  <button
+                    class="btn-action"
+                    title="Editar registro"
+                    (click)="abrirModal_editar(cementerio)"
+                  >
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button class="btn-action text-danger" title="Eliminar registro">
+                  <button
+                    class="btn-action text-danger"
+                    title="Eliminar registro"
+                    (click)="abrirModal_delete(cementerio)"
+                  >
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>
@@ -78,9 +90,13 @@
             </button>
           </li>
 
-          <li class="page-item active">
-            <button class="page-link">{{ paginaActual() }}</button>
-          </li>
+          @for (n of paginas(); track n) {
+            <li class="page-item" [class.active]="paginaActual() === n">
+              <button class="page-link" (click)="cambiarPagina(n)">
+                {{ n }}
+              </button>
+            </li>
+          }
 
           <li class="page-item">
             <button
@@ -93,6 +109,307 @@
           </li>
         </ul>
       </nav>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalCementerio" tabindex="-1" aria-hidden="true" #htmlModal>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-custom-modal border-0 p-4">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Registrar Nuevo Ayuntamiento</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light">
+          <form id="formCliente" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom">Nombre *</label>
+              <input
+                [(ngModel)]="nuevoCementerio.nombre"
+                name="nombre"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. Cementerio La Cruz"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Email *</label>
+              <input
+                [(ngModel)]="nuevoCementerio.email"
+                name="email"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. email@gmail.com"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Teléfono *</label>
+              <input
+                [(ngModel)]="nuevoCementerio.telefono"
+                type="tel"
+                name="telefono"
+                class="form-control-custom"
+                placeholder="900 000 000"
+                required
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Dirección *</label>
+              <input
+                [(ngModel)]="nuevoCementerio.direccion"
+                type="text"
+                name="direccion"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+                required
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">ID del Ayuntamiento * </label>
+              <input
+                [(ngModel)]="nuevoCementerio.ayuntamientoId"
+                type="number"
+                name="ayuntamientoId"
+                class="form-control-custom"
+                placeholder="1"
+                required
+              />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+            (click)="guardarCementerio()"
+          >
+            <i class="bi bi-save"></i> Guardar Cementerio
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="modalAyuntamiento_editar"
+    tabindex="-1"
+    aria-hidden="true"
+    #modalEditar
+  >
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-custom-modal border-0 p-4">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Editar Cementerio</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light">
+          <form id="formClienteEditar" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom">Nombre *</label>
+              <input
+                [(ngModel)]="cementerioEditar.nombre"
+                name="nombre"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. Cementerio La Cruz"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Email *</label>
+              <input
+                [(ngModel)]="cementerioEditar.email"
+                name="email"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. email@gmail.com"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Teléfono *</label>
+              <input
+                [(ngModel)]="cementerioEditar.telefono"
+                type="tel"
+                name="telefono"
+                class="form-control-custom"
+                placeholder="900 000 000"
+                required
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Dirección *</label>
+              <input
+                [(ngModel)]="cementerioEditar.direccion"
+                type="text"
+                name="direccion"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+                required
+              />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+            (click)="actuCementerio(id)"
+          >
+            <i class="bi bi-save"></i> Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalAyuntamiento_ver" tabindex="-1" aria-hidden="true" #modalVer>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-custom-modal border-0 p-4">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Información Completa</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light">
+          <form id="formClienteVer" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom">Nombre *</label>
+              <input
+                readonly
+                [(ngModel)]="cementerioEditar.nombre"
+                name="nombre"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. Cementerio La Cruz"
+                required
+              />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Email *</label>
+              <input
+                readonly
+                [(ngModel)]="cementerioEditar.email"
+                name="email"
+                type="text"
+                class="form-control-custom"
+                placeholder="Ej. email@gmail.com"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Teléfono *</label>
+              <input
+                readonly
+                [(ngModel)]="cementerioEditar.telefono"
+                type="tel"
+                name="telefono"
+                class="form-control-custom"
+                placeholder="900 000 000"
+                required
+              />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Dirección *</label>
+              <input
+                readonly
+                [(ngModel)]="cementerioEditar.direccion"
+                type="text"
+                name="direccion"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+                required
+              />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    class="modal fade"
+    id="modalAyuntamiento_delete"
+    tabindex="-1"
+    aria-hidden="true"
+    #modalDelete
+  >
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header border-0 p-4 bg-danger text-white">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Confirmar Acción</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 text-center">
+          <p class="fs-5 mb-0">¿Estás seguro de que deseas eliminar este cliente?</p>
+          <p class="text-muted small">Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-center gap-3">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger px-4 py-2 shadow-sm rounded-3"
+            (click)="delete(id)"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
