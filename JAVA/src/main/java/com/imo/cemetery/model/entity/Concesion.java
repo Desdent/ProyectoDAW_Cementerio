@@ -25,7 +25,7 @@ public class Concesion {
     private Long id;
 
     @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal precio; // PREGUNTAR A MANOLO SI AQUÍ TAMBIEN VA PRECIO
+    private BigDecimal precio;
 
     @Column(nullable = false)
     private LocalDate fechaInicio;

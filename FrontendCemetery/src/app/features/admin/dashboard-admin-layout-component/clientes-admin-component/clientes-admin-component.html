@@ -1,7 +1,7 @@
 <div class="data-card">
   <div class="card-header-custom d-flex justify-content-between align-items-center">
     <h3>Gestión de Clientes</h3>
-    <button class="btn-primary-custom" type="button">
+    <button class="btn-primary-custom" type="button" (click)="abrirModal()">
       <i class="bi bi-plus-lg"></i> Nuevo Cliente
     </button>
   </div>
@@ -41,11 +41,15 @@
               <td>{{ cli.telefono }}</td>
               <td>
                 <div class="d-flex gap-2 justify-content-end">
-                  <button class="btn-action" title="Ver detalles">
+                  <button class="btn-action" title="Ver detalles" (click)="abrirModal_ver()">
                     <i class="bi bi-eye"></i>
                   </button>
-                  <button class="btn-action"><i class="bi bi-pencil"></i></button>
-                  <button class="btn-action text-danger"><i class="bi bi-trash"></i></button>
+                  <button class="btn-action" (click)="abrirModal_editar()">
+                    <i class="bi bi-pencil"></i>
+                  </button>
+                  <button class="btn-action text-danger" (click)="abrirModal_delete()">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </div>
               </td>
             </tr>
@@ -85,6 +89,282 @@
           </li>
         </ul>
       </nav>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true" #htmlModal>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-custom-modal border-0 p-4">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Registrar Nuevo Cliente</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light">
+          <form id="formCliente" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom">Nombre</label>
+              <input type="text" class="form-control-custom" placeholder="Ej. Juan" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Primer Apellido</label>
+              <input type="text" class="form-control-custom" placeholder="Ej. Pérez" required />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Segundo Apellido</label>
+              <input type="text" class="form-control-custom" placeholder="Ej. García" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Teléfono</label>
+              <input type="tel" class="form-control-custom" placeholder="600 000 000" required />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Dirección Completa</label>
+              <input
+                type="text"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Provincia *</label>
+              <select
+                class="form-select-custom"
+                name="provincia"
+                #provSelect
+                (change)="onProvinciaChange(provSelect.value)"
+              >
+                <option value="" disabled selected>Seleccione provincia</option>
+                @for (p of provinciaService.provincias(); track p.id) {
+                  <option [value]="p.id">{{ p.nombre }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Localidad *</label>
+              <select
+                class="form-select-custom"
+                name="localidad"
+                [disabled]="!provinciaSeleccionadaId()"
+              >
+                <option value="" disabled selected>
+                  {{
+                    provinciaSeleccionadaId() ? 'Seleccione localidad' : 'Primero elija provincia'
+                  }}
+                </option>
+
+                @for (ciu of ciudadService.ciudades(); track ciu.id) {
+                  <option [value]="ciu.id">{{ ciu.nombre }}</option>
+                }
+              </select>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-primary-custom px-4 py-2 m-0 shadow-sm">
+            <i class="bi bi-save"></i> Guardar Cliente
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalCliente_editar" tabindex="-1" aria-hidden="true" #modalEditar>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-custom-modal border-0 p-4">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Editar Cliente</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light">
+          <form id="formClienteEditar" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom">Nombre</label>
+              <input type="text" class="form-control-custom" placeholder="Ej. Juan" required />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Primer Apellido</label>
+              <input type="text" class="form-control-custom" placeholder="Ej. Pérez" required />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Segundo Apellido</label>
+              <input type="text" class="form-control-custom" placeholder="Ej. García" />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Teléfono</label>
+              <input type="tel" class="form-control-custom" placeholder="600 000 000" required />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Dirección Completa</label>
+              <input
+                type="text"
+                class="form-control-custom"
+                placeholder="C/ Mayor, 12, 2ºB"
+                required
+              />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Provincia *</label>
+              <select
+                class="form-select-custom"
+                name="provincia"
+                #provSelectEdit
+                (change)="onProvinciaChange(provSelectEdit.value)"
+              >
+                <option value="" disabled selected>Seleccione provincia</option>
+                @for (p of provinciaService.provincias(); track p.id) {
+                  <option [value]="p.id">{{ p.nombre }}</option>
+                }
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Localidad *</label>
+              <select
+                class="form-select-custom"
+                name="localidad"
+                [disabled]="!provinciaSeleccionadaId()"
+              >
+                <option value="" disabled selected>
+                  {{
+                    provinciaSeleccionadaId() ? 'Seleccione localidad' : 'Primero elija provincia'
+                  }}
+                </option>
+                @for (ciu of ciudadService.ciudades(); track ciu.id) {
+                  <option [value]="ciu.id">{{ ciu.nombre }}</option>
+                }
+              </select>
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
+            Cancelar
+          </button>
+          <button type="button" class="btn-primary-custom px-4 py-2 m-0 shadow-sm">
+            <i class="bi bi-save"></i> Guardar Cambios
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalCliente_ver" tabindex="-1" aria-hidden="true" #modalVer>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-custom-modal border-0 p-4">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Información Completa</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light">
+          <form id="formClienteVer" class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-custom">Nombre</label>
+              <input type="text" class="form-control-custom" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Primer Apellido</label>
+              <input type="text" class="form-control-custom" readonly />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Segundo Apellido</label>
+              <input type="text" class="form-control-custom" readonly />
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-custom">Teléfono</label>
+              <input type="tel" class="form-control-custom" readonly />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Dirección Completa</label>
+              <input type="text" class="form-control-custom" readonly />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Provincia</label>
+              <input type="text" class="form-control-custom" readonly />
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label-custom">Localidad</label>
+              <input type="text" class="form-control-custom" readonly />
+            </div>
+          </form>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalCliente_delete" tabindex="-1" aria-hidden="true" #modalDelete>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header border-0 p-4 bg-danger text-white">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Confirmar Acción</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 text-center">
+          <p class="fs-5 mb-0">¿Estás seguro de que deseas eliminar este cliente?</p>
+          <p class="text-muted small">Esta acción no se puede deshacer.</p>
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-center gap-3">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
+            Cancelar
+          </button>
+          <button type="button" class="btn btn-danger px-4 py-2 shadow-sm rounded-3">
+            Eliminar permanentemente
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </div>

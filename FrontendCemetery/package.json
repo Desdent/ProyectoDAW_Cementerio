@@ -45,6 +45,7 @@
     "@angular/compiler-cli": "^21.0.0",
     "@angular/localize": "^21.0.0",
     "@ng-bootstrap/ng-bootstrap": "^20.0.0",
+    "@types/bootstrap": "^5.2.10",
     "@types/datatables.net": "^1.10.21",
     "@types/jquery": "^3.5.9",
     "angular-datatables": "^16.0.1",

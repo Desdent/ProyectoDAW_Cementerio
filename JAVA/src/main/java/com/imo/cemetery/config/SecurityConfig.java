@@ -12,9 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @Configuration
-// Anotación que indica que se inicia con la aplicación y permite crear un @Bean de tipo SecurityFilterChain
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
@@ -24,30 +28,31 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
-
         return http
-                .csrf(csrf -> csrf.disable()) // Esta linea se encarga de quitar la proteccion contra Cross-Site Scripting
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // 1. ACTIVAR CORS
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/controller/cemetery/**").permitAll()
-                        .requestMatchers("/controller/cemetery/**").hasRole("ADMIN") // Ya le añade automaticamente el filtro el "ROLE_"
-                        // En estas rutas es donde deberia estar el login y tal
-                        .requestMatchers("/error").permitAll()
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                // ^^^^ en ese filtro se añaden (por ahora) que rutas son visibles de manera pública y cuáles no
-                //.formLogin(login -> login
-                //        .loginPage("/login")
-                //       .permitAll()
-                //);
-                // ^^^^ en este filtro se añade un login personalizado a la ruta /login (hay que hacer un controller aure maneje esta petición GET igualmente), pero como por ahora no hay, usa el por defecto
                 .build();
+    }
 
+    // 2. DEFINIR LA CONFIGURACIÓN DE CORS
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200")); // Origen de Angular
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+        configuration.setAllowCredentials(true);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
