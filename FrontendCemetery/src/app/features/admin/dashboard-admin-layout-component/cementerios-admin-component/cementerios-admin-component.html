@@ -50,6 +50,13 @@
                   </button>
                   <button
                     class="btn-action"
+                    title="Ver Zonas"
+                    (click)="abrirModal_zonas(cementerio)"
+                  >
+                    <i class="bi bi-grid-1x2"></i>
+                  </button>
+                  <button
+                    class="btn-action"
                     title="Ver detalles"
                     (click)="abrirModal_ver(cementerio)"
                   >
@@ -412,6 +419,83 @@
 
         <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
           <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalVerZonas" tabindex="-1" aria-hidden="true" #verZonas>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-custom-modal border-0 p-4">
+          <h5 class="modal-title d-flex align-items-center">
+            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+            <span class="modal-title-text">Editar Zonas</span>
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+
+        <div class="modal-body p-4 bg-light">
+          @if (zonas()) {
+            <form id="formZonas" class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label-custom">Tipo de Zona</label>
+                <select
+                  class="form-select-custom"
+                  name="zonasSelect"
+                  (change)="onZonaChange($event)"
+                >
+                  <option value="" disabled selected>Seleccione Tipo</option>
+                  @for (t of zonas(); track $index) {
+                    <option [value]="t.id">
+                      {{ t.nombre }}
+                    </option>
+                  }
+                </select>
+              </div>
+
+              @if (zonaSelected()) {
+                <div class="col-md-6">
+                  <label class="form-label-custom">Nombre *</label>
+                  <input
+                    required
+                    [(ngModel)]="zonaSelected()!.nombre"
+                    name="nombre"
+                    type="text"
+                    class="form-control-custom"
+                    placeholder="Zona A"
+                  />
+                </div>
+
+                <div class="col-md-6">
+                  <label class="form-label-custom">Coordenadas *</label>
+                  <p>Por acabar...</p>
+                </div>
+              }
+            </form>
+          } @else {
+            <div class="text-center p-5">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2">Cargando datos de la zona...</p>
+            </div>
+          }
+        </div>
+
+        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
+            Cancelar
+          </button>
+          <button
+            type="button"
+            class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+            (click)="guardarZonas(zonaId)"
+          >
+            <i class="bi bi-save"></i> Guardar Zonas
+          </button>
         </div>
       </div>
     </div>

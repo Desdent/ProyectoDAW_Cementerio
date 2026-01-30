@@ -4,6 +4,7 @@ package com.imo.cemetery.controller;
 import com.imo.cemetery.model.dto.zona.ZonaCreateDTO;
 import com.imo.cemetery.model.dto.zona.ZonaResponseDTO;
 import com.imo.cemetery.model.dto.zona.ZonaUpdateDTO;
+import com.imo.cemetery.model.enums.ZonaType;
 import com.imo.cemetery.service.zona.ZonaService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -75,6 +76,19 @@ public class ZonaController {
                                                                             @RequestParam (defaultValue = "") String name)
     {
         return ResponseEntity.ok(service.findByNombreEnCementerio(name, id));
+    }
+
+    @GetMapping("/cementerio/{id}")
+    public ResponseEntity<List<ZonaResponseDTO>> findAllByCementerioId(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByCementerioId(id));
+    }
+
+    //TODO si da tiempo cambiar esto para que llame a un controller de ZonaType con servicio de por medio
+    @GetMapping("/tipos")
+    public ResponseEntity<List<String>> getAllTipos()
+    {
+        return ResponseEntity.ok(List.of("NICHOS", "CRIPTAS", "TUMBAS"));
     }
 
 }

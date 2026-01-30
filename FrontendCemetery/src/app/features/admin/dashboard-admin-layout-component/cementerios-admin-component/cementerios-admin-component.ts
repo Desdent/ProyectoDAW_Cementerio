@@ -6,11 +6,12 @@ import { CiudadService } from '../../../../core/services/ciudadService';
 import { ProvinciaService } from '../../../../core/services/provinciaService';
 import * as bootstrap from 'bootstrap';
 import { FormsModule } from '@angular/forms';
-import { JsonPipe } from '@angular/common';
+import { Zona } from '../../../../interfaces/zona/zona';
+import { ZonaService } from '../../../../core/services/zonaService';
 
 @Component({
   selector: 'app-cementerios-admin-component',
-  imports: [FormsModule, JsonPipe],
+  imports: [FormsModule],
   templateUrl: './cementerios-admin-component.html',
   styleUrl: './cementerios-admin-component.css',
 })
@@ -18,6 +19,7 @@ export class CementeriosAdminComponent {
   public cementerioService = inject(CementerioService);
   public ciudadService = inject(CiudadService);
   public provinciaService = inject(ProvinciaService);
+  public zonaService = inject(ZonaService);
 
   id: number = 0;
   archivoParaSubir: File | null = null;
@@ -28,12 +30,17 @@ export class CementeriosAdminComponent {
   mapaPreview = signal<string | null>(null);
   urlMapa = signal<string | null>(null);
   cementerioSeleccionadoNombre = signal<string>('');
+  zonas = signal<Zona[]>([]);
+  zonaId: number = 0;
+  zonaSelected = signal<Zona | null>(null);
+  tipos = signal<string[]>([]);
 
   @ViewChild('htmlModal') modalElement!: ElementRef;
   @ViewChild('modalVer') modalVerRef!: ElementRef;
   @ViewChild('modalEditar') modalEditarRef!: ElementRef;
   @ViewChild('modalDelete') modalDeleteRef!: ElementRef;
   @ViewChild('modalMapa') modalMapaRef!: ElementRef;
+  @ViewChild('verZonas') modalZonasRef!: ElementRef;
 
   nuevoCementerio: CementerioPost = {
     nombre: '',
@@ -95,7 +102,8 @@ export class CementeriosAdminComponent {
 
   abrirModal_editar(cementerio: any) {
     this.id = cementerio.id;
-    this.obtenerCliente(cementerio.id, () => {
+    this.findAllZonasByCementerio(this.id);
+    this.obtenerCementerio(cementerio.id, () => {
       this.modalBootstrap = new bootstrap.Modal(this.modalEditarRef.nativeElement);
       this.modalBootstrap.show();
     });
@@ -103,10 +111,22 @@ export class CementeriosAdminComponent {
 
   abrirModal_ver(cementerio: any) {
     this.id = cementerio.id;
-    this.obtenerCliente(cementerio.id, () => {
+    this.findAllZonasByCementerio(this.id);
+    this.obtenerCementerio(cementerio.id, () => {
       this.modalBootstrap = new bootstrap.Modal(this.modalVerRef.nativeElement);
       this.modalBootstrap.show();
     });
+  }
+
+  abrirModal_zonas(cementerio: any) {
+    this.id = cementerio.id;
+    this.findAllZonasByCementerio(this.id);
+    console.log(this.tipos());
+
+    if (this.modalZonasRef && this.modalZonasRef.nativeElement) {
+      this.modalBootstrap = new bootstrap.Modal(this.modalZonasRef.nativeElement);
+      this.modalBootstrap.show();
+    }
   }
 
   cerrarModal() {
@@ -115,7 +135,7 @@ export class CementeriosAdminComponent {
     }
   }
 
-  obtenerCliente(id: number, callback?: () => void) {
+  obtenerCementerio(id: number, callback?: () => void) {
     this.cementerioService.find(id).subscribe((data) => {
       this.cementerioEditar = {
         nombre: data.nombre,
@@ -182,6 +202,16 @@ export class CementeriosAdminComponent {
     });
   }
 
+  findAllZonasByCementerio(idExterior: number) {
+    this.zonaService.findAllByCementerioId(idExterior).subscribe({
+      next: (res) => {
+        console.log('Zonas recibidas del cementerio:', res);
+        this.zonas.set(res); // Ahora sí, guardamos el array de zonas en la señal
+      },
+      error: (err) => console.error('Error al cargar zonas:', err),
+    });
+  }
+
   // --- UTILIDADES ---
 
   resetForm() {
@@ -219,6 +249,32 @@ export class CementeriosAdminComponent {
     if (this.modalMapaRef && this.modalMapaRef.nativeElement) {
       this.modalBootstrap = new bootstrap.Modal(this.modalMapaRef.nativeElement);
       this.modalBootstrap.show();
+    }
+  }
+
+  obtainDatosZona(idExterior: number) {
+    this.zonaService.find(idExterior).subscribe({
+      next: (res) => {
+        this.zonaSelected.set(res);
+      },
+      error: (error) => {
+        console.log('Error al obtener los datos: ', error);
+      },
+    });
+  }
+
+  getAllTipo() {
+    this.tipos.set(this.zonaService.tipos());
+  }
+
+  guardarZonas(idExterior: number) {
+    this.zonaService.update(this.zonaSelected()!, idExterior);
+  }
+
+  onZonaChange(event: any) {
+    const idSeleccionado = event.target.value;
+    if (idSeleccionado) {
+      this.obtainDatosZona(Number(idSeleccionado));
     }
   }
 }
