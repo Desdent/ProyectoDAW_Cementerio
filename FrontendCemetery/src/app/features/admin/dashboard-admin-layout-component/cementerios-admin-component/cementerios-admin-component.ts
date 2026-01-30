@@ -6,10 +6,11 @@ import { CiudadService } from '../../../../core/services/ciudadService';
 import { ProvinciaService } from '../../../../core/services/provinciaService';
 import * as bootstrap from 'bootstrap';
 import { FormsModule } from '@angular/forms';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'app-cementerios-admin-component',
-  imports: [FormsModule],
+  imports: [FormsModule, JsonPipe],
   templateUrl: './cementerios-admin-component.html',
   styleUrl: './cementerios-admin-component.css',
 })
@@ -19,21 +20,27 @@ export class CementeriosAdminComponent {
   public provinciaService = inject(ProvinciaService);
 
   id: number = 0;
+  archivoParaSubir: File | null = null;
 
   elementosPorPagina = 5;
   paginaActual = signal(1);
   modalBootstrap: any;
+  mapaPreview = signal<string | null>(null);
+  urlMapa = signal<string | null>(null);
+  cementerioSeleccionadoNombre = signal<string>('');
 
   @ViewChild('htmlModal') modalElement!: ElementRef;
   @ViewChild('modalVer') modalVerRef!: ElementRef;
   @ViewChild('modalEditar') modalEditarRef!: ElementRef;
   @ViewChild('modalDelete') modalDeleteRef!: ElementRef;
+  @ViewChild('modalMapa') modalMapaRef!: ElementRef;
 
   nuevoCementerio: CementerioPost = {
     nombre: '',
     telefono: '',
     direccion: '',
     email: '',
+    mapa: '',
     ayuntamientoId: 0,
   };
 
@@ -42,6 +49,7 @@ export class CementeriosAdminComponent {
     telefono: '',
     direccion: '',
     email: '',
+    mapa: '',
   };
 
   ngOnInit(): void {
@@ -70,6 +78,8 @@ export class CementeriosAdminComponent {
     }
   }
 
+  // --- GESTIÓN DE MODALES CON CARGA ASÍNCRONA ---
+
   abrirModal() {
     if (this.modalElement && this.modalElement.nativeElement) {
       this.modalBootstrap = new bootstrap.Modal(this.modalElement.nativeElement);
@@ -77,75 +87,102 @@ export class CementeriosAdminComponent {
     }
   }
 
-  abrirModal_delete(cliente: any) {
-    this.id = cliente.id;
-    this.obtenerCliente(cliente.id);
-
-    if (this.modalDeleteRef && this.modalDeleteRef.nativeElement) {
-      this.modalBootstrap = new bootstrap.Modal(this.modalDeleteRef.nativeElement);
-      this.modalBootstrap.show();
-    }
+  abrirModal_delete(cementerio: any) {
+    this.id = cementerio.id;
+    this.modalBootstrap = new bootstrap.Modal(this.modalDeleteRef.nativeElement);
+    this.modalBootstrap.show();
   }
 
-  abrirModal_editar(cliente: any) {
-    this.id = cliente.id;
-    this.obtenerCliente(cliente.id);
-
-    if (this.modalEditarRef && this.modalEditarRef.nativeElement) {
+  abrirModal_editar(cementerio: any) {
+    this.id = cementerio.id;
+    this.obtenerCliente(cementerio.id, () => {
       this.modalBootstrap = new bootstrap.Modal(this.modalEditarRef.nativeElement);
       this.modalBootstrap.show();
-    }
+    });
   }
 
-  abrirModal_ver(cliente: any) {
-    this.id = cliente.id;
-    this.obtenerCliente(cliente.id);
-    if (this.modalVerRef && this.modalVerRef.nativeElement) {
+  abrirModal_ver(cementerio: any) {
+    this.id = cementerio.id;
+    this.obtenerCliente(cementerio.id, () => {
       this.modalBootstrap = new bootstrap.Modal(this.modalVerRef.nativeElement);
       this.modalBootstrap.show();
-    }
+    });
   }
 
   cerrarModal() {
-    this.modalBootstrap.hide();
+    if (this.modalBootstrap) {
+      this.modalBootstrap.hide();
+    }
   }
 
-  obtenerCliente(id: number) {
+  obtenerCliente(id: number, callback?: () => void) {
     this.cementerioService.find(id).subscribe((data) => {
       this.cementerioEditar = {
         nombre: data.nombre,
         telefono: data.telefono,
         direccion: data.direccion,
         email: data.email,
+        mapa: data.mapa,
       };
+      if (callback) callback();
     });
   }
 
+  // --- PERSISTENCIA (SUBIDA DE IMAGEN + JSON) ---
+
   guardarCementerio() {
-    console.log(this.nuevoCementerio);
+    if (this.archivoParaSubir) {
+      this.cementerioService.subirImagen(this.archivoParaSubir).subscribe({
+        next: (res) => {
+          this.nuevoCementerio.mapa = res.nombreArchivo;
+
+          this.procederAGuardar();
+        },
+        error: (err) => console.error('Error al subir imagen', err),
+      });
+    } else {
+      this.procederAGuardar();
+    }
+  }
+
+  private procederAGuardar() {
     this.cementerioService.save(this.nuevoCementerio).subscribe({
       next: (res) => {
-        console.log('Cliente guardado', res);
+        console.log('Cementerio guardado', res);
         this.cerrarModal();
         this.cementerioService.loadAll();
         this.resetForm();
       },
-      error: (err) => console.error('Error al guardar', err),
+      error: (err) => console.error('Error al guardar datos', err),
     });
   }
 
   actuCementerio(id: number) {
-    console.log(this.nuevoCementerio);
     this.cementerioService.update(this.cementerioEditar, id).subscribe({
       next: (res) => {
-        console.log('Cliente actualizado', res);
+        console.log('Cementerio actualizado', res);
         this.cerrarModal();
-        this.cementerioService.loadAll(); // Refrescar la tabla
-        this.resetForm(); // Limpiar el objeto
+        this.cementerioService.loadAll();
+        this.resetForm();
       },
-      error: (err) => console.error('Error al guardar', err),
+      error: (err) => console.error('Error al actualizar', err),
     });
   }
+
+  delete(idExterior: number) {
+    this.cementerioService.delete(idExterior).subscribe({
+      next: () => {
+        this.cementerioService.loadAll();
+        this.cerrarModal();
+        if (this.cementeriosPaginados.length === 0 && this.paginaActual() > 1) {
+          this.paginaActual.update((p) => p - 1);
+        }
+      },
+      error: (err) => console.error('Error al eliminar', err),
+    });
+  }
+
+  // --- UTILIDADES ---
 
   resetForm() {
     this.nuevoCementerio = {
@@ -153,28 +190,35 @@ export class CementeriosAdminComponent {
       telefono: '',
       direccion: '',
       email: '',
+      mapa: '',
       ayuntamientoId: 0,
     };
-    this.cementerioEditar = {
-      nombre: '',
-      telefono: '',
-      direccion: '',
-      email: '',
-    }; // Bloquear de nuevo el select de ciudades
+    this.cementerioEditar = { nombre: '', telefono: '', direccion: '', email: '', mapa: '' };
+    this.archivoParaSubir = null;
+    this.mapaPreview.set(null);
   }
 
-  delete(idExterior: number) {
-    this.cementerioService.delete(idExterior).subscribe({
-      next: () => {
-        console.log('Cliente eliminado');
-        this.cementerioService.loadAll();
-        this.cerrarModal();
+  onFileSelected(event: any) {
+    const file: File = event.target.files[0];
+    if (file) {
+      this.archivoParaSubir = file;
+      this.nuevoCementerio.mapa = file.name;
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.mapaPreview.set(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
 
-        if (this.cementeriosPaginados.length === 0 && this.paginaActual() > 1) {
-          this.paginaActual.update((p) => p - 1);
-        }
-      },
-      error: (err) => console.error('Error al eliminar', err),
-    });
+  verMapa(cementerio: any) {
+    this.cementerioSeleccionadoNombre.set(cementerio.nombre);
+    const rutaBase = 'http://localhost:8080/uploads/mapas/';
+    this.urlMapa.set(rutaBase + cementerio.mapa);
+
+    if (this.modalMapaRef && this.modalMapaRef.nativeElement) {
+      this.modalBootstrap = new bootstrap.Modal(this.modalMapaRef.nativeElement);
+      this.modalBootstrap.show();
+    }
   }
 }

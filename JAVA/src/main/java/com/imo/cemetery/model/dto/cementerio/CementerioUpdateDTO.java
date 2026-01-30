@@ -22,6 +22,7 @@ public class CementerioUpdateDTO {
     @NotBlank
     @Email
     private String email;
+    private String mapa;
 
 
 }

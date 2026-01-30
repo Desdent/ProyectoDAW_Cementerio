@@ -158,6 +158,10 @@
   display: block;
 }
 
+.form-control {
+  max-width: 300px;
+}
+
 .form-control-custom {
   width: 100%;
   padding: 10px 14px;

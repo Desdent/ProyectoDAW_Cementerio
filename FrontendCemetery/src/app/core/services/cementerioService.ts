@@ -9,21 +9,24 @@ import { CementerioUpdate } from '../../interfaces/cementerio/cementerioUpdate';
 })
 export class CementerioService {
   private http = inject(HttpClient);
-
   private apiUrl = 'http://localhost:8080/api/v1/cementerios';
-
-  constructor() {}
 
   cementerios = signal<Cementerio[]>([]);
   amount = signal<number>(0);
 
+  constructor() {}
+
   loadAll() {
     this.http.get<Cementerio[]>(this.apiUrl).subscribe((data) => {
       this.cementerios.set(data);
-      this.amount.set(this.cementerios().length);
-      console.log(data);
-      console.log(this.amount);
+      this.amount.set(data.length);
     });
+  }
+
+  subirImagen(file: File) {
+    const formData = new FormData();
+    formData.append('archivo', file);
+    return this.http.post<{ nombreArchivo: string }>(`${this.apiUrl}/upload`, formData);
   }
 
   save(cementerio: CementerioPost) {

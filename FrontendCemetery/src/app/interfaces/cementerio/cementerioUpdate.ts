@@ -3,4 +3,5 @@ export interface CementerioUpdate {
   direccion: string;
   telefono: string;
   email: string;
+  mapa?: string;
 }

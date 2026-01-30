@@ -8,12 +8,7 @@
 
   <div class="card-body-custom">
     <div class="mb-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Buscar en la tabla..."
-        style="max-width: 300px"
-      />
+      <input type="text" class="form-control" placeholder="Buscar en la tabla..." />
     </div>
 
     <div class="table-responsive">
@@ -45,6 +40,14 @@
 
               <td>
                 <div class="d-flex gap-2 justify-content-end">
+                  <button
+                    class="btn-action btn-map-view"
+                    title="Ver Mapa"
+                    [disabled]="!cementerio.mapa"
+                    (click)="verMapa(cementerio)"
+                  >
+                    <i class="bi bi-map"></i>
+                  </button>
                   <button
                     class="btn-action"
                     title="Ver detalles"
@@ -186,6 +189,49 @@
                 placeholder="1"
                 required
               />
+            </div>
+
+            <div class="col-12">
+              <label class="form-label-custom">Mapa del Cementerio</label>
+              <div class="input-group-custom">
+                <input
+                  type="text"
+                  [(ngModel)]="nuevoCementerio.mapa"
+                  name="mapa"
+                  class="form-control-custom"
+                  placeholder="No se ha seleccionado archivo"
+                  readonly
+                />
+                <label class="btn-file-upload">
+                  <i class="bi bi-folder2-open me-2"></i> Examinar
+                  <input
+                    type="file"
+                    class="d-none"
+                    accept="image/*"
+                    (change)="onFileSelected($event)"
+                  />
+                </label>
+              </div>
+
+              @if (mapaPreview()) {
+                <div class="map-preview-wrapper mt-3">
+                  <div class="preview-header d-flex justify-content-between">
+                    <small class="text-muted">Vista previa del mapa:</small>
+                    <button
+                      type="button"
+                      class="btn-close-small"
+                      (click)="mapaPreview.set(null); nuevoCementerio.mapa = ''"
+                    >
+                      <i class="bi bi-x"></i>
+                    </button>
+                  </div>
+                  <img
+                    [src]="mapaPreview()"
+                    alt="Vista previa"
+                    class="img-fluid rounded shadow-sm border"
+                  />
+                </div>
+              }
             </div>
           </form>
         </div>
@@ -408,6 +454,34 @@
           >
             Eliminar
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="modalVerMapa" tabindex="-1" aria-hidden="true" #modalMapa>
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-content modal-custom-border shadow-lg">
+        <div class="modal-header header-map-viewer">
+          <h5 class="modal-title h6">
+            <i class="bi bi-map me-2"></i>
+            Mapa: {{ cementerioSeleccionadoNombre() }}
+          </h5>
+          <button
+            type="button"
+            class="btn-close btn-close-white shadow-none"
+            (click)="cerrarModal()"
+          ></button>
+        </div>
+        <div class="modal-body body-map-viewer">
+          @if (urlMapa()) {
+            <img [src]="urlMapa()" class="img-map-preview" alt="Mapa del cementerio" />
+          } @else {
+            <div class="no-image-placeholder">
+              <i class="bi bi-image-alt"></i>
+              <p>No hay imagen disponible para este mapa</p>
+            </div>
+          }
         </div>
       </div>
     </div>

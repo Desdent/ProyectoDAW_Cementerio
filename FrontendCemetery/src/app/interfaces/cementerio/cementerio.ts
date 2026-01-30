@@ -4,5 +4,6 @@ export interface Cementerio {
   direccion: string;
   telefono: string;
   email: string;
+  mapa?: string;
   ayuntamientoId: number;
 }

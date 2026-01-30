@@ -18,6 +18,7 @@ public interface CementerioMapper {
     Cementerio toEntity(CementerioCreateDTO dto);
 
     @Mapping(source = "ayuntamiento.id", target = "ayuntamientoId")
+    @Mapping(source = "mapa", target = "mapa")
     CementerioResponseDTO toResponseDTO(Cementerio entity);
 
     @Mapping(target = "id", ignore = true)

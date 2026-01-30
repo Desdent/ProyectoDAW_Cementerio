@@ -34,6 +34,9 @@ public class Cementerio {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column
+    private String mapa;
+
 
     // >> RELACIONES <<
 

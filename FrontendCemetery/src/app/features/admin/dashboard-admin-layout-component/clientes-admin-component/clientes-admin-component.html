@@ -8,12 +8,7 @@
 
   <div class="card-body-custom">
     <div class="mb-3">
-      <input
-        type="text"
-        class="form-control"
-        placeholder="Buscar en la tabla..."
-        style="max-width: 300px"
-      />
+      <input type="text" class="form-control" placeholder="Buscar en la tabla..." />
     </div>
     <div class="table-responsive">
       <table class="table-custom">
@@ -44,10 +39,18 @@
                   <button class="btn-action" title="Ver detalles" (click)="abrirModal_ver(cli)">
                     <i class="bi bi-eye"></i>
                   </button>
-                  <button class="btn-action" (click)="abrirModal_editar(cli)">
+                  <button
+                    class="btn-action"
+                    title="Editar registro"
+                    (click)="abrirModal_editar(cli)"
+                  >
                     <i class="bi bi-pencil"></i>
                   </button>
-                  <button class="btn-action text-danger" (click)="abrirModal_delete(cli)">
+                  <button
+                    class="btn-action text-danger"
+                    title="Eliminar registro"
+                    (click)="abrirModal_delete(cli)"
+                  >
                     <i class="bi bi-trash"></i>
                   </button>
                 </div>

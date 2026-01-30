@@ -4,6 +4,7 @@ import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoCreateDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoResponseDTO;
 import com.imo.cemetery.model.dto.ayuntamiento.AyuntamientoUpdateDTO;
 import com.imo.cemetery.model.entity.Ayuntamiento;
+import com.imo.cemetery.model.entity.Cementerio;
 import com.imo.cemetery.model.entity.Role;
 import com.imo.cemetery.model.enums.RoleType;
 import com.imo.cemetery.model.mapper.AyuntamientoMapper;
@@ -107,6 +108,7 @@ public class AyuntamientoServiceImpl implements AyuntamientoService {
         return repo.findAll().stream()
                 .map(ayuntamientoMapper::toResponseDTO)
                 .collect(Collectors.toList());
+
     }
 
     @Override

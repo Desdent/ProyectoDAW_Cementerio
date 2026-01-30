@@ -158,6 +158,10 @@
   display: block;
 }
 
+.form-control {
+  max-width: 300px;
+}
+
 .form-control-custom {
   width: 100%;
   padding: 10px 14px;
@@ -179,4 +183,104 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0px;
+}
+
+/* Contenedor para alinear el input de texto y el botón */
+.input-group-custom {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* El input de texto ocupa todo el espacio disponible */
+.input-group-custom .form-control-custom {
+  flex: 1;
+}
+
+/* Estilo del botón de subida */
+.btn-file-upload {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1.25rem;
+  background-color: var(--kelpie-ash);
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-file-upload:hover {
+  background-color: #0b5ed7;
+}
+
+.btn-file-upload:active {
+  transform: translateY(1px);
+}
+
+#modalVerMapa .modal-body {
+  overflow: hidden;
+}
+
+#modalVerMapa img {
+  object-fit: contain;
+  background-color: #f0f0f0;
+  cursor: zoom-in;
+}
+
+/* Estilo para el botón de la tabla */
+.btn-map-view {
+  color: #0d6efd;
+}
+
+.btn-map-view:disabled {
+  color: #adb5bd;
+  cursor: not-allowed;
+}
+
+/* Encabezado del modal de mapa */
+.header-map-viewer {
+  border: 0;
+  padding: 1rem;
+  background-color: #212529;
+  color: #ffffff;
+}
+
+/* Contenedor principal del visor */
+.body-map-viewer {
+  padding: 0;
+  background-color: #495057;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  overflow: hidden;
+}
+
+/* Estilo de la imagen del mapa */
+.img-map-preview {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background-color: #f0f0f0;
+  cursor: zoom-in;
+}
+
+/* Estado cuando no hay imagen */
+.no-image-placeholder {
+  text-align: center;
+  color: #ffffff;
+}
+
+.no-image-placeholder i {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.no-image-placeholder p {
+  margin: 0;
+  font-size: 0.9rem;
 }

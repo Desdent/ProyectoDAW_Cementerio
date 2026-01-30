@@ -43,6 +43,7 @@ public class CementerioServiceImpl implements CementerioService {
         String email = auth.getName();
 
 
+
         // Buscamos el Ayuntamiento completo en la base de datos
         Ayuntamiento ayuntamiento = ayuntamientoRepo.findById(dto.getAyuntamientoId())
                 .orElseThrow(() -> new EntityNotFoundException("Ayuntamiento no encontrado con ID: " + dto.getAyuntamientoId()));
@@ -54,6 +55,7 @@ public class CementerioServiceImpl implements CementerioService {
         // El cementerio ahora sae a qué ayuntamiento pertenece
         entity.setAyuntamiento(ayuntamiento);
 
+        entity.setMapa(dto.getMapa());
         // 5. Guardamos
         Cementerio entitySaved = repo.save(entity);
 
@@ -90,9 +92,10 @@ public class CementerioServiceImpl implements CementerioService {
 
     @Override
     public List<CementerioResponseDTO> findAll() {
-        return repo.findAll().stream()
+       return repo.findAll().stream()
                 .map(cementerioMapper::toResponseDTO)
                 .collect(Collectors.toList());
+
     }
 
     @Override

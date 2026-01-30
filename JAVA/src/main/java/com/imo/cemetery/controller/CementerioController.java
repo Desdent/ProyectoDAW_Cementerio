@@ -7,6 +7,8 @@ import com.imo.cemetery.model.dto.cementerio.CementerioResponseDTO;
 import com.imo.cemetery.model.dto.cementerio.CementerioUpdateDTO;
 import com.imo.cemetery.service.cementerio.CementerioService;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.Map;
+import java.util.UUID;
 
 import java.util.List;
 
@@ -113,5 +122,36 @@ public class CementerioController {
     public ResponseEntity<List<CementerioResponseDTO>> myCementerios()
     {
         return ResponseEntity.ok(service.findAllByLoggedAyuntamiento());
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<Map<String, String>> uploadMap(@RequestParam("archivo") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            // Define la ruta de la carpeta
+            String uploadDir = "src/main/resources/static/uploads/mapas/";
+            Path pathDir = Paths.get(uploadDir);
+
+            // Crear carpetas si no existen
+            if (!Files.exists(pathDir)) {
+                Files.createDirectories(pathDir);
+            }
+
+            // 3. Generar nombre único: timestamp + nombre original
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = pathDir.resolve(fileName);
+
+            // 4. Guardar archivo
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // 5. Devolver el nombre final para que Angular lo use en el JSON del cementerio
+            return ResponseEntity.ok(Map.of("nombreArchivo", fileName));
+
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error al guardar el archivo: " + e.getMessage()));
+        }
     }
 }
