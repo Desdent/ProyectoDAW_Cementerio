@@ -25,6 +25,14 @@ export class ClienteService {
     });
   }
 
+  loadAllByAyuntamiento(id: number) {
+    return this.http.get<Cliente[]>(`${this.apiUrl}/ayuntamiento/${id}`);
+  }
+
+  loadAllByCementerio(id: number) {
+    return this.http.get<Cliente[]>(`${this.apiUrl}/cementerio/${id}`);
+  }
+
   save(cliente: ClientePost) {
     return this.http.post<Cliente>(this.apiUrl, cliente);
   }

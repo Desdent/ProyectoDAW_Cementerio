@@ -16,4 +16,6 @@ public interface DifuntoService {
     List<DifuntoResponseDTO> findByFullName(String nombre, String ape1, String ape2);
     List<DifuntoResponseDTO> findAllByParcela(Long parcelaId);
     List<DifuntoResponseDTO> findAllByYearDefuncion(Year year);
+    List<DifuntoResponseDTO> findAllByAyuntamientoId(Long id);
+    List<DifuntoResponseDTO> findAllByCementerioId(Long id);
 }

@@ -6,7 +6,7 @@ export interface Difunto {
   yearNacimiento: number;
   yearDefuncion: number;
   fechaEntierro: Date;
-  mensaje: string;
-  foto: string;
+  mensaje?: string;
+  foto?: string;
   parcelaId: number;
 }

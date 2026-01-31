@@ -8,6 +8,7 @@ import * as bootstrap from 'bootstrap';
 import { FormsModule } from '@angular/forms';
 import { Zona } from '../../../../interfaces/zona/zona';
 import { ZonaService } from '../../../../core/services/zonaService';
+import { zonaPost } from '../../../../interfaces/zona/zonaPost';
 
 @Component({
   selector: 'app-cementerios-admin-component',
@@ -41,6 +42,7 @@ export class CementeriosAdminComponent {
   @ViewChild('modalDelete') modalDeleteRef!: ElementRef;
   @ViewChild('modalMapa') modalMapaRef!: ElementRef;
   @ViewChild('verZonas') modalZonasRef!: ElementRef;
+  @ViewChild('addZonas') modalAddZonasRef!: ElementRef;
 
   nuevoCementerio: CementerioPost = {
     nombre: '',
@@ -59,8 +61,18 @@ export class CementeriosAdminComponent {
     mapa: '',
   };
 
+  nuevaZona: zonaPost = {
+    nombre: '',
+    tipo: '',
+    puntos: '',
+    filas: 0,
+    columnas: 0,
+    cementerioId: this.id,
+  };
+
   ngOnInit(): void {
     this.cementerioService.loadAll();
+    this.zonaService.getAllTipos();
   }
 
   totalPaginas() {
@@ -119,6 +131,7 @@ export class CementeriosAdminComponent {
   }
 
   abrirModal_zonas(cementerio: any) {
+    console.log(this.getAllTipo());
     this.id = cementerio.id;
     this.findAllZonasByCementerio(this.id);
     console.log(this.tipos());
@@ -129,8 +142,21 @@ export class CementeriosAdminComponent {
     }
   }
 
+  abrirModal_addZonas(cementerio: any) {
+    this.id = cementerio.id;
+    console.log(this.id);
+    console.log(this.getAllTipo());
+    this.resetForm();
+    this.nuevaZona.cementerioId = cementerio.id;
+    if (this.modalAddZonasRef && this.modalAddZonasRef.nativeElement) {
+      this.modalBootstrap = new bootstrap.Modal(this.modalAddZonasRef.nativeElement);
+      this.modalBootstrap.show();
+    }
+  }
+
   cerrarModal() {
     if (this.modalBootstrap) {
+      this.resetForm();
       this.modalBootstrap.hide();
     }
   }
@@ -178,6 +204,22 @@ export class CementeriosAdminComponent {
   }
 
   actuCementerio(id: number) {
+    if (this.archivoParaSubir) {
+      // Si el usuario seleccionó una imagen nueva, la subimos primero
+      this.cementerioService.subirImagen(this.archivoParaSubir).subscribe({
+        next: (res) => {
+          this.cementerioEditar.mapa = res.nombreArchivo;
+          this.procederActualizar(id);
+        },
+        error: (err) => console.error('Error al subir nueva imagen', err),
+      });
+    } else {
+      // Si no cambió la imagen, actualizamos directamente los textos
+      this.procederActualizar(id);
+    }
+  }
+
+  private procederActualizar(id: number) {
     this.cementerioService.update(this.cementerioEditar, id).subscribe({
       next: (res) => {
         console.log('Cementerio actualizado', res);
@@ -197,6 +239,16 @@ export class CementeriosAdminComponent {
         if (this.cementeriosPaginados.length === 0 && this.paginaActual() > 1) {
           this.paginaActual.update((p) => p - 1);
         }
+      },
+      error: (err) => console.error('Error al eliminar', err),
+    });
+  }
+
+  deleteZona(idExterior: number) {
+    this.zonaService.delete(idExterior).subscribe({
+      next: () => {
+        this.cementerioService.loadAll();
+        this.cerrarModal();
       },
       error: (err) => console.error('Error al eliminar', err),
     });
@@ -224,6 +276,16 @@ export class CementeriosAdminComponent {
       ayuntamientoId: 0,
     };
     this.cementerioEditar = { nombre: '', telefono: '', direccion: '', email: '', mapa: '' };
+    this.nuevaZona = {
+      nombre: '',
+      tipo: '',
+      puntos: '',
+      filas: 0,
+      columnas: 0,
+      cementerioId: this.id,
+    };
+    this.id = 0;
+    this.zonaSelected.set(null);
     this.archivoParaSubir = null;
     this.mapaPreview.set(null);
   }
@@ -232,7 +294,13 @@ export class CementeriosAdminComponent {
     const file: File = event.target.files[0];
     if (file) {
       this.archivoParaSubir = file;
-      this.nuevoCementerio.mapa = file.name;
+      // Actualizamos el nombre en el objeto que estemos usando (nuevo o editar)
+      if (this.cementerioEditar.nombre !== '') {
+        this.cementerioEditar.mapa = file.name;
+      } else {
+        this.nuevoCementerio.mapa = file.name;
+      }
+
       const reader = new FileReader();
       reader.onload = () => {
         this.mapaPreview.set(reader.result as string);
@@ -256,10 +324,25 @@ export class CementeriosAdminComponent {
     this.zonaService.find(idExterior).subscribe({
       next: (res) => {
         this.zonaSelected.set(res);
+        console.log(res);
       },
       error: (error) => {
         console.log('Error al obtener los datos: ', error);
       },
+    });
+  }
+
+  addZona() {
+    console.log(this.nuevaZona);
+    this.zonaService.save(this.nuevaZona).subscribe({
+      next: (res) => {
+        console.log('Zona guardada', res);
+        console.log('En el cementerio con ID: ', this.id);
+        this.cerrarModal();
+        this.cementerioService.loadAll();
+        this.resetForm();
+      },
+      error: (err) => console.error('Error al guardar datos', err),
     });
   }
 
@@ -268,7 +351,16 @@ export class CementeriosAdminComponent {
   }
 
   guardarZonas(idExterior: number) {
-    this.zonaService.update(this.zonaSelected()!, idExterior);
+    console.log(this.zonaSelected()!.id);
+    this.zonaService.update(this.zonaSelected()!, idExterior).subscribe({
+      next: (res) => {
+        console.log('Zona actualizada', res);
+        this.cerrarModal();
+        this.cementerioService.loadAll();
+        this.resetForm();
+      },
+      error: (err) => console.error('Error al actualizar', err),
+    });
   }
 
   onZonaChange(event: any) {

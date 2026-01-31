@@ -133,4 +133,28 @@ public class DifuntoServiceImpl implements DifuntoService {
                 .toList();
         return response;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DifuntoResponseDTO> findAllByAyuntamientoId(Long id)
+    {
+        List<DifuntoResponseDTO> response = repo.findAllByParcelaZonaCementerioAyuntamientoId((id))
+                .stream()
+                .map(difuntoMapper::toResponseDTO)
+                .toList();
+
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DifuntoResponseDTO> findAllByCementerioId(Long id)
+    {
+        List<DifuntoResponseDTO> response = repo.findAllByParcelaZonaCementerioId((id))
+                .stream()
+                .map(difuntoMapper::toResponseDTO)
+                .toList();
+
+        return response;
+    }
 }

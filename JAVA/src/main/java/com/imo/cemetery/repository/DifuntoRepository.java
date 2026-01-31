@@ -22,6 +22,7 @@ public interface DifuntoRepository extends JpaRepository<Difunto, Long> {
     List<Difunto> findAllByFechaEntierro(LocalDate fechaEntierro);
     List<Difunto> findAllByParcelaId(Long id);
 
-    // Búsqueda por zona del cementerio
     List<Difunto> findAllByParcelaZonaId(Long zonaId);
+    List<Difunto> findAllByParcelaZonaCementerioAyuntamientoId(Long id);
+    List<Difunto> findAllByParcelaZonaCementerioId(Long id);
 }

@@ -15,6 +15,8 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     //Buscador
     List<Cliente> findAllByNombreContainingIgnoreCaseOrApellido1ContainingIgnoreCaseOrApellido2ContainingIgnoreCaseOrTelefonoContaining(String nombre, String ap1, String ap2, String telefono);
+    List<Cliente> findAllDistinctByConcesiones_Parcelas_Zona_Cementerio_Ayuntamiento_Id(Long id);
+    List<Cliente> findAllDistinctByConcesiones_Parcelas_Zona_Cementerio_Id(Long id);
 
     // Localización
     List<Cliente> findAllByCiudadProvinciaNombreIgnoreCase(String nombreProvincia);

@@ -81,6 +81,7 @@ public class ZonaController {
     @GetMapping("/cementerio/{id}")
     public ResponseEntity<List<ZonaResponseDTO>> findAllByCementerioId(@PathVariable Long id)
     {
+        System.out.println(service.findAllByCementerioId(id));
         return ResponseEntity.ok(service.findAllByCementerioId(id));
     }
 
@@ -88,6 +89,7 @@ public class ZonaController {
     @GetMapping("/tipos")
     public ResponseEntity<List<String>> getAllTipos()
     {
+        System.out.println(ResponseEntity.ok(List.of("NICHOS", "CRIPTAS", "TUMBAS")));
         return ResponseEntity.ok(List.of("NICHOS", "CRIPTAS", "TUMBAS"));
     }
 

@@ -24,11 +24,9 @@
           </tr>
         </thead>
         <tbody>
-          @for (cementerio of cementeriosPaginados; track $index) {
+          @for (cementerio of cementeriosPaginados; track cementerio.id) {
             <tr>
-              <td>
-                {{ cementerio.id }}
-              </td>
+              <td>{{ cementerio.id }}</td>
               <td>
                 <div class="d-flex align-items-center gap-2">
                   <span class="fw-medium">{{ cementerio.nombre }}</span>
@@ -37,7 +35,6 @@
               <td>{{ cementerio.direccion }}</td>
               <td>{{ cementerio.email }}</td>
               <td>{{ cementerio.telefono }}</td>
-
               <td>
                 <div class="d-flex gap-2 justify-content-end">
                   <button
@@ -50,13 +47,6 @@
                   </button>
                   <button
                     class="btn-action"
-                    title="Ver Zonas"
-                    (click)="abrirModal_zonas(cementerio)"
-                  >
-                    <i class="bi bi-grid-1x2"></i>
-                  </button>
-                  <button
-                    class="btn-action"
                     title="Ver detalles"
                     (click)="abrirModal_ver(cementerio)"
                   >
@@ -64,10 +54,24 @@
                   </button>
                   <button
                     class="btn-action"
-                    title="Editar registro"
+                    title="Editar Cementerio"
                     (click)="abrirModal_editar(cementerio)"
                   >
                     <i class="bi bi-pencil"></i>
+                  </button>
+                  <button
+                    class="btn-action"
+                    title="Editar Zonas"
+                    (click)="abrirModal_zonas(cementerio)"
+                  >
+                    <i class="bi bi-grid-1x2"></i>
+                  </button>
+                  <button
+                    class="btn-action"
+                    title="Añadir Zona"
+                    (click)="abrirModal_addZonas(cementerio)"
+                  >
+                    <i class="bi bi-plus-square"></i>
                   </button>
                   <button
                     class="btn-action text-danger"
@@ -99,15 +103,11 @@
               Anterior
             </button>
           </li>
-
           @for (n of paginas(); track n) {
             <li class="page-item" [class.active]="paginaActual() === n">
-              <button class="page-link" (click)="cambiarPagina(n)">
-                {{ n }}
-              </button>
+              <button class="page-link" (click)="cambiarPagina(n)">{{ n }}</button>
             </li>
           }
-
           <li class="page-item">
             <button
               class="page-link"
@@ -121,452 +121,659 @@
       </nav>
     </div>
   </div>
+</div>
 
-  <div class="modal fade" id="modalCementerio" tabindex="-1" aria-hidden="true" #htmlModal>
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content modal-custom-border shadow-lg">
-        <div class="modal-header header-custom-modal border-0 p-4">
-          <h5 class="modal-title d-flex align-items-center">
-            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
-            <span class="modal-title-text">Registrar Nuevo Ayuntamiento</span>
-          </h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white shadow-none"
-            (click)="cerrarModal()"
-          ></button>
-        </div>
+<!-- MODAL AÑADIR CEMENTERIO -->
 
-        <div class="modal-body p-4 bg-light">
-          <form id="formCliente" class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label-custom">Nombre *</label>
+<div class="modal fade" id="modalAddCementerio" tabindex="-1" aria-hidden="true" #htmlModal>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+          <span class="modal-title-text">Registrar Nuevo Cementerio</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <form id="formCliente" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Nombre *</label>
+            <input
+              [(ngModel)]="nuevoCementerio.nombre"
+              name="nombre"
+              type="text"
+              class="form-control-custom"
+              placeholder="Ej. Cementerio La Cruz"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Email *</label>
+            <input
+              [(ngModel)]="nuevoCementerio.email"
+              name="email"
+              type="text"
+              class="form-control-custom"
+              placeholder="Ej. email@gmail.com"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Teléfono *</label>
+            <input
+              [(ngModel)]="nuevoCementerio.telefono"
+              type="tel"
+              name="telefono"
+              class="form-control-custom"
+              placeholder="900 000 000"
+              required
+            />
+          </div>
+          <div class="col-12">
+            <label class="form-label-custom">Dirección *</label>
+            <input
+              [(ngModel)]="nuevoCementerio.direccion"
+              type="text"
+              name="direccion"
+              class="form-control-custom"
+              placeholder="C/ Mayor, 12, 2ºB"
+              required
+            />
+          </div>
+          <div class="col-12">
+            <label class="form-label-custom">ID del Ayuntamiento *</label>
+            <input
+              [(ngModel)]="nuevoCementerio.ayuntamientoId"
+              type="number"
+              name="ayuntamientoId"
+              class="form-control-custom"
+              placeholder="1"
+              required
+            />
+          </div>
+          <div class="col-12">
+            <label class="form-label-custom">Mapa del Cementerio</label>
+            <div class="input-group-custom">
               <input
-                [(ngModel)]="nuevoCementerio.nombre"
-                name="nombre"
                 type="text"
+                [(ngModel)]="nuevoCementerio.mapa"
+                name="mapa"
                 class="form-control-custom"
-                placeholder="Ej. Cementerio La Cruz"
-                required
+                placeholder="No se ha seleccionado archivo"
+                readonly
               />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label-custom">Email *</label>
-              <input
-                [(ngModel)]="nuevoCementerio.email"
-                name="email"
-                type="text"
-                class="form-control-custom"
-                placeholder="Ej. email@gmail.com"
-                required
-              />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label-custom">Teléfono *</label>
-              <input
-                [(ngModel)]="nuevoCementerio.telefono"
-                type="tel"
-                name="telefono"
-                class="form-control-custom"
-                placeholder="900 000 000"
-                required
-              />
-            </div>
-
-            <div class="col-12">
-              <label class="form-label-custom">Dirección *</label>
-              <input
-                [(ngModel)]="nuevoCementerio.direccion"
-                type="text"
-                name="direccion"
-                class="form-control-custom"
-                placeholder="C/ Mayor, 12, 2ºB"
-                required
-              />
-            </div>
-
-            <div class="col-12">
-              <label class="form-label-custom">ID del Ayuntamiento * </label>
-              <input
-                [(ngModel)]="nuevoCementerio.ayuntamientoId"
-                type="number"
-                name="ayuntamientoId"
-                class="form-control-custom"
-                placeholder="1"
-                required
-              />
-            </div>
-
-            <div class="col-12">
-              <label class="form-label-custom">Mapa del Cementerio</label>
-              <div class="input-group-custom">
+              <label class="btn-file-upload">
+                <i class="bi bi-folder2-open me-2"></i> Examinar
                 <input
-                  type="text"
-                  [(ngModel)]="nuevoCementerio.mapa"
-                  name="mapa"
-                  class="form-control-custom"
-                  placeholder="No se ha seleccionado archivo"
-                  readonly
+                  type="file"
+                  class="d-none"
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
                 />
-                <label class="btn-file-upload">
-                  <i class="bi bi-folder2-open me-2"></i> Examinar
-                  <input
-                    type="file"
-                    class="d-none"
-                    accept="image/*"
-                    (change)="onFileSelected($event)"
-                  />
-                </label>
+              </label>
+            </div>
+            @if (mapaPreview()) {
+              <div class="map-preview-wrapper mt-3">
+                <div class="preview-header d-flex justify-content-between">
+                  <small class="text-muted">Vista previa del mapa:</small>
+                  <button
+                    type="button"
+                    class="btn-close-small"
+                    (click)="mapaPreview.set(null); nuevoCementerio.mapa = ''"
+                  >
+                    <i class="bi bi-x"></i>
+                  </button>
+                </div>
+                <img
+                  [src]="mapaPreview()"
+                  alt="Vista previa"
+                  class="img-fluid rounded shadow-sm border"
+                />
               </div>
+            }
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
+        <button
+          type="button"
+          class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+          (click)="guardarCementerio()"
+        >
+          <i class="bi bi-save"></i> Guardar Cementerio
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
-              @if (mapaPreview()) {
-                <div class="map-preview-wrapper mt-3">
-                  <div class="preview-header d-flex justify-content-between">
-                    <small class="text-muted">Vista previa del mapa:</small>
-                    <button
-                      type="button"
-                      class="btn-close-small"
-                      (click)="mapaPreview.set(null); nuevoCementerio.mapa = ''"
-                    >
-                      <i class="bi bi-x"></i>
-                    </button>
-                  </div>
-                  <img
-                    [src]="mapaPreview()"
-                    alt="Vista previa"
-                    class="img-fluid rounded shadow-sm border"
-                  />
+<!-- MODAL EDITAR CEMENTERIO -->
+
+<div class="modal fade" id="modalCementerioeditar" tabindex="-1" aria-hidden="true" #modalEditar>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+          <span class="modal-title-text">Editar Cementerio</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4 bg-light">
+        <form id="formClienteEditar" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Nombre *</label>
+            <input
+              [(ngModel)]="cementerioEditar.nombre"
+              name="nombre"
+              type="text"
+              class="form-control-custom"
+              placeholder="Ej. Cementerio La Cruz"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Email *</label>
+            <input
+              [(ngModel)]="cementerioEditar.email"
+              name="email"
+              type="text"
+              class="form-control-custom"
+              placeholder="Ej. email@gmail.com"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Teléfono *</label>
+            <input
+              [(ngModel)]="cementerioEditar.telefono"
+              type="tel"
+              name="telefono"
+              class="form-control-custom"
+              placeholder="900 000 000"
+              required
+            />
+          </div>
+          <div class="col-12">
+            <label class="form-label-custom">Dirección *</label>
+            <input
+              [(ngModel)]="cementerioEditar.direccion"
+              type="text"
+              name="direccion"
+              class="form-control-custom"
+              placeholder="C/ Mayor, 12, 2ºB"
+              required
+            />
+          </div>
+
+          <div class="col-12">
+            <label class="form-label-custom">Mapa del Cementerio</label>
+            <div class="input-group-custom">
+              <input
+                type="text"
+                [(ngModel)]="cementerioEditar.mapa"
+                name="mapa"
+                class="form-control-custom"
+                placeholder="No se ha seleccionado archivo"
+                readonly
+              />
+              <label class="btn-file-upload">
+                <i class="bi bi-folder2-open me-2"></i> Cambiar Mapa
+                <input
+                  type="file"
+                  class="d-none"
+                  accept="image/*"
+                  (change)="onFileSelected($event)"
+                />
+              </label>
+            </div>
+            @if (mapaPreview()) {
+              <div class="map-preview-wrapper mt-3">
+                <img
+                  [src]="mapaPreview()"
+                  class="img-fluid rounded shadow-sm border"
+                  style="max-height: 150px"
+                />
+              </div>
+            }
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
+        <button
+          type="button"
+          class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+          (click)="actuCementerio(id)"
+        >
+          <i class="bi bi-save"></i> Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL VER CEMENTERIO -->
+
+<div class="modal fade" id="modalCementerio_ver" tabindex="-1" aria-hidden="true" #modalVer>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-person-plus-fill me-2 fs-4"></i>
+          <span class="modal-title-text">Información Completa</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4 bg-light">
+        <form id="formClienteVer" class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Nombre</label>
+            <input
+              readonly
+              [(ngModel)]="cementerioEditar.nombre"
+              name="nombre"
+              type="text"
+              class="form-control-custom"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Email</label>
+            <input
+              readonly
+              [(ngModel)]="cementerioEditar.email"
+              name="email"
+              type="text"
+              class="form-control-custom"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Teléfono</label>
+            <input
+              readonly
+              [(ngModel)]="cementerioEditar.telefono"
+              type="tel"
+              name="telefono"
+              class="form-control-custom"
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Dirección</label>
+            <input
+              readonly
+              [(ngModel)]="cementerioEditar.direccion"
+              type="text"
+              name="direccion"
+              class="form-control-custom"
+            />
+          </div>
+
+          <div class="col-12 mt-3">
+            <label class="form-label-custom">Imagen del Mapa</label>
+            <div class="border rounded bg-white p-2 text-center">
+              @if (cementerioEditar.mapa) {
+                <img
+                  [src]="'http://localhost:8080/uploads/mapas/' + cementerioEditar.mapa"
+                  class="img-fluid rounded shadow-sm"
+                  style="max-height: 250px; cursor: pointer"
+                  (click)="
+                    verMapa({ nombre: cementerioEditar.nombre, mapa: cementerioEditar.mapa })
+                  "
+                />
+                <p class="text-muted small mt-2">
+                  <i class="bi bi-zoom-in"></i> Click en la imagen para ampliar
+                </p>
+              } @else {
+                <div class="p-4 text-muted">
+                  <i class="bi bi-image-alt fs-2"></i>
+                  <p>Este cementerio no tiene mapa asignado</p>
                 </div>
               }
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
 
-        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
-          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
-            Cancelar
-          </button>
-          <button
-            type="button"
-            class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
-            (click)="guardarCementerio()"
-          >
-            <i class="bi bi-save"></i> Guardar Cementerio
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+        <hr class="my-4" />
 
-  <div
-    class="modal fade"
-    id="modalAyuntamiento_editar"
-    tabindex="-1"
-    aria-hidden="true"
-    #modalEditar
-  >
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content modal-custom-border shadow-lg">
-        <div class="modal-header header-custom-modal border-0 p-4">
-          <h5 class="modal-title d-flex align-items-center">
-            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
-            <span class="modal-title-text">Editar Cementerio</span>
-          </h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white shadow-none"
-            (click)="cerrarModal()"
-          ></button>
-        </div>
-
-        <div class="modal-body p-4 bg-light">
-          <form id="formClienteEditar" class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label-custom">Nombre *</label>
-              <input
-                [(ngModel)]="cementerioEditar.nombre"
-                name="nombre"
-                type="text"
-                class="form-control-custom"
-                placeholder="Ej. Cementerio La Cruz"
-                required
-              />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label-custom">Email *</label>
-              <input
-                [(ngModel)]="cementerioEditar.email"
-                name="email"
-                type="text"
-                class="form-control-custom"
-                placeholder="Ej. email@gmail.com"
-                required
-              />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label-custom">Teléfono *</label>
-              <input
-                [(ngModel)]="cementerioEditar.telefono"
-                type="tel"
-                name="telefono"
-                class="form-control-custom"
-                placeholder="900 000 000"
-                required
-              />
-            </div>
-
-            <div class="col-12">
-              <label class="form-label-custom">Dirección *</label>
-              <input
-                [(ngModel)]="cementerioEditar.direccion"
-                type="text"
-                name="direccion"
-                class="form-control-custom"
-                placeholder="C/ Mayor, 12, 2ºB"
-                required
-              />
-            </div>
-          </form>
-        </div>
-
-        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
-          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
-            Cancelar
-          </button>
-          <button
-            type="button"
-            class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
-            (click)="actuCementerio(id)"
-          >
-            <i class="bi bi-save"></i> Guardar Cambios
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="modalAyuntamiento_ver" tabindex="-1" aria-hidden="true" #modalVer>
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content modal-custom-border shadow-lg">
-        <div class="modal-header header-custom-modal border-0 p-4">
-          <h5 class="modal-title d-flex align-items-center">
-            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
-            <span class="modal-title-text">Información Completa</span>
-          </h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white shadow-none"
-            (click)="cerrarModal()"
-          ></button>
-        </div>
-
-        <div class="modal-body p-4 bg-light">
-          <form id="formClienteVer" class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label-custom">Nombre *</label>
-              <input
-                readonly
-                [(ngModel)]="cementerioEditar.nombre"
-                name="nombre"
-                type="text"
-                class="form-control-custom"
-                placeholder="Ej. Cementerio La Cruz"
-                required
-              />
-            </div>
-            <div class="col-md-6">
-              <label class="form-label-custom">Email *</label>
-              <input
-                readonly
-                [(ngModel)]="cementerioEditar.email"
-                name="email"
-                type="text"
-                class="form-control-custom"
-                placeholder="Ej. email@gmail.com"
-                required
-              />
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label-custom">Teléfono *</label>
-              <input
-                readonly
-                [(ngModel)]="cementerioEditar.telefono"
-                type="tel"
-                name="telefono"
-                class="form-control-custom"
-                placeholder="900 000 000"
-                required
-              />
-            </div>
-
-            <div class="col-12">
-              <label class="form-label-custom">Dirección *</label>
-              <input
-                readonly
-                [(ngModel)]="cementerioEditar.direccion"
-                type="text"
-                name="direccion"
-                class="form-control-custom"
-                placeholder="C/ Mayor, 12, 2ºB"
-                required
-              />
-            </div>
-          </form>
-        </div>
-
-        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
-          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cerrar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="modalVerZonas" tabindex="-1" aria-hidden="true" #verZonas>
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content modal-custom-border shadow-lg">
-        <div class="modal-header header-custom-modal border-0 p-4">
-          <h5 class="modal-title d-flex align-items-center">
-            <i class="bi bi-person-plus-fill me-2 fs-4"></i>
-            <span class="modal-title-text">Editar Zonas</span>
-          </h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white shadow-none"
-            (click)="cerrarModal()"
-          ></button>
-        </div>
-
-        <div class="modal-body p-4 bg-light">
+        <div class="mt-3">
+          <h6 class="fw-bold mb-3">Zonas Registradas</h6>
           @if (zonas()) {
-            <form id="formZonas" class="row g-3">
+            <div class="row g-3">
               <div class="col-md-6">
-                <label class="form-label-custom">Tipo de Zona</label>
+                <label class="form-label-custom">Seleccionar Zona</label>
                 <select
                   class="form-select-custom"
-                  name="zonasSelect"
+                  name="ver_zonasSelect"
                   (change)="onZonaChange($event)"
                 >
-                  <option value="" disabled selected>Seleccione Tipo</option>
-                  @for (t of zonas(); track $index) {
-                    <option [value]="t.id">
-                      {{ t.nombre }}
-                    </option>
+                  <option value="" disabled selected>Elija una zona para ver detalles</option>
+                  @for (t of zonas(); track t.id) {
+                    <option [value]="t.id">{{ t.nombre }}</option>
+                  }
+                </select>
+              </div>
+              @if (zonaSelected()) {
+                <div class="col-md-6">
+                  <label class="form-label-custom">Nombre Zona</label>
+                  <input readonly [value]="zonaSelected()?.nombre" class="form-control-custom" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label-custom">Tipo de Zona</label>
+                  <input readonly [value]="zonaSelected()?.tipo" class="form-control-custom" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label-custom">Serie de Coordenadas</label>
+                  <input readonly [value]="zonaSelected()?.puntos" class="form-control-custom" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label-custom">Filas</label>
+                  <input readonly [value]="zonaSelected()?.filas" class="form-control-custom" />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label-custom">Columnas</label>
+                  <input readonly [value]="zonaSelected()?.columnas" class="form-control-custom" />
+                </div>
+              }
+            </div>
+          } @else {
+            <div class="text-center p-4">
+              <div class="spinner-border text-primary" role="status"></div>
+              <p class="mt-2">Consultando zonas del servidor...</p>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 p-4 bg-light justify-content-end">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR ZONAS -->
+
+<div class="modal fade" id="modalVerZonas" tabindex="-1" aria-hidden="true" #verZonas>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-pencil-square me-2 fs-4"></i>
+          <span class="modal-title-text">Editar Zonas</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="row g-3">
+          <div class="col-12">
+            <label class="form-label-custom">Seleccionar Zona a Editar</label>
+            <select class="form-select-custom" name="ez_selector" (change)="onZonaChange($event)">
+              <option value="" disabled selected>Seleccione la zona que desea modificar</option>
+              @for (t of zonas(); track t.id) {
+                <option [value]="t.id">{{ t.nombre }}</option>
+              }
+            </select>
+          </div>
+
+          @if (zonaSelected()) {
+            <hr class="my-4" />
+            <form class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label-custom">Nombre de Zona *</label>
+                <input
+                  required
+                  [(ngModel)]="zonaSelected()!.nombre"
+                  name="ez_nombre"
+                  type="text"
+                  class="form-control-custom"
+                />
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label-custom">Tipo de Zona *</label>
+                <select
+                  required
+                  [(ngModel)]="zonaSelected()!.tipo"
+                  name="ez_tipo"
+                  class="form-select-custom"
+                >
+                  <option value="" disabled>Seleccione Tipo</option>
+                  @for (tipo of tipos(); track tipo) {
+                    <option [value]="tipo">{{ tipo }}</option>
                   }
                 </select>
               </div>
 
-              @if (zonaSelected()) {
-                <div class="col-md-6">
-                  <label class="form-label-custom">Nombre *</label>
-                  <input
-                    required
-                    [(ngModel)]="zonaSelected()!.nombre"
-                    name="nombre"
-                    type="text"
-                    class="form-control-custom"
-                    placeholder="Zona A"
-                  />
-                </div>
-
-                <div class="col-md-6">
-                  <label class="form-label-custom">Coordenadas *</label>
-                  <p>Por acabar...</p>
-                </div>
-              }
+              <div class="col-md-12">
+                <label class="form-label-custom">Puntos de Coordenadas *</label>
+                <input
+                  required
+                  [(ngModel)]="zonaSelected()!.puntos"
+                  name="ez_puntos"
+                  type="text"
+                  class="form-control-custom"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">Filas *</label>
+                <input
+                  required
+                  [(ngModel)]="zonaSelected()!.filas"
+                  name="ez_filas"
+                  type="number"
+                  class="form-control-custom"
+                />
+              </div>
+              <div class="col-md-6">
+                <label class="form-label-custom">Columnas *</label>
+                <input
+                  required
+                  [(ngModel)]="zonaSelected()!.columnas"
+                  name="ez_columnas"
+                  type="number"
+                  class="form-control-custom"
+                />
+              </div>
             </form>
+          } @else if (zonas().length > 0) {
+            <div class="text-center p-4">
+              <p class="text-muted">Elija una zona arriba para habilitar la edición.</p>
+            </div>
           } @else {
-            <div class="text-center p-5">
+            <div class="text-center p-4">
               <div class="spinner-border text-primary" role="status"></div>
-              <p class="mt-2">Cargando datos de la zona...</p>
             </div>
           }
         </div>
-
-        <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
-          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
-            Cancelar
-          </button>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
+        @if (zonaSelected()) {
           <button
             type="button"
             class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
-            (click)="guardarZonas(zonaId)"
+            (click)="guardarZonas(zonaSelected()!.id)"
           >
-            <i class="bi bi-save"></i> Guardar Zonas
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div
-    class="modal fade"
-    id="modalAyuntamiento_delete"
-    tabindex="-1"
-    aria-hidden="true"
-    #modalDelete
-  >
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content modal-custom-border shadow-lg">
-        <div class="modal-header border-0 p-4 bg-danger text-white">
-          <h5 class="modal-title d-flex align-items-center">
-            <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
-            <span class="modal-title-text">Confirmar Acción</span>
-          </h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white shadow-none"
-            (click)="cerrarModal()"
-          ></button>
-        </div>
-
-        <div class="modal-body p-4 text-center">
-          <p class="fs-5 mb-0">¿Estás seguro de que deseas eliminar este cliente?</p>
-          <p class="text-muted small">Esta acción no se puede deshacer.</p>
-        </div>
-
-        <div class="modal-footer border-0 p-4 bg-light justify-content-center gap-3">
-          <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">
-            Cancelar
+            <i class="bi bi-save"></i> Actualizar Zona
           </button>
           <button
             type="button"
             class="btn btn-danger px-4 py-2 shadow-sm rounded-3"
-            (click)="delete(id)"
+            (click)="deleteZona(zonaSelected()!.id)"
           >
-            Eliminar
+            Eliminar Zona
           </button>
-        </div>
+        }
       </div>
     </div>
   </div>
+</div>
 
-  <div class="modal fade" id="modalVerMapa" tabindex="-1" aria-hidden="true" #modalMapa>
-    <div class="modal-dialog modal-dialog-centered modal-xl">
-      <div class="modal-content modal-custom-border shadow-lg">
-        <div class="modal-header header-map-viewer">
-          <h5 class="modal-title h6">
-            <i class="bi bi-map me-2"></i>
-            Mapa: {{ cementerioSeleccionadoNombre() }}
-          </h5>
-          <button
-            type="button"
-            class="btn-close btn-close-white shadow-none"
-            (click)="cerrarModal()"
-          ></button>
-        </div>
-        <div class="modal-body body-map-viewer">
-          @if (urlMapa()) {
-            <img [src]="urlMapa()" class="img-map-preview" alt="Mapa del cementerio" />
-          } @else {
-            <div class="no-image-placeholder">
-              <i class="bi bi-image-alt"></i>
-              <p>No hay imagen disponible para este mapa</p>
-            </div>
-          }
-        </div>
+<!-- MODAL AÑADIR ZONAS -->
+
+<div class="modal fade" id="modalAddZonas" tabindex="-1" aria-hidden="true" #addZonas>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-plus-square-fill me-2 fs-4"></i>
+          <span class="modal-title-text">Añadir Nueva Zona</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <form class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-custom">Nombre *</label>
+            <input
+              [(ngModel)]="nuevaZona.nombre"
+              name="nz_nombre"
+              type="text"
+              class="form-control-custom"
+              placeholder="Ej. Zona Y"
+              required
+            />
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Tipo *</label>
+            <select required name="nz_tipo" class="form-select-custom" [(ngModel)]="nuevaZona.tipo">
+              <option value="" disabled selected>Seleccione un tipo</option>
+              @for (tipo of tipos(); track tipo) {
+                <option [value]="tipo">{{ tipo }}</option>
+              }
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-custom">Puntos de Coordenadas *</label>
+            <input
+              [(ngModel)]="nuevaZona.puntos"
+              type="text"
+              name="nz_puntos"
+              class="form-control-custom"
+              placeholder="x1,y1,x2,y2..."
+              required
+            />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label-custom">Filas *</label>
+            <input
+              [(ngModel)]="nuevaZona.filas"
+              type="number"
+              name="nz_filas"
+              class="form-control-custom"
+              required
+            />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label-custom">Columnas *</label>
+            <input
+              [(ngModel)]="nuevaZona.columnas"
+              type="number"
+              name="nz_columnas"
+              class="form-control-custom"
+              required
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
+        <button
+          type="button"
+          class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+          (click)="addZona()"
+        >
+          <i class="bi bi-plus-lg"></i> Añadir Zona
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL BORRAR CEMENTERIO -->
+
+<div class="modal fade" id="modalCementerio_delete" tabindex="-1" aria-hidden="true" #modalDelete>
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header border-0 p-4 bg-danger text-white">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-exclamation-triangle-fill me-2 fs-4"></i>
+          <span class="modal-title-text">Confirmar Eliminación</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 text-center">
+        <p class="fs-5 mb-0">¿Estás seguro de que deseas eliminar este cementerio?</p>
+        <p class="text-muted small">
+          Esta acción borrará todos los datos asociados y no se puede deshacer.
+        </p>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-light justify-content-center gap-3">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
+        <button
+          type="button"
+          class="btn btn-danger px-4 py-2 shadow-sm rounded-3"
+          (click)="delete(id)"
+        >
+          Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalVerMapa" tabindex="-1" aria-hidden="true" #modalMapa>
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-map-viewer">
+        <h5 class="modal-title h6">
+          <i class="bi bi-map me-2"></i>
+          Mapa: {{ cementerioSeleccionadoNombre() }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body body-map-viewer">
+        @if (urlMapa()) {
+          <img [src]="urlMapa()" class="img-map-preview" alt="Mapa" />
+        } @else {
+          <div class="no-image-placeholder text-center p-5">
+            <i class="bi bi-image-alt fs-1 text-muted"></i>
+            <p>No hay imagen disponible para este mapa</p>
+          </div>
+        }
       </div>
     </div>
   </div>

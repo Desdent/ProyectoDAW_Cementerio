@@ -71,10 +71,11 @@
               Anterior
             </button>
           </li>
-
-          <li class="page-item active">
-            <button class="page-link">{{ paginaActual() }}</button>
-          </li>
+          @for (n of paginas(); track n) {
+            <li class="page-item" [class.active]="paginaActual() === n">
+              <button class="page-link" (click)="cambiarPagina(n)">{{ n }}</button>
+            </li>
+          }
 
           <li class="page-item">
             <button

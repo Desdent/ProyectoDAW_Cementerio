@@ -98,4 +98,28 @@ public class ServicioServiceImpl implements ServicioService {
                 .toList();
         return response;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ServicioResponseDTO> findAllByAyuntamiento(Long id)
+    {
+        List<ServicioResponseDTO> response = repo.findAllDistinctByDisponibilidadEnCementerios_Cementerio_AyuntamientoId(id)
+                .stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+
+        return response;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ServicioResponseDTO> findAllByCementerio(Long id)
+    {
+        List<ServicioResponseDTO> response = repo.findAllDistinctByDisponibilidadEnCementerios_CementerioId(id)
+                .stream()
+                .map(mapper::toResponseDTO)
+                .toList();
+
+        return response;
+    }
 }

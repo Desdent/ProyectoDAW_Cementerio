@@ -44,6 +44,7 @@ public class JwtService {
                 .expiration(expiryDate)
                 // información personalizada: rol o roles, username, email, avatar...
                 // .claim("role", user.getRole())
+                .claim("id", user.getId())
                 .claim("email", user.getEmail())
                 .claim("role", user.getRole().getTipo())
                 //.claim("avatar", user.getAvatarUrl())

@@ -16,5 +16,8 @@ public class ZonaResponseDTO {
     private ZonaType tipo;
     private String nombre;
     private Long cementerioId;
+    private String puntos;
+    private Integer filas;
+    private Integer columnas;
 
 }

@@ -70,4 +70,16 @@ public class ServicioController {
         return ResponseEntity.ok(service.findByTipo(type));
     }
 
+    @GetMapping("/cementerio/{id}")
+    public ResponseEntity<List<ServicioResponseDTO>> findAllByCementerio(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByCementerio(id));
+    }
+
+    @GetMapping("/ayuntamiento/{id}")
+    public ResponseEntity<List<ServicioResponseDTO>> findAllByAyuntamiento(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByAyuntamiento(id));
+    }
+
 }

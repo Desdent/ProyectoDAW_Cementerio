@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home-component/home-component';
 import { DashboardAdminLayoutComponent } from './features/admin/dashboard-admin-layout-component/dashboard-admin-layout-component';
-import { DashboardAyuntamientoComponent } from './features/ayuntamiento/dashboard-ayuntamiento-component/dashboard-ayuntamiento-component';
 import { DashboardClienteComponent } from './features/cliente/dashboard-cliente-component/dashboard-cliente-component';
 import { LoginComponent } from './features/login-component/login-component';
 import { authGuard } from './core/guards/auth-guard';
@@ -13,6 +12,13 @@ import { MainPanelAdminComponent } from './features/admin/dashboard-admin-layout
 import { AyuntamientosAdminComponent } from './features/admin/dashboard-admin-layout-component/ayuntamientos-admin-component/ayuntamientos-admin-component';
 import { ClientesAdminComponent } from './features/admin/dashboard-admin-layout-component/clientes-admin-component/clientes-admin-component';
 import { StatsComponent } from './features/admin/dashboard-admin-layout-component/stats-component/stats-component';
+import { MainPanelAytoComponent } from './features/ayuntamiento/main-panel-ayto-component/main-panel-ayto-component';
+import { CementeriosAytoComponent } from './features/ayuntamiento/cementerios-ayto-component/cementerios-ayto-component';
+import { ConcesionesAytoComponent } from './features/ayuntamiento/concesiones-ayto-component/concesiones-ayto-component';
+import { StatsAytoComponent } from './features/ayuntamiento/stats-ayto-component/stats-ayto-component';
+import { DifuntosAytoComponent } from './features/ayuntamiento/difuntos-ayto-component/difuntos-ayto-component';
+import { ClientesAytoComponent } from './features/ayuntamiento/clientes-ayto-component/clientes-ayto-component';
+import { DashboardLayoutAytoComponent } from './features/ayuntamiento/dashboard-layout-ayto-component/dashboard-layout-ayto-component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -54,10 +60,36 @@ export const routes: Routes = [
   },
   // AYUNTAMIENTO
   {
-    path: 'ayuntamiento/dashboard',
-    component: DashboardAyuntamientoComponent,
+    path: 'ayto/dashboard',
+    component: DashboardLayoutAytoComponent,
     canActivate: [roleGuard],
     data: { expectedRole: 'ROLE_AYUNTAMIENTO' },
+    children: [
+      {
+        path: '',
+        component: MainPanelAytoComponent,
+      },
+      {
+        path: 'cementerios',
+        component: CementeriosAytoComponent,
+      },
+      {
+        path: 'difuntos',
+        component: DifuntosAytoComponent,
+      },
+      {
+        path: 'concesiones',
+        component: ConcesionesAytoComponent,
+      },
+      {
+        path: 'clientes',
+        component: ClientesAytoComponent,
+      },
+      {
+        path: 'stats',
+        component: StatsAytoComponent,
+      },
+    ],
   },
   // CLIENTE
   {

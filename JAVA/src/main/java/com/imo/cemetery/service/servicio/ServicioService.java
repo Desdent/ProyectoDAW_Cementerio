@@ -14,4 +14,6 @@ public interface ServicioService {
     ServicioResponseDTO findById(Long id);
     ServicioResponseDTO findByTipo(ServicioType tipo);
     List<ServicioResponseDTO> findAll();
+    List<ServicioResponseDTO> findAllByAyuntamiento(Long id);
+    List<ServicioResponseDTO> findAllByCementerio(Long id);
 }

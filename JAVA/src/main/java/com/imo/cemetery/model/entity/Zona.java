@@ -31,6 +31,15 @@ public class Zona {
     @Column(nullable = false)
     private ZonaType tipo;
 
+    @Column(columnDefinition = "TEXT")
+    private String puntos;
+
+    @Column(nullable = false)
+    private Integer filas;
+
+    @Column(nullable = false)
+    private Integer columnas;
+
 
     // >> RELACIONES <<
 

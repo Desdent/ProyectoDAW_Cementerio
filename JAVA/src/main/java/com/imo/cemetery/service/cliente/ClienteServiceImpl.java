@@ -147,5 +147,23 @@ public class ClienteServiceImpl implements ClienteService {
                 .toList();
     }
 
+    @Override
+    public List<ClienteResponseDTO> findAllByAyuntamientoId(Long id)
+    {
+        return repo.findAllDistinctByConcesiones_Parcelas_Zona_Cementerio_Ayuntamiento_Id(id)
+                .stream()
+                .map(clienteMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ClienteResponseDTO> findAllByCementerioId(Long id)
+    {
+        return repo.findAllDistinctByConcesiones_Parcelas_Zona_Cementerio_Id(id)
+                .stream()
+                .map(clienteMapper::toResponseDTO)
+                .toList();
+    }
+
 
 }

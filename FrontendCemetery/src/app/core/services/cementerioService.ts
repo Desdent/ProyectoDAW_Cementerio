@@ -23,6 +23,10 @@ export class CementerioService {
     });
   }
 
+  loadAllByAyuntamiento(id: number) {
+    return this.http.get<Cementerio[]>(`${this.apiUrl}/ayuntamiento/${id}`);
+  }
+
   subirImagen(file: File) {
     const formData = new FormData();
     formData.append('archivo', file);

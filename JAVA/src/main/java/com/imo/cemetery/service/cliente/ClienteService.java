@@ -31,4 +31,7 @@ public interface ClienteService {
     List<ClienteResponseDTO> findByCiudadNombre(String ciudadNombre);
     List<ClienteResponseDTO> findByProvinciaId(Long provinciaId);
     List<ClienteResponseDTO> findByProvinciaNombre(String provinciaNombre);
+    List<ClienteResponseDTO> findAllByCementerioId(Long id);
+    List<ClienteResponseDTO> findAllByAyuntamientoId(Long id);
+
 }

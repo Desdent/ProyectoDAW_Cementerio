@@ -21,4 +21,12 @@ export class ServicioService {
       this.amount.set(this.servicios().length);
     });
   }
+
+  loadAllByAyuntamiento(id: number) {
+    return this.http.get<Servicio[]>(`${this.apiUrl}/ayuntamiento/${id}`);
+  }
+
+  loadAllByCementerio(id: number) {
+    return this.http.get<Servicio[]>(`${this.apiUrl}/cementerio/${id}`);
+  }
 }

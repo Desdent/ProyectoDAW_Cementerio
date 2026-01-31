@@ -88,4 +88,18 @@ public class ClienteController {
         return ResponseEntity.ok(service.findByCiudadId(id));
     }
 
+    @GetMapping("/cementerio/{id}")
+    public ResponseEntity<List<ClienteResponseDTO>> findAllByCementerio(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByCementerioId(id));
+    }
+
+    @GetMapping("/ayuntamiento/{id}")
+    public ResponseEntity<List<ClienteResponseDTO>> findAllByAyuntamiento(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByAyuntamientoId(id));
+    }
+
+
+
 }

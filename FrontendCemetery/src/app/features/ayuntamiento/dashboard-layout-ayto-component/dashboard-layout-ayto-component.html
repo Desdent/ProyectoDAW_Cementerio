@@ -1,0 +1,55 @@
+<div class="dashboard-admin">
+  <div class="container-fluid p-0">
+    <div class="row g-0">
+      <div class="col-lg-2 col-md-3 sidebar">
+        <div class="sidebar-header"></div>
+        <nav class="sidebar-nav">
+          <a
+            class="nav-item"
+            routerLink="/ayto/dashboard"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            <span class="nav-label">Mi panel</span>
+          </a>
+
+          <a class="nav-item" routerLink="/ayto/dashboard/cementerios" routerLinkActive="active">
+            <span class="nav-label">Campos Asociados</span>
+          </a>
+
+          <a class="nav-item" routerLink="/ayto/dashboard/difuntos" routerLinkActive="active">
+            <span class="nav-label">Difuntos Asociados</span>
+          </a>
+
+          <a class="nav-item" routerLink="/ayto/dashboard/clientes" routerLinkActive="active">
+            <span class="nav-label">Clientes Asociados</span>
+          </a>
+
+          <a class="nav-item" routerLink="/ayto/dashboard/concesiones" routerLinkActive="active">
+            <span class="nav-label">Concesiones Asociadas</span>
+          </a>
+
+          <a class="nav-item" routerLink="/ayto/dashboard/pagos" routerLinkActive="active">
+            <span class="nav-label">Pagos Asociados</span>
+          </a>
+
+          <a class="nav-item" routerLink="/ayto/dashboard/stats" routerLinkActive="active">
+            <span class="nav-label">Estadísticas</span>
+          </a>
+        </nav>
+      </div>
+
+      <div class="col-lg-10 col-md-9 col-12 main-content">
+        <div class="top-bar">
+          <div class="d-flex justify-content-between align-items-center">
+            <h1 class="page-title mb-0">Panel de Ayuntamiento</h1>
+          </div>
+        </div>
+
+        <div class="content-area p-4">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
-import { Difunto } from '../../interfaces/difunto';
+import { Difunto } from '../../interfaces/difunto/difunto';
+import { DifuntoPost } from '../../interfaces/difunto/difuntoPost';
+import { DifuntoUpdate } from '../../interfaces/difunto/difuntoUpdate';
 
 @Injectable({
   providedIn: 'root',
@@ -24,5 +26,29 @@ export class DifuntoService {
       this.difuntos.set(data);
       console.log(data);
     });
+  }
+
+  loadAllByAyuntamiento(id: number) {
+    return this.http.get<Difunto[]>(`${this.apiUrl}/ayuntamiento/${id}`);
+  }
+
+  loadAllByCementerio(id: number) {
+    return this.http.get<Difunto[]>(`${this.apiUrl}/cementerio/${id}`);
+  }
+
+  save(difunto: DifuntoPost) {
+    return this.http.post<DifuntoPost>(this.apiUrl, difunto);
+  }
+
+  find(id: number) {
+    return this.http.get<Difunto>(`${this.apiUrl}/${id}`);
+  }
+
+  update(difunto: DifuntoUpdate, id: number) {
+    return this.http.put<DifuntoUpdate>(`${this.apiUrl}/${id}`, difunto);
+  }
+
+  delete(id: number) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }
