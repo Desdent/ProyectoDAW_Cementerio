@@ -75,7 +75,7 @@
 }
 
 .card-info-wrapper {
-  flex-grow: 1;
+  flex-grow: 1; /* Este contenedor se "estira" y empuja al botón al final */
 }
 
 /* Banner de la Tarjeta */
