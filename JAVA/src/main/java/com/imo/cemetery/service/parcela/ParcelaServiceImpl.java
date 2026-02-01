@@ -27,9 +27,6 @@ public class ParcelaServiceImpl implements ParcelaService {
     @Override
     @Transactional
     public ParcelaResponseDTO create(ParcelaCreateDTO dto) {
-        if (repo.existsByCoordenadaXAndCoordenadaY(dto.getCoordenadaX(), dto.getCoordenadaY())) {
-            throw new IllegalStateException("Ya existe una parcela en esas coordenadas GPS");
-        }
 
         if (repo.existsByFilaAndColumnaAndZonaId(dto.getFila(), dto.getColumna(), dto.getZonaId())) {
             throw new IllegalStateException("Esa posición (Fila/Columna) ya está ocupada en esta zona");
@@ -50,9 +47,6 @@ public class ParcelaServiceImpl implements ParcelaService {
     public ParcelaResponseDTO update(Long id, ParcelaUpdateDTO dto) {
         Parcela entity = repo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Parcela no encontrada"));
-
-        if (dto.getCoordenadaX() != null) entity.setCoordenadaX(dto.getCoordenadaX());
-        if (dto.getCoordenadaY() != null) entity.setCoordenadaY(dto.getCoordenadaY());
         if (dto.getFila() != null) entity.setFila(dto.getFila());
         if (dto.getColumna() != null) entity.setColumna(dto.getColumna());
         if (dto.getEstado() != null) entity.setEstado(dto.getEstado());
@@ -144,8 +138,8 @@ public class ParcelaServiceImpl implements ParcelaService {
 
     @Override
     @Transactional(readOnly = true)
-    public ParcelaResponseDTO findByUbicacionCompleta(Double x, Double y, Integer fila, Integer columna) {
-        ParcelaResponseDTO response = repo.findByCoordenadaXAndCoordenadaYAndFilaAndColumna(x, y, fila, columna)
+    public ParcelaResponseDTO findByUbicacionCompleta(Integer fila, Integer columna) {
+        ParcelaResponseDTO response = repo.findByFilaAndColumna(fila, columna)
                 .map(parcelaMapper::toResponseDTO)
                 .orElseThrow(() -> new EntityNotFoundException("Ubicación de parcela no registrada"));
 

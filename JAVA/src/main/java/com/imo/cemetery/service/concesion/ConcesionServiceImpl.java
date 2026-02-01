@@ -3,8 +3,10 @@ package com.imo.cemetery.service.concesion;
 import com.imo.cemetery.model.dto.concesion.ConcesionCreateDTO;
 import com.imo.cemetery.model.dto.concesion.ConcesionResponseDTO;
 import com.imo.cemetery.model.dto.concesion.ConcesionUpdateDTO;
+import com.imo.cemetery.model.dto.pago.PagoCreateDTO;
 import com.imo.cemetery.model.entity.Cliente;
 import com.imo.cemetery.model.entity.Concesion;
+import com.imo.cemetery.model.entity.Pago;
 import com.imo.cemetery.model.entity.Parcela;
 import com.imo.cemetery.model.enums.EstadoType;
 import com.imo.cemetery.model.mapper.ConcesionMapper;
@@ -37,7 +39,9 @@ public class ConcesionServiceImpl implements ConcesionService{
 
     @Override
     @Transactional
-    public ConcesionResponseDTO create(ConcesionCreateDTO dto) {
+    public ConcesionResponseDTO create(ConcesionCreateDTO concesionDto, PagoCreateDTO pagoDto) {
+
+
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null) {
             throw new AccessDeniedException("Usuario no autenticado");
@@ -46,35 +50,52 @@ public class ConcesionServiceImpl implements ConcesionService{
         Cliente cliente;
         if (auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_CLIENTE"))) {
             cliente = clienteRepository.findByEmail(auth.getName())
-                    .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado"));
+                    .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado por email"));
         } else {
-            cliente = clienteRepository.findById(dto.getClienteId())
-                    .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado"));
+            cliente = clienteRepository.findById(concesionDto.getClienteId())
+                    .orElseThrow(() -> new EntityNotFoundException("Cliente no encontrado con ID: " + concesionDto.getClienteId()));
         }
 
-        List<Parcela> parcelas = parcelaRepository.findAllById(dto.getParcelaIds());
-        if (parcelas.size() != dto.getParcelaIds().size()) {
+        List<Parcela> parcelas = parcelaRepository.findAllById(concesionDto.getParcelaIds());
+
+
+        if (parcelas.size() != concesionDto.getParcelaIds().size()) {
             throw new EntityNotFoundException("Una o más parcelas no existen");
         }
 
-        if (parcelas.stream().anyMatch(p -> !p.isLibre())) {
-            throw new IllegalStateException("Alguna de las parcelas ya está ocupada");
+        if (parcelas.stream().anyMatch(p -> p.getEstado() != com.imo.cemetery.model.enums.EstadoType.LIBRE)) {
+            throw new IllegalStateException("Alguna de las parcelas ya está ocupada o reservada");
         }
 
-        Concesion entity = concesionMapper.toEntity(dto);
+
+        com.imo.cemetery.model.entity.Pago pagoEntity = com.imo.cemetery.model.entity.Pago.builder()
+                .importe(pagoDto.getImporte())
+                .fecha(pagoDto.getFecha())
+                .metodo(pagoDto.getMetodo())
+                .transaccionId(pagoDto.getTransaccionId())
+                .estado(pagoDto.getEstado())
+                .build();
+
+
+        com.imo.cemetery.model.entity.Concesion entity = concesionMapper.toEntity(concesionDto);
         entity.setCliente(cliente);
+        entity.setPago(pagoEntity);
         entity.setVencida(false);
 
-        final Concesion savedEntity = repo.save(entity);
+        // Se guarda la concesión y, por cascada, el pago.
+        final com.imo.cemetery.model.entity.Concesion savedEntity = repo.save(entity);
+
 
         parcelas.forEach(p -> {
             p.setConcesion(savedEntity);
-            p.setEstado(EstadoType.RESERVADA);
+            p.setEstado(com.imo.cemetery.model.enums.EstadoType.RESERVADA);
         });
+
         parcelaRepository.saveAll(parcelas);
 
         return concesionMapper.toResponseDTO(savedEntity);
     }
+
 
     @Override
     @Transactional

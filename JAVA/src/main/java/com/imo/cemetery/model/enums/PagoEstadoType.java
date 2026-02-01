@@ -1,4 +1,7 @@
 package com.imo.cemetery.model.enums;
 
-public enum pagoEstadoType {
+public enum PagoEstadoType {
+    PENDIENTE,
+    APROBADO,
+    RECHAZADO
 }

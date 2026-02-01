@@ -24,7 +24,7 @@ public interface ParcelaService {
 
     List<ParcelaResponseDTO> findAllLibresByZona(Long zonaId);
 
-    ParcelaResponseDTO findByUbicacionCompleta(Double x, Double y, Integer fila, Integer columna);
+    ParcelaResponseDTO findByUbicacionCompleta(Integer fila, Integer columna);
 
 
 

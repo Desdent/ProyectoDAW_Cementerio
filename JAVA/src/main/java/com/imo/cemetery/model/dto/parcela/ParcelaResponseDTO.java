@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 public class ParcelaResponseDTO {
 
     private Long id;
-    private Double coordenadaX;
-    private Double coordenadaY;
     private Integer fila;
     private Integer columna;
     private Long concesionId;

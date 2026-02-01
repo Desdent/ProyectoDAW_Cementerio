@@ -1,6 +1,7 @@
 package com.imo.cemetery.model.dto.pago;
 
 import com.imo.cemetery.model.enums.PagoType;
+import com.imo.cemetery.model.enums.PagoEstadoType;
 import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PastOrPresent;
@@ -29,6 +30,10 @@ public class PagoCreateDTO {
     private LocalDate fecha;
     @NotNull
     private PagoType metodo;
+    @NotNull
+    private String transaccionId;
+    @NotNull
+    private PagoEstadoType estado;
 
 
 }

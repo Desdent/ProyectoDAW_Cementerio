@@ -27,12 +27,6 @@ public class Parcela {
     private Long id;
 
     @Column(nullable = false)
-    private Double coordenadaX;
-
-    @Column(nullable = false)
-    private Double coordenadaY;
-
-    @Column(nullable = false)
     private Integer fila;
 
     @Column(nullable = false)

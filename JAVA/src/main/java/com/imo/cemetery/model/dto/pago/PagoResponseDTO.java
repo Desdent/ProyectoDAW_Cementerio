@@ -1,5 +1,6 @@
 package com.imo.cemetery.model.dto.pago;
 
+import com.imo.cemetery.model.enums.PagoEstadoType;
 import com.imo.cemetery.model.enums.PagoType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,5 +20,7 @@ public class PagoResponseDTO {
     private BigDecimal importe;
     private LocalDate fecha;
     private PagoType metodo;
+    private String transaccionId;
+    private PagoEstadoType estado;
 
 }

@@ -1,0 +1,77 @@
+<div class="main-wrapper d-flex justify-content-center align-items-start p-4">
+  <div class="search-container">
+    <div class="search-header-card mb-5 shadow-lg">
+      <div class="card-header-custom p-4 text-center">
+        <h2 class="display-6 fw-bold m-0 text-uppercase letter-spacing">
+          Encuentra tu campo ideal
+        </h2>
+        <p class="mt-2 opacity-75">Explora nuestras instalaciones disponibles</p>
+      </div>
+
+      <div class="card-body-custom p-4">
+        <div class="search-box position-relative">
+          <i class="bi bi-search search-icon"></i>
+          <input
+            type="text"
+            class="form-control-custom"
+            placeholder="Empieza a escribir para filtrar..."
+            [(ngModel)]="filtroTexto"
+            name="filtro"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+      @for (cemento of cementeriosFiltrados(); track cemento.id) {
+        <div class="col-12 col-md-6 col-xl-4 d-flex justify-content-center">
+          <div class="cementerio-card shadow">
+            <div class="card-banner">
+              @if (cemento.mapa) {
+                <img [src]="'http://localhost:8080/uploads/mapas/' + cemento.mapa" alt="Banner" />
+              } @else {
+                <div class="banner-placeholder">
+                  <i class="bi bi-bank2"></i>
+                </div>
+              }
+            </div>
+
+            <div class="card-body p-4">
+              <h4 class="card-title text-navy fw-bold mb-3">{{ cemento.nombre }}</h4>
+
+              <div class="info-item mb-2">
+                <i class="bi bi-geo-alt-fill text-red"></i>
+                <span>{{ cemento.direccion }}</span>
+              </div>
+
+              <div class="info-item mb-2">
+                <i class="bi bi-telephone-fill text-blue"></i>
+                <span>{{ cemento.telefono }}</span>
+              </div>
+
+              <div class="info-item mb-4">
+                <i class="bi bi-envelope-at-fill text-blue"></i>
+                <span class="text-truncate">{{ cemento.email }}</span>
+              </div>
+
+              <a
+                class="btn-card-action w-100 text-center text-decoration-none"
+                [routerLink]="['/cementerio', cemento.id]"
+              >
+                <i class="bi bi-eye-fill me-2"></i>Ir al Campo
+              </a>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <div class="col-12 text-center py-5">
+          <div class="no-results p-5 bg-white rounded-4 shadow-sm border">
+            <i class="bi bi-search-heart fs-1 text-muted opacity-50"></i>
+            <h4 class="mt-3 text-muted">No hay coincidencias</h4>
+            <p class="text-muted">Prueba a buscar por otra localidad o nombre</p>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

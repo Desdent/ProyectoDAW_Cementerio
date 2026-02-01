@@ -3,6 +3,7 @@ package com.imo.cemetery.controller;
 import com.imo.cemetery.model.dto.concesion.ConcesionCreateDTO;
 import com.imo.cemetery.model.dto.concesion.ConcesionResponseDTO;
 import com.imo.cemetery.model.dto.concesion.ConcesionUpdateDTO;
+import com.imo.cemetery.model.dto.pago.PagoCreateDTO;
 import com.imo.cemetery.service.concesion.ConcesionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +30,16 @@ public class ConcesionController {
 
     // CRUD y básicass
 
+    // Sin esto no me funciona el create, aparentemente no se pueden usar dos requestbody
+    // Si da tiempo sacarlo y meterlo en dtos: prioridad Baja
+    public record CompraRequest(
+            @Valid ConcesionCreateDTO concesion,
+            @Valid PagoCreateDTO pago
+    ) {}
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ConcesionResponseDTO> create(@RequestBody @Valid ConcesionCreateDTO dto)
-    {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
+    public ResponseEntity<ConcesionResponseDTO> create(@RequestBody @Valid CompraRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(service.create(request.concesion(), request.pago()));
     }
 
     @GetMapping

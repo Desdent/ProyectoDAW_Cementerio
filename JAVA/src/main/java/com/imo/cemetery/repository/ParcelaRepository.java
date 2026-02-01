@@ -11,13 +11,9 @@ import java.util.Optional;
 @Repository
 public interface ParcelaRepository extends JpaRepository<Parcela, Long> {
 
-    // Coordenadas
-    List<Parcela> findAllByCoordenadaX(Double coordenadaX);
-    List<Parcela> findAllByCoordenadaY(Double coordenadaY);
-    List<Parcela> findAllByCoordenadaXAndCoordenadaY(Double coordenadaX, Double coordenadaY);
 
     // El buscador
-    Optional<Parcela> findByCoordenadaXAndCoordenadaYAndFilaAndColumna(Double x, Double y, Integer fila, Integer columna);
+    Optional<Parcela> findByFilaAndColumna(Integer fila, Integer columna);
 
     // Relaciones
     List<Parcela> findAllByConcesionId(Long id);
@@ -30,7 +26,6 @@ public interface ParcelaRepository extends JpaRepository<Parcela, Long> {
     List<Parcela> findAllByZonaCementerioIdAndConcesionIsNull(Long cementerioId);
 
     // Validaciones
-    boolean existsByCoordenadaXAndCoordenadaY(Double x, Double y);
     boolean existsByFilaAndColumnaAndZonaId(Integer fila, Integer columna, Long zonaId);
 
     long countByEstado(EstadoType estado);

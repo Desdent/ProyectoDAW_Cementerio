@@ -80,7 +80,7 @@ public class ParcelaController {
                                                               @RequestParam int fila,
                                                               @RequestParam int columna)
     {
-        return ResponseEntity.ok(service.findByUbicacionCompleta(x, y, fila, columna));
+        return ResponseEntity.ok(service.findByUbicacionCompleta(fila, columna));
     }
 
 }

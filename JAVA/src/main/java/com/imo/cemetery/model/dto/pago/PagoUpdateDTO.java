@@ -1,5 +1,6 @@
 package com.imo.cemetery.model.dto.pago;
 
+import com.imo.cemetery.model.enums.PagoEstadoType;
 import com.imo.cemetery.model.enums.PagoType;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -16,6 +17,8 @@ public class PagoUpdateDTO {
 
     @NotNull
     private PagoType metodo;
+    @NotNull
+    private PagoEstadoType estado;
 
 
 }

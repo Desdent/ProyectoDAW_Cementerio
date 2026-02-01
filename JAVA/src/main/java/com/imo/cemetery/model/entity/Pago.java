@@ -2,6 +2,7 @@ package com.imo.cemetery.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.imo.cemetery.model.enums.PagoType;
+import com.imo.cemetery.model.enums.PagoEstadoType;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,6 +30,13 @@ public class Pago {
 
     @Column(nullable = false)
     private LocalDate fecha;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PagoEstadoType estado;
+
+    @Column(nullable = false,unique = true)
+    private String transaccionId;
 
     @Enumerated(EnumType.STRING)
     // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación

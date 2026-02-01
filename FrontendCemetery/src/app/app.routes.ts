@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './features/home/home-component/home-component';
 import { DashboardAdminLayoutComponent } from './features/admin/dashboard-admin-layout-component/dashboard-admin-layout-component';
-import { DashboardClienteComponent } from './features/cliente/dashboard-cliente-component/dashboard-cliente-component';
 import { LoginComponent } from './features/login-component/login-component';
 import { authGuard } from './core/guards/auth-guard';
 import { redirectGuard } from './core/guards/redirect-guard';
@@ -19,6 +18,14 @@ import { StatsAytoComponent } from './features/ayuntamiento/stats-ayto-component
 import { DifuntosAytoComponent } from './features/ayuntamiento/difuntos-ayto-component/difuntos-ayto-component';
 import { ClientesAytoComponent } from './features/ayuntamiento/clientes-ayto-component/clientes-ayto-component';
 import { DashboardLayoutAytoComponent } from './features/ayuntamiento/dashboard-layout-ayto-component/dashboard-layout-ayto-component';
+import { MainClienteComponent } from './features/cliente/main-cliente-component/main-cliente-component';
+import { DashboardLayoutClienteComponent } from './features/cliente/dashboard-layout-cliente-component/dashboard-layout-cliente-component';
+import { CementeriosClienteComponent } from './features/cliente/cementerios-cliente-component/cementerios-cliente-component';
+import { DifuntosClienteComponent } from './features/cliente/difuntos-cliente-component/difuntos-cliente-component';
+import { ConcesionesClienteComponent } from './features/cliente/concesiones-cliente-component/concesiones-cliente-component';
+import { SearchComponent } from './features/search-component/search-component';
+import { PanelCementerioComponent } from './features/panel-cementerio-component/panel-cementerio-component';
+import { CarritoComponent } from './features/carrito-component/carrito-component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -94,10 +101,35 @@ export const routes: Routes = [
   // CLIENTE
   {
     path: 'cliente/dashboard',
-    component: DashboardClienteComponent,
+    component: DashboardLayoutClienteComponent,
     canActivate: [roleGuard],
     data: { expectedRole: 'ROLE_CLIENTE' },
+    children: [
+      {
+        path: '',
+        component: MainClienteComponent,
+      },
+      {
+        path: 'cementerios',
+        component: CementeriosClienteComponent,
+      },
+
+      {
+        path: 'difuntos',
+        component: DifuntosClienteComponent,
+      },
+      {
+        path: 'concesiones',
+        component: ConcesionesClienteComponent,
+      },
+    ],
   },
+  // BUSCADOR
+  { path: 'search', component: SearchComponent },
+  // PANEL CEMENTERIO
+  { path: 'cementerio/:id', component: PanelCementerioComponent },
+  // CARRITO
+  { path: 'carrito', component: CarritoComponent },
   // LOGIN/LOGOUT
   { path: 'login', component: LoginComponent, canActivate: [authGuard] },
   { path: 'logout', canActivate: [logoutGuard], component: HomeComponent }, // El component es solo para que no de error, nunca se va a acceder a el

@@ -3,6 +3,7 @@ package com.imo.cemetery.service.concesion;
 import com.imo.cemetery.model.dto.concesion.ConcesionCreateDTO;
 import com.imo.cemetery.model.dto.concesion.ConcesionResponseDTO;
 import com.imo.cemetery.model.dto.concesion.ConcesionUpdateDTO;
+import com.imo.cemetery.model.dto.pago.PagoCreateDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -10,7 +11,7 @@ import java.util.List;
 public interface ConcesionService {
 
     // CRUD
-    ConcesionResponseDTO create(ConcesionCreateDTO dto);
+    ConcesionResponseDTO create(ConcesionCreateDTO dto, PagoCreateDTO pagoDto);
     ConcesionResponseDTO update(ConcesionUpdateDTO dto, Long id);
     void deleteById(Long id);
 
