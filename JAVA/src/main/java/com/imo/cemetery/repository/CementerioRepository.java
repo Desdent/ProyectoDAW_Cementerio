@@ -3,6 +3,8 @@ package com.imo.cemetery.repository;
 import com.imo.cemetery.model.entity.Cementerio;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,5 +26,10 @@ public interface CementerioRepository extends JpaRepository<Cementerio, Long> {
     List<Cementerio> findAllByAyuntamientoCiudadId(Long id);
     List<Cementerio> findAllByAyuntamientoId(Long id);
     Long countByAyuntamientoId(Long id);
+    @Query("SELECT c FROM Cementerio c " +
+            "JOIN c.zonas z " +
+            "JOIN z.parcelas p " +
+            "WHERE p.concesion.id = :concesionId")
+    Optional<Cementerio> findByConcesionId(@Param("concesionId") Long concesionId);
 
 }

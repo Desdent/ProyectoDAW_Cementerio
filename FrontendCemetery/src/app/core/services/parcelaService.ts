@@ -38,6 +38,10 @@ export class ParcelaService {
     return this.http.get<Parcela[]>(`${this.apiUrl}/cementerio/${id}`);
   }
 
+  findAllByConcesionId(id: number) {
+    return this.http.get<Parcela[]>(`${this.apiUrl}/concesion/${id}`);
+  }
+
   findByZonaId(id: number) {
     return this.http.get<Parcela[]>(`${this.apiUrl}/zona/${id}`);
   }

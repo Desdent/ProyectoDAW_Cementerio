@@ -30,5 +30,6 @@ public interface CementerioService {
     List<CementerioResponseDTO> findAllByAyuntamientoId(Long id);
     Long countByAyuntamientoId(Long id);
     List<CementerioResponseDTO> findAllByAyuntamientoEmail(String email);
+    CementerioResponseDTO findByConcesionId(Long id);
 
 }

@@ -83,4 +83,10 @@ public class ParcelaController {
         return ResponseEntity.ok(service.findByUbicacionCompleta(fila, columna));
     }
 
+    @GetMapping("/concesion/{id}")
+    public ResponseEntity<List<ParcelaResponseDTO>> findAllByConcesion(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByConcesion(id));
+    }
+
 }

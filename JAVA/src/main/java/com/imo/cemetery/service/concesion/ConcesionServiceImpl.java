@@ -86,6 +86,7 @@ public class ConcesionServiceImpl implements ConcesionService{
         final com.imo.cemetery.model.entity.Concesion savedEntity = repo.save(entity);
 
 
+
         parcelas.forEach(p -> {
             p.setConcesion(savedEntity);
             p.setEstado(com.imo.cemetery.model.enums.EstadoType.RESERVADA);
@@ -156,10 +157,14 @@ public class ConcesionServiceImpl implements ConcesionService{
 
     @Override
     public List<ConcesionResponseDTO> findAllByClienteId(Long id) {
-        return repo.findAllByClienteId(id)
+
+        System.out.println(repo.findAllByClienteId(id));
+        List<ConcesionResponseDTO> response = repo.findAllByClienteId(id)
                 .stream()
                 .map(concesionMapper::toResponseDTO)
                 .toList();
+        System.out.println(response);
+        return response;
     }
 
     @Override

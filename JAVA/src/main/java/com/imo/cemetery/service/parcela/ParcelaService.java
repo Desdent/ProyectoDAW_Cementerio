@@ -26,6 +26,6 @@ public interface ParcelaService {
 
     ParcelaResponseDTO findByUbicacionCompleta(Integer fila, Integer columna);
 
-
+    List<ParcelaResponseDTO> findAllByConcesion(Long id);
 
 }

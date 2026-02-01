@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -21,5 +22,6 @@ public class ConcesionResponseDTO {
     private Boolean vencida;
     private Long clienteId;
     private Long pagoId;
+    private List<Long> parcelaIds;
 
 }

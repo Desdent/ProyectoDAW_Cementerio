@@ -157,4 +157,14 @@ public class DifuntoServiceImpl implements DifuntoService {
 
         return response;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<DifuntoResponseDTO> findAllByCliente(Long id)
+    {
+        return repo.findAllByParcelaConcesionClienteId(id)
+                .stream()
+                .map(difuntoMapper::toResponseDTO)
+                .toList();
+    }
 }

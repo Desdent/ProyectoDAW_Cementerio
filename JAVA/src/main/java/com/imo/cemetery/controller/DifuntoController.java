@@ -17,9 +17,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.Year;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/difuntos")
@@ -35,7 +42,6 @@ public class DifuntoController {
     // CRUD y básicos
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') || hasRole('AYUNTAMIENTO')")
     public ResponseEntity<DifuntoResponseDTO> create(@RequestBody @Valid DifuntoCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
@@ -101,6 +107,44 @@ public class DifuntoController {
     public ResponseEntity<List<DifuntoResponseDTO>> findAllByCementerioId(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByCementerioId(id));
+    }
+
+
+    @GetMapping("/cliente/{id}")
+    public ResponseEntity<List<DifuntoResponseDTO>> findAllByDifuntoId(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findAllByCliente(id));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadMap(@RequestParam("archivo") MultipartFile file) {
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        try {
+            // Define la ruta de la carpeta
+            String uploadDir = "src/main/resources/static/uploads/fotos/";
+            Path pathDir = Paths.get(uploadDir);
+
+            // Crear carpetas si no existen
+            if (!Files.exists(pathDir)) {
+                Files.createDirectories(pathDir);
+            }
+
+            // 3. Generar nombre único: timestamp + nombre original
+            String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            Path filePath = pathDir.resolve(fileName);
+
+            // 4. Guardar archivo
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // 5. Devolver el nombre final para que Angular lo use en el JSON del cementerio
+            return ResponseEntity.ok(Map.of("nombreArchivo", fileName));
+
+        } catch (IOException e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Error al guardar el archivo: " + e.getMessage()));
+        }
     }
 
     /* Al final estos métodos no hacen falta porque cualquiera deberia poder consultar que muertos hay en un cementerio

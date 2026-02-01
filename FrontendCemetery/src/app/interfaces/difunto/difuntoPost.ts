@@ -4,7 +4,7 @@ export interface DifuntoPost {
   apellido2: string;
   yearNacimiento: number;
   yearDefuncion: number;
-  fechaEntierro: Date;
+  fechaEntierro: string;
   mensaje?: string;
   foto?: string;
   parcelaId: number;

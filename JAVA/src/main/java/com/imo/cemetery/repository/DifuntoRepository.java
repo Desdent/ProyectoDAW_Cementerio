@@ -25,4 +25,5 @@ public interface DifuntoRepository extends JpaRepository<Difunto, Long> {
     List<Difunto> findAllByParcelaZonaId(Long zonaId);
     List<Difunto> findAllByParcelaZonaCementerioAyuntamientoId(Long id);
     List<Difunto> findAllByParcelaZonaCementerioId(Long id);
+    List<Difunto> findAllByParcelaConcesionClienteId(Long id);
 }

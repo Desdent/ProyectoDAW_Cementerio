@@ -21,4 +21,8 @@ export class ConcesionService {
       pago: pago,
     });
   }
+
+  findAllByCliente(id: number) {
+    return this.http.get<Concesion[]>(`${this.apiUrl}/cliente/${id}`);
+  }
 }

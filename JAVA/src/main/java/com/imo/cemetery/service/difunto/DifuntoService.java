@@ -18,4 +18,5 @@ public interface DifuntoService {
     List<DifuntoResponseDTO> findAllByYearDefuncion(Year year);
     List<DifuntoResponseDTO> findAllByAyuntamientoId(Long id);
     List<DifuntoResponseDTO> findAllByCementerioId(Long id);
+    List<DifuntoResponseDTO> findAllByCliente(Long id);
 }

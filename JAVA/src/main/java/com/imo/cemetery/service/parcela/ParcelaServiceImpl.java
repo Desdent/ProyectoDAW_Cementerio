@@ -145,4 +145,14 @@ public class ParcelaServiceImpl implements ParcelaService {
 
         return response;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ParcelaResponseDTO> findAllByConcesion(Long id)
+    {
+        return repo.findAllByConcesionId(id)
+                .stream()
+                .map(parcelaMapper::toResponseDTO)
+                .toList();
+    }
 }

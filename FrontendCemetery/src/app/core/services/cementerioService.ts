@@ -27,6 +27,10 @@ export class CementerioService {
     return this.http.get<Cementerio[]>(`${this.apiUrl}/ayuntamiento/${id}`);
   }
 
+  findByConcesion(id: number) {
+    return this.http.get<Cementerio>(`${this.apiUrl}/concesion/${id}`);
+  }
+
   subirImagen(file: File) {
     const formData = new FormData();
     formData.append('archivo', file);

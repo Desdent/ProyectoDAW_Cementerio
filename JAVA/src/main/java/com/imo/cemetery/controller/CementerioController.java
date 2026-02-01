@@ -154,4 +154,10 @@ public class CementerioController {
             return ResponseEntity.status(500).body(Map.of("error", "Error al guardar el archivo: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/concesion/{id}")
+    public ResponseEntity<CementerioResponseDTO> findByConcesion(@PathVariable Long id)
+    {
+        return ResponseEntity.ok(service.findByConcesionId(id));
+    }
 }

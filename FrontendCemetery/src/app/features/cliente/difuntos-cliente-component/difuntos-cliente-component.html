@@ -1,1 +1,52 @@
-<p>difuntos-cliente-component works!</p>
+<table class="table-custom">
+  <thead>
+    <tr>
+      <th>FOTO</th>
+      <th>NOMBRE COMPLETO</th>
+      <th>AÑO NACIMIENTO</th>
+      <th>AÑO DEFUNCIÓN</th>
+      <th>FECHA ENTIERRO</th>
+      <th>UBICACIÓN</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (d of difuntos(); track d.id) {
+      <tr>
+        <td>
+          @if (d.foto && !shouldShowPlaceholder(d.id)) {
+            <img
+              [src]="rutaBaseFotos + d.foto"
+              (error)="onImageError(d.id, d.foto)"
+              (load)="onImageLoad(d.id)"
+              class="rounded-circle shadow-sm border"
+              width="45"
+              height="45"
+              alt="Foto Familiar"
+            />
+          } @else {
+            <div
+              class="bg-light rounded-circle d-flex align-items-center justify-content-center border"
+              style="width: 45px; height: 45px"
+            >
+              <i class="bi bi-person-fill text-muted"></i>
+            </div>
+          }
+        </td>
+        <td>
+          <div class="text-dark">{{ d.nombre }} {{ d.apellido1 }} {{ d.apellido2 }}</div>
+        </td>
+        <td>
+          <div class="text-dark">{{ d.yearNacimiento }}</div>
+        </td>
+        <td>
+          <div class="text-dark">{{ d.yearDefuncion }}</div>
+        </td>
+        <td>
+          <div class="text-dark">{{ d.fechaEntierro }}</div>
+        </td>
+
+        <td>Parcela nº{{ d.parcelaId }}</td>
+      </tr>
+    }
+  </tbody>
+</table>

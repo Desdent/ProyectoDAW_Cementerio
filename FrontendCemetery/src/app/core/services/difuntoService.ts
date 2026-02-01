@@ -28,12 +28,22 @@ export class DifuntoService {
     });
   }
 
+  subirImagen(file: File) {
+    const formData = new FormData();
+    formData.append('archivo', file);
+    return this.http.post<{ nombreArchivo: string }>(`${this.apiUrl}/upload`, formData);
+  }
+
   loadAllByAyuntamiento(id: number) {
     return this.http.get<Difunto[]>(`${this.apiUrl}/ayuntamiento/${id}`);
   }
 
   loadAllByCementerio(id: number) {
     return this.http.get<Difunto[]>(`${this.apiUrl}/cementerio/${id}`);
+  }
+
+  loadAllByCliente(id: number) {
+    return this.http.get<Difunto[]>(`${this.apiUrl}/cliente/${id}`);
   }
 
   save(difunto: DifuntoPost) {

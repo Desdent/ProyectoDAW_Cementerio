@@ -6,4 +6,5 @@ export interface Concesion {
   vencida: boolean;
   clienteId: number;
   pagoId: number;
+  parcelaIds: number[];
 }

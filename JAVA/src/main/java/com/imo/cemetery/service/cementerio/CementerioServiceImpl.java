@@ -191,5 +191,12 @@ public class CementerioServiceImpl implements CementerioService {
         return repo.countByAyuntamientoId(id);
     }
 
+    @Override
+    public CementerioResponseDTO findByConcesionId(Long id)
+    {
+        return repo.findByConcesionId(id)
+                .map(cementerioMapper::toResponseDTO)
+                .orElseThrow(() -> new EntityNotFoundException("No existe cementerio asociado a la concesion con ID: " + id));
+    }
 
 }
