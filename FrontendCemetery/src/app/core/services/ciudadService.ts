@@ -14,6 +14,9 @@ export class CiudadService {
 
   ciudades = signal<Ciudad[]>([]);
 
+  /**
+   * Cargo todos los registros de ciudades desde la API y actualizo la señal reactiva.
+   */
   loadAll() {
     this.http.get<Ciudad[]>(this.apiUrl).subscribe((data) => {
       this.ciudades.set(data);
@@ -21,6 +24,10 @@ export class CiudadService {
     });
   }
 
+  /**
+   * Filtro y cargo las ciudades pertenecientes a una provincia específica.
+   * @param id Identificador de la provincia.
+   */
   loadByProvinciaId(id: number) {
     const urlFiltrada = `${this.apiUrl}/provincia/${id}`;
     this.http.get<Ciudad[]>(urlFiltrada).subscribe((data) => {

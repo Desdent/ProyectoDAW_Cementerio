@@ -74,6 +74,13 @@
                     <i class="bi bi-plus-square"></i>
                   </button>
                   <button
+                    class="btn-action"
+                    title="Gestionar Parcelas"
+                    (click)="abrirModal_parcelas(cementerio)"
+                  >
+                    <i class="bi bi-layers"></i>
+                  </button>
+                  <button
                     class="btn-action text-danger"
                     title="Eliminar registro"
                     (click)="abrirModal_delete(cementerio)"
@@ -707,6 +714,79 @@
           (click)="addZona()"
         >
           <i class="bi bi-plus-lg"></i> Añadir Zona
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ABRIR ZONAS -->
+
+<div class="modal fade" id="modalParcelas" tabindex="-1" aria-hidden="true" #modalParcelas>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-layers-fill me-2 fs-4"></i>
+          <span class="modal-title-text">Gestión de Parcelas</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+
+      <div class="modal-body p-4 bg-light">
+        <div class="row g-3">
+          <div class="col-md-12">
+            <label class="form-label-custom">Seleccionar Zona para añadir parcela</label>
+            <select class="form-select-custom" (change)="onZonaSeleccionadaParaParcelas($event)">
+              <option value="" disabled selected>Seleccione zona...</option>
+              @for (z of zonas(); track z.id) {
+                <option [value]="z.id">{{ z.nombre }} ({{ z.filas }}x{{ z.columnas }})</option>
+              }
+            </select>
+          </div>
+
+          @if (zonaParaParcelas()) {
+            <hr class="my-4" />
+
+            <div class="col-12">
+              <p class="small text-muted mb-2">
+                Estado de la zona: {{ parcelasDeZona().length }} parcelas creadas de
+                {{ zonaParaParcelas()!.filas * zonaParaParcelas()!.columnas }} totales.
+              </p>
+            </div>
+
+            <div class="col-md-12">
+              <label class="form-label-custom">Seleccionar Ubicación Libre *</label>
+              <select
+                class="form-select-custom"
+                (change)="onSeleccionarHueco($event)"
+                name="ubicacion"
+              >
+                <option value="" disabled selected>Seleccione Fila y Columna disponible</option>
+                @for (h of disponibilidadParcelas(); track $index) {
+                  <option [value]="h.fila + '-' + h.columna">
+                    Fila {{ h.fila }} - Columna {{ h.columna }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+        </div>
+      </div>
+
+      <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
+        <button
+          type="button"
+          class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+          [disabled]="nuevaParcela.fila === 0 || nuevaParcela.zonaId === 0"
+          (click)="guardarParcela()"
+        >
+          <i class="bi bi-plus-circle"></i> Crear Parcela
         </button>
       </div>
     </div>

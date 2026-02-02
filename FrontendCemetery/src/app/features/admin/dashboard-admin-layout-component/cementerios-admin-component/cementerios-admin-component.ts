@@ -70,27 +70,45 @@ export class CementeriosAdminComponent {
     cementerioId: this.id,
   };
 
+  /**
+   * Inicializa el componente cargando todos los cementerios y los tipos de zonas disponibles.
+   */
   ngOnInit(): void {
     this.cementerioService.loadAll();
     this.zonaService.getAllTipos();
   }
 
+  /**
+   * Calcula el número total de páginas para la paginación de cementerios.
+   * @returns El número total de páginas.
+   */
   totalPaginas() {
     const totalRegistros = this.cementerioService.amount();
     return Math.ceil(totalRegistros / this.elementosPorPagina) || 1;
   }
 
+  /**
+   * Señal computada que devuelve un array con los números de página.
+   */
   paginas = computed(() => {
     const total = Math.ceil(this.cementerioService.amount() / this.elementosPorPagina) || 1;
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
+  /**
+   * Obtiene los cementerios que corresponden a la página actual.
+   * @returns Un subconjunto del array de cementerios.
+   */
   get cementeriosPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.cementerioService.cementerios().slice(inicio, fin);
   }
 
+  /**
+   * Cambia la página actual de la tabla.
+   * @param nuevaPagina El número de página al que navegar.
+   */
   cambiarPagina(nuevaPagina: number) {
     if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas()) {
       this.paginaActual.set(nuevaPagina);
@@ -99,6 +117,9 @@ export class CementeriosAdminComponent {
 
   // --- GESTIÓN DE MODALES CON CARGA ASÍNCRONA ---
 
+  /**
+   * Abre el modal para crear un nuevo cementerio.
+   */
   abrirModal() {
     if (this.modalElement && this.modalElement.nativeElement) {
       this.modalBootstrap = new bootstrap.Modal(this.modalElement.nativeElement);
@@ -106,12 +127,20 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Abre el modal de confirmación para eliminar un cementerio.
+   * @param cementerio El objeto cementerio a eliminar.
+   */
   abrirModal_delete(cementerio: any) {
     this.id = cementerio.id;
     this.modalBootstrap = new bootstrap.Modal(this.modalDeleteRef.nativeElement);
     this.modalBootstrap.show();
   }
 
+  /**
+   * Abre el modal para editar un cementerio, cargando sus datos y zonas previamente.
+   * @param cementerio El objeto cementerio a editar.
+   */
   abrirModal_editar(cementerio: any) {
     this.id = cementerio.id;
     this.findAllZonasByCementerio(this.id);
@@ -121,6 +150,10 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Abre el modal para ver los detalles de un cementerio.
+   * @param cementerio El objeto cementerio a visualizar.
+   */
   abrirModal_ver(cementerio: any) {
     this.id = cementerio.id;
     this.findAllZonasByCementerio(this.id);
@@ -130,6 +163,10 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Abre el modal de gestión de zonas de un cementerio.
+   * @param cementerio El objeto cementerio cuyas zonas se quieren gestionar.
+   */
   abrirModal_zonas(cementerio: any) {
     console.log(this.getAllTipo());
     this.id = cementerio.id;
@@ -142,6 +179,10 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Abre el modal para añadir una nueva zona a un cementerio específico.
+   * @param cementerio El objeto cementerio al que se añadirá la zona.
+   */
   abrirModal_addZonas(cementerio: any) {
     this.id = cementerio.id;
     console.log(this.id);
@@ -154,6 +195,9 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Cierra el modal activo y resetea los formularios.
+   */
   cerrarModal() {
     if (this.modalBootstrap) {
       this.resetForm();
@@ -161,6 +205,11 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Recupera la información de un cementerio por su ID y ejecuta un callback al finalizar.
+   * @param id ID del cementerio.
+   * @param callback Función opcional a ejecutar tras la carga.
+   */
   obtenerCementerio(id: number, callback?: () => void) {
     this.cementerioService.find(id).subscribe((data) => {
       this.cementerioEditar = {
@@ -176,6 +225,9 @@ export class CementeriosAdminComponent {
 
   // --- PERSISTENCIA (SUBIDA DE IMAGEN + JSON) ---
 
+  /**
+   * Inicia el proceso de guardado de un cementerio, subiendo la imagen primero si existe.
+   */
   guardarCementerio() {
     if (this.archivoParaSubir) {
       this.cementerioService.subirImagen(this.archivoParaSubir).subscribe({
@@ -191,6 +243,9 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Realiza la petición HTTP para guardar los datos del cementerio en la base de datos.
+   */
   private procederAGuardar() {
     this.cementerioService.save(this.nuevoCementerio).subscribe({
       next: (res) => {
@@ -203,6 +258,10 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Inicia el proceso de actualización de un cementerio, gestionando la subida de una nueva imagen si se ha seleccionado.
+   * @param id ID del cementerio a actualizar.
+   */
   actuCementerio(id: number) {
     if (this.archivoParaSubir) {
       // Si el usuario seleccionó una imagen nueva, la subimos primero
@@ -219,6 +278,10 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Realiza la petición HTTP para actualizar los datos del cementerio.
+   * @param id ID del cementerio.
+   */
   private procederActualizar(id: number) {
     this.cementerioService.update(this.cementerioEditar, id).subscribe({
       next: (res) => {
@@ -231,6 +294,10 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Elimina un cementerio del sistema.
+   * @param idExterior ID del cementerio a eliminar.
+   */
   delete(idExterior: number) {
     this.cementerioService.delete(idExterior).subscribe({
       next: () => {
@@ -244,6 +311,10 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Elimina una zona específica.
+   * @param idExterior ID de la zona a eliminar.
+   */
   deleteZona(idExterior: number) {
     this.zonaService.delete(idExterior).subscribe({
       next: () => {
@@ -254,6 +325,10 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Carga todas las zonas asociadas a un cementerio.
+   * @param idExterior ID del cementerio.
+   */
   findAllZonasByCementerio(idExterior: number) {
     this.zonaService.findAllByCementerioId(idExterior).subscribe({
       next: (res) => {
@@ -266,6 +341,9 @@ export class CementeriosAdminComponent {
 
   // --- UTILIDADES ---
 
+  /**
+   * Restablece los modelos de datos y estados de previsualización a sus valores por defecto.
+   */
   resetForm() {
     this.nuevoCementerio = {
       nombre: '',
@@ -290,6 +368,10 @@ export class CementeriosAdminComponent {
     this.mapaPreview.set(null);
   }
 
+  /**
+   * Maneja la selección de un archivo de imagen, generando una previsualización local.
+   * @param event Evento de cambio del input file.
+   */
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
@@ -309,6 +391,10 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Configura la URL del mapa y abre el modal para visualizarlo.
+   * @param cementerio Objeto cementerio que contiene el nombre del archivo del mapa.
+   */
   verMapa(cementerio: any) {
     this.cementerioSeleccionadoNombre.set(cementerio.nombre);
     const rutaBase = 'http://localhost:8080/uploads/mapas/';
@@ -320,6 +406,10 @@ export class CementeriosAdminComponent {
     }
   }
 
+  /**
+   * Obtiene los datos detallados de una zona por su ID.
+   * @param idExterior ID de la zona.
+   */
   obtainDatosZona(idExterior: number) {
     this.zonaService.find(idExterior).subscribe({
       next: (res) => {
@@ -332,6 +422,9 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Envía la información para crear una nueva zona en el cementerio actual.
+   */
   addZona() {
     console.log(this.nuevaZona);
     this.zonaService.save(this.nuevaZona).subscribe({
@@ -346,10 +439,17 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Carga los tipos de zonas disponibles desde el servicio.
+   */
   getAllTipo() {
     this.tipos.set(this.zonaService.tipos());
   }
 
+  /**
+   * Actualiza la información de una zona existente.
+   * @param idExterior ID de la zona a actualizar.
+   */
   guardarZonas(idExterior: number) {
     console.log(this.zonaSelected()!.id);
     this.zonaService.update(this.zonaSelected()!, idExterior).subscribe({
@@ -363,6 +463,10 @@ export class CementeriosAdminComponent {
     });
   }
 
+  /**
+   * Maneja el cambio de selección en el listado de zonas para cargar sus datos.
+   * @param event Evento de cambio del selector.
+   */
   onZonaChange(event: any) {
     const idSeleccionado = event.target.value;
     if (idSeleccionado) {

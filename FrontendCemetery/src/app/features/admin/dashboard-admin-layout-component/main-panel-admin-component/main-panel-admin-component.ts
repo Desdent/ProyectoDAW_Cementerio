@@ -20,6 +20,9 @@ export class MainPanelAdminComponent {
 
   initials = signal<string>((localStorage.getItem('email') || '').substring(0, 2).toUpperCase());
 
+  /**
+   * Inicializa el componente cargando los datos de todos los servicios necesarios.
+   */
   ngOnInit() {
     this.cementerioService.loadAll();
     this.ayuntamientoService.loadAll();
@@ -27,13 +30,19 @@ export class MainPanelAdminComponent {
     this.servicioService.loadAll();
   }
 
+  /**
+   * Señal computada que genera una lista de actividades recientes.
+   * Combina los últimos registros de cementerios, zonas y clientes en un feed unificado.
+   */
   public actividades = computed(() => {
-    // Los últimos datos de cada servicio
+    // Obtenemos los últimos registros de cada servicio usando slice(-n)
+    // para simular un historial de actividad reciente.
     const cementerios = this.cementerioService.cementerios().slice(-2);
     const clientes = this.clienteService.clientes().slice(-1);
     const zonas = this.zonaService.zonas().slice(-2);
 
-    // juntar todos los eventos en un solo array
+    // Consolidamos todos los eventos en un único array plano.
+    // Se utiliza el operador spread (...) para concatenar los resultados de los mapeos.
     return [
       ...cementerios.map((c) => ({
         title: `Nuevo cementerio: ${c.nombre}`,

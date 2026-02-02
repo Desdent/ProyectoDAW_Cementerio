@@ -22,7 +22,6 @@ public class ParcelaCreateDTO {
     @NotNull
     @Positive
     private Integer columna;
-    @NotNull
     private Long concesionId;
     @NotNull
     private Long zonaId;

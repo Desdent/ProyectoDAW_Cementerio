@@ -23,6 +23,9 @@ export class ClientesAdminComponent {
   @ViewChild('modalEditar') modalEditarRef!: ElementRef;
   @ViewChild('modalDelete') modalDeleteRef!: ElementRef;
 
+  /**
+   * Inicializa el componente cargando la lista completa de clientes y provincias.
+   */
   ngOnInit(): void {
     this.clienteService.loadAll();
     this.provinciaService.loadAll();
@@ -58,31 +61,46 @@ export class ClientesAdminComponent {
   modalBootstrap: any;
   provinciaSeleccionadaId = signal<number | null>(null);
 
-  // cambiar de página
+  /**
+   * Cambia la página actual de la visualización paginada.
+   * @param nuevaPagina El número de la página a la que se desea navegar.
+   */
   cambiarPagina(nuevaPagina: number) {
     if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas()) {
       this.paginaActual.set(nuevaPagina);
     }
   }
 
-  // Cálculo de páginas
+  /**
+   * Calcula el número total de páginas basándose en la cantidad total de registros.
+   * @returns El número total de páginas (mínimo 1).
+   */
   totalPaginas() {
     const totalRegistros = this.clienteService.amount();
     return Math.ceil(totalRegistros / this.elementosPorPagina) || 1;
   }
 
+  /**
+   * Señal computada que genera un array con los números de página disponibles.
+   */
   paginas = computed(() => {
     const total = Math.ceil(this.clienteService.amount() / this.elementosPorPagina) || 1;
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
-  // obtener solo los cementerios de la página actual
+  /**
+   * Obtiene la lista de clientes que deben mostrarse en la página actual.
+   * @returns Un subconjunto del array de clientes.
+   */
   get clientesPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.clienteService.clientes().slice(inicio, fin);
   }
 
+  /**
+   * Abre el modal para la creación de un nuevo cliente.
+   */
   abrirModal() {
     if (this.modalElement && this.modalElement.nativeElement) {
       this.modalBootstrap = new bootstrap.Modal(this.modalElement.nativeElement);
@@ -90,6 +108,10 @@ export class ClientesAdminComponent {
     }
   }
 
+  /**
+   * Abre el modal de confirmación para eliminar un cliente.
+   * @param cliente El objeto cliente que se pretende eliminar.
+   */
   abrirModal_delete(cliente: any) {
     this.id = cliente.id;
     this.obtenerCliente(cliente.id);
@@ -100,6 +122,10 @@ export class ClientesAdminComponent {
     }
   }
 
+  /**
+   * Abre el modal para editar la información de un cliente existente.
+   * @param cliente El objeto cliente a editar.
+   */
   abrirModal_editar(cliente: any) {
     this.id = cliente.id;
     this.obtenerCliente(cliente.id);
@@ -110,6 +136,10 @@ export class ClientesAdminComponent {
     }
   }
 
+  /**
+   * Abre el modal para visualizar los detalles de un cliente.
+   * @param cliente El objeto cliente a visualizar.
+   */
   abrirModal_ver(cliente: any) {
     this.id = cliente.id;
     this.obtenerCliente(cliente.id);
@@ -119,10 +149,17 @@ export class ClientesAdminComponent {
     }
   }
 
+  /**
+   * Cierra el modal de Bootstrap que esté activo.
+   */
   cerrarModal() {
     this.modalBootstrap.hide();
   }
 
+  /**
+   * Maneja el cambio en el selector de provincias para cargar las ciudades asociadas.
+   * @param value El valor seleccionado (puede ser ID numérico o nombre).
+   */
   onProvinciaChange(value: any) {
     let id: number | undefined;
 
@@ -140,6 +177,9 @@ export class ClientesAdminComponent {
     }
   }
 
+  /**
+   * Envía la información del nuevo cliente al servidor para guardarlo.
+   */
   guardarCliente() {
     console.log(this.nuevoCliente);
     this.clienteService.save(this.nuevoCliente).subscribe({
@@ -152,6 +192,11 @@ export class ClientesAdminComponent {
       error: (err) => console.error('Error al guardar', err),
     });
   }
+
+  /**
+   * Actualiza la información de un cliente existente.
+   * @param id El identificador único del cliente a actualizar.
+   */
   actuCliente(id: number) {
     console.log(this.nuevoCliente);
     this.clienteService.update(this.clienteEditar, id).subscribe({
@@ -165,6 +210,9 @@ export class ClientesAdminComponent {
     });
   }
 
+  /**
+   * Restablece los objetos de datos y estados de selección a sus valores iniciales.
+   */
   resetForm() {
     this.nuevoCliente = {
       nombre: '',
@@ -190,6 +238,10 @@ export class ClientesAdminComponent {
     this.provinciaSeleccionadaId.set(null); // Bloquear de nuevo el select de ciudades
   }
 
+  /**
+   * Obtiene los datos de un cliente por su ID y prepara el objeto de edición.
+   * @param id El identificador del cliente.
+   */
   obtenerCliente(id: number) {
     this.clienteService.find(id).subscribe((data) => {
       this.clienteEditar = {
@@ -211,10 +263,18 @@ export class ClientesAdminComponent {
     });
   }
 
+  /**
+   * Guarda temporalmente el ID de un cliente.
+   * @param idExterior El ID a almacenar.
+   */
   guardarId(idExterior: number) {
     this.id = idExterior;
   }
 
+  /**
+   * Elimina un cliente del sistema tras la confirmación.
+   * @param idExterior El identificador del cliente a eliminar.
+   */
   delete(idExterior: number) {
     this.clienteService.delete(idExterior).subscribe({
       next: () => {

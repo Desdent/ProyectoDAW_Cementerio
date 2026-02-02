@@ -27,7 +27,7 @@ public class ParcelaController {
     // CRUD y básicos
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AYUNTAMIENTO')")
     public ResponseEntity<ParcelaResponseDTO> create(@RequestBody @Valid ParcelaCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));

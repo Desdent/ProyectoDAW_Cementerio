@@ -14,6 +14,9 @@ export class ProvinciaService {
 
   constructor() {}
 
+  /**
+   * Solicito la lista de todas las provincias a la API.
+   */
   loadAll() {
     this.http.get<Provincia[]>(this.apiUrl).subscribe((data) => {
       this.provincias.set(data);

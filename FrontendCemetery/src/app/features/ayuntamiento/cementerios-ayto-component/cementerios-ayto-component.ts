@@ -14,6 +14,8 @@ import { ServicioService } from '../../../core/services/servicioService';
 import { ClienteService } from '../../../core/services/clienteService';
 import { DifuntoService } from '../../../core/services/difuntoService';
 import { FormsModule } from '@angular/forms';
+import { ParcelaService } from '../../../core/services/parcelaService';
+import { ParcelaPost } from '../../../interfaces/parcela/parcelaPost';
 
 @Component({
   selector: 'app-cementerios-ayto-component',
@@ -27,6 +29,7 @@ export class CementeriosAytoComponent {
   public servicioService = inject(ServicioService);
   public clienteService = inject(ClienteService);
   public difuntoService = inject(DifuntoService);
+  public parcelaService = inject(ParcelaService);
 
   id: number = 0;
   archivoParaSubir: File | null = null;
@@ -40,6 +43,9 @@ export class CementeriosAytoComponent {
   zonas = signal<Zona[]>([]);
   zonaSelected = signal<Zona | null>(null);
   tipos = signal<string[]>([]);
+  disponibilidadParcelas = signal<{ fila: number; columna: number }[]>([]);
+  zonaParaParcelas = signal<Zona | null>(null);
+  parcelasDeZona = signal<any[]>([]);
 
   cementerios = signal<Cementerio[]>([]);
   amountCementerios = computed(() => this.cementerios().length);
@@ -55,6 +61,10 @@ export class CementeriosAytoComponent {
 
   aytoId: number = 0;
 
+  /**
+   * Inicializa el componente obteniendo el ID del ayuntamiento desde el token
+   * y cargando todos los datos relacionados (cementerios, clientes, difuntos, servicios).
+   */
   ngOnInit() {
     this.aytoId = this.obtenerIdUsuario()!;
     this.cargarCementerios(this.aytoId);
@@ -71,6 +81,7 @@ export class CementeriosAytoComponent {
   @ViewChild('modalMapa') modalMapaRef!: ElementRef;
   @ViewChild('verZonas') modalZonasRef!: ElementRef;
   @ViewChild('addZonas') modalAddZonasRef!: ElementRef;
+  @ViewChild('modalParcelas') modalParcelasRef!: ElementRef;
 
   nuevoCementerio: CementerioPost = {
     nombre: '',
@@ -89,6 +100,14 @@ export class CementeriosAytoComponent {
     mapa: '',
   };
 
+  nuevaParcela: ParcelaPost = {
+    fila: 0,
+    columna: 0,
+    concesionId: 0,
+    zonaId: 0,
+    estado: 'LIBRE',
+  };
+
   nuevaZona: zonaPost = {
     nombre: '',
     tipo: '',
@@ -98,27 +117,45 @@ export class CementeriosAytoComponent {
     cementerioId: this.id,
   };
 
+  /**
+   * Calcula el número total de páginas para la paginación de cementerios.
+   * @returns El número total de páginas.
+   */
   totalPaginas() {
     return Math.ceil(this.amountCementerios() / this.elementosPorPagina) || 1;
   }
 
+  /**
+   * Señal computada que devuelve un array con los números de página.
+   */
   paginas = computed(() => {
     const total = this.totalPaginas();
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
+  /**
+   * Obtiene los cementerios que corresponden a la página actual.
+   * @returns Un subconjunto del array de cementerios.
+   */
   get cementeriosPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.cementerios().slice(inicio, fin);
   }
 
+  /**
+   * Cambia la página actual de la tabla.
+   * @param nuevaPagina El número de página al que navegar.
+   */
   cambiarPagina(nuevaPagina: number) {
     if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas()) {
       this.paginaActual.set(nuevaPagina);
     }
   }
 
+  /**
+   * Abre el modal para crear un nuevo cementerio.
+   */
   abrirModal() {
     if (this.modalElement && this.modalElement.nativeElement) {
       this.modalBootstrap = new bootstrap.Modal(this.modalElement.nativeElement);
@@ -126,12 +163,20 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Abre el modal de confirmación para eliminar un cementerio.
+   * @param cementerio El objeto cementerio a eliminar.
+   */
   abrirModal_delete(cementerio: any) {
     this.id = cementerio.id;
     this.modalBootstrap = new bootstrap.Modal(this.modalDeleteRef.nativeElement);
     this.modalBootstrap.show();
   }
 
+  /**
+   * Abre el modal para editar un cementerio, cargando sus datos y zonas previamente.
+   * @param cementerio El objeto cementerio a editar.
+   */
   abrirModal_editar(cementerio: any) {
     this.id = cementerio.id;
     this.findAllZonasByCementerio(this.id);
@@ -141,6 +186,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Abre el modal para ver los detalles de un cementerio.
+   * @param cementerio El objeto cementerio a visualizar.
+   */
   abrirModal_ver(cementerio: any) {
     this.id = cementerio.id;
     this.findAllZonasByCementerio(this.id);
@@ -150,6 +199,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Abre el modal de gestión de zonas de un cementerio.
+   * @param cementerio El objeto cementerio cuyas zonas se quieren gestionar.
+   */
   abrirModal_zonas(cementerio: any) {
     this.id = cementerio.id;
     this.findAllZonasByCementerio(this.id);
@@ -161,6 +214,10 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Abre el modal para añadir una nueva zona a un cementerio específico.
+   * @param cementerio El objeto cementerio al que se añadirá la zona.
+   */
   abrirModal_addZonas(cementerio: any) {
     this.id = cementerio.id;
     this.getAllTipo();
@@ -172,6 +229,9 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Cierra el modal activo y resetea los formularios.
+   */
   cerrarModal() {
     if (this.modalBootstrap) {
       this.resetForm();
@@ -179,6 +239,11 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Recupera la información de un cementerio por su ID y ejecuta un callback al finalizar.
+   * @param id ID del cementerio.
+   * @param callback Función opcional a ejecutar tras la carga.
+   */
   obtenerCementerio(id: number, callback?: () => void) {
     this.cementerioService.find(id).subscribe((data) => {
       this.cementerioEditar = {
@@ -192,6 +257,9 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Inicia el proceso de guardado de un cementerio, subiendo la imagen primero si existe.
+   */
   guardarCementerio() {
     if (this.archivoParaSubir) {
       this.cementerioService.subirImagen(this.archivoParaSubir).subscribe({
@@ -206,6 +274,9 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Realiza la petición HTTP para guardar los datos del cementerio en la base de datos.
+   */
   private procederAGuardar() {
     this.cementerioService.save(this.nuevoCementerio).subscribe({
       next: (res) => {
@@ -218,6 +289,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Inicia el proceso de actualización de un cementerio, gestionando la subida de una nueva imagen si se ha seleccionado.
+   * @param id ID del cementerio a actualizar.
+   */
   actuCementerio(id: number) {
     if (this.archivoParaSubir) {
       this.cementerioService.subirImagen(this.archivoParaSubir).subscribe({
@@ -232,7 +307,11 @@ export class CementeriosAytoComponent {
     }
   }
 
-  private procederActualizar(id: number) {
+  /**
+   * Realiza la petición HTTP para actualizar los datos del cementerio.
+   * @param id ID del cementerio.
+   */
+  procederActualizar(id: number) {
     this.cementerioService.update(this.cementerioEditar, id).subscribe({
       next: (res) => {
         console.log('Cementerio actualizado', res);
@@ -244,6 +323,21 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Abre el modal de gestión de parcelas para un cementerio.
+   * @param cementerio El objeto cementerio.
+   */
+  abrirModal_parcelas(cementerio: any) {
+    this.id = cementerio.id;
+    this.findAllZonasByCementerio(this.id);
+    this.modalBootstrap = new bootstrap.Modal(this.modalParcelasRef.nativeElement);
+    this.modalBootstrap.show();
+  }
+
+  /**
+   * Elimina un cementerio del sistema.
+   * @param idExterior ID del cementerio a eliminar.
+   */
   delete(idExterior: number) {
     this.cementerioService.delete(idExterior).subscribe({
       next: () => {
@@ -257,6 +351,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Elimina una zona específica.
+   * @param idExterior ID de la zona a eliminar.
+   */
   deleteZona(idExterior: number) {
     this.zonaService.delete(idExterior).subscribe({
       next: () => {
@@ -267,6 +365,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Carga todas las zonas asociadas a un cementerio.
+   * @param idExterior ID del cementerio.
+   */
   findAllZonasByCementerio(idExterior: number) {
     this.zonaService.findAllByCementerioId(idExterior).subscribe({
       next: (res) => {
@@ -276,6 +378,9 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Restablece los modelos de datos y estados de previsualización a sus valores por defecto.
+   */
   resetForm() {
     this.nuevoCementerio = {
       nombre: '',
@@ -300,6 +405,10 @@ export class CementeriosAytoComponent {
     this.mapaPreview.set(null);
   }
 
+  /**
+   * Maneja la selección de un archivo de imagen, generando una previsualización local.
+   * @param event Evento de cambio del input file.
+   */
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
@@ -318,6 +427,66 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Maneja la selección de una zona para gestionar sus parcelas.
+   * @param event Evento de cambio del selector de zonas.
+   */
+  onZonaSeleccionadaParaParcelas(event: any) {
+    const zonaId = Number(event.target.value);
+    const zona = this.zonas().find((z) => z.id === zonaId);
+
+    if (zona) {
+      this.zonaParaParcelas.set(zona);
+      // Buscamos qué parcelas existen ya en esa zona para determinar los huecos libres
+      // basándonos en la capacidad total de la zona (filas x columnas).
+      this.parcelaService.findByZonaId(zonaId).subscribe((parcelasExistentes) => {
+        this.parcelasDeZona.set(parcelasExistentes);
+        this.calcularHuecosLibres(zona, parcelasExistentes);
+      });
+    }
+  }
+
+  /**
+   * Calcula los huecos libres en una zona basándose en su cuadrícula (filas x columnas).
+   * @param zona La zona a analizar.
+   * @param existentes Lista de parcelas ya registradas en esa zona.
+   */
+  calcularHuecosLibres(zona: Zona, existentes: any[]) {
+    const huecos = [];
+    // Iteramos por la cuadrícula definida para la zona.
+    for (let f = 1; f <= zona.filas; f++) {
+      for (let c = 1; c <= zona.columnas; c++) {
+        // Verificamos si la posición (fila, columna) ya está ocupada por una parcela existente.
+        const existe = existentes.find((p) => p.fila === f && p.columna === c);
+        if (!existe) {
+          huecos.push({ fila: f, columna: c });
+        }
+      }
+    }
+    this.disponibilidadParcelas.set(huecos);
+  }
+
+  /**
+   * Maneja la selección de un hueco libre para preparar la creación de una nueva parcela.
+   * @param event Evento de cambio del selector de huecos.
+   */
+  onSeleccionarHueco(event: any) {
+    // El valor viene en formato "fila-columna"
+    const [f, c] = event.target.value.split('-').map(Number);
+
+    this.nuevaParcela = {
+      fila: f,
+      columna: c,
+      concesionId: 0,
+      zonaId: this.zonaParaParcelas()?.id || 0,
+      estado: 'LIBRE',
+    };
+  }
+
+  /**
+   * Configura la URL del mapa y abre el modal para visualizarlo.
+   * @param cementerio Objeto cementerio que contiene el nombre del archivo del mapa.
+   */
   verMapa(cementerio: any) {
     this.cementerioSeleccionadoNombre.set(cementerio.nombre);
     const rutaBase = 'http://localhost:8080/uploads/mapas/';
@@ -329,6 +498,10 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Obtiene los datos detallados de una zona por su ID.
+   * @param idExterior ID de la zona.
+   */
   obtainDatosZona(idExterior: number) {
     this.zonaService.find(idExterior).subscribe({
       next: (res) => {
@@ -340,6 +513,9 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Envía la información para crear una nueva zona en el cementerio actual.
+   */
   addZona() {
     this.zonaService.save(this.nuevaZona).subscribe({
       next: (res) => {
@@ -352,10 +528,42 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Carga los tipos de zonas disponibles desde el servicio.
+   */
   getAllTipo() {
     this.tipos.set(this.zonaService.tipos());
   }
 
+  /**
+   * Guarda una nueva parcela en el sistema y refresca la disponibilidad de la zona.
+   */
+  guardarParcela() {
+    const data = this.nuevaParcela;
+    console.log(data);
+
+    this.parcelaService.save(data).subscribe({
+      next: () => {
+        console.log('Parcela creada:', data);
+        // Refrescamos la lista de huecos libres tras guardar la nueva parcela.
+        this.onZonaSeleccionadaParaParcelas({ target: { value: data.zonaId } });
+        this.nuevaParcela = {
+          fila: 0,
+          columna: 0,
+          concesionId: 0,
+          zonaId: data.zonaId,
+          estado: 'LIBRE',
+        };
+        alert('Parcela registrada correctamente en el inventario.');
+      },
+      error: (err) => console.error('Error al crear parcela', err),
+    });
+  }
+
+  /**
+   * Actualiza la información de una zona existente.
+   * @param idExterior ID de la zona a actualizar.
+   */
   guardarZonas(idExterior: number) {
     this.zonaService.update(this.zonaSelected()!, idExterior).subscribe({
       next: (res) => {
@@ -368,6 +576,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Maneja el cambio de selección en el listado de zonas para cargar sus datos.
+   * @param event Evento de cambio del selector.
+   */
   onZonaChange(event: any) {
     const idSeleccionado = event.target.value;
     if (idSeleccionado) {
@@ -375,13 +587,22 @@ export class CementeriosAytoComponent {
     }
   }
 
+  /**
+   * Extrae el ID del usuario (ayuntamiento) decodificando el token JWT almacenado en localStorage.
+   * @returns El ID del usuario o null si no se puede obtener.
+   */
   obtenerIdUsuario(): number | null {
     let userId: number | null = null;
     const token = localStorage.getItem('token');
 
     if (token) {
       try {
+        // El token JWT se compone de Header.Payload.Signature.
+        // El payload (índice 1) contiene los datos del usuario.
         const payloadPart = token.split('.')[1];
+
+        // atob() decodifica la cadena Base64.
+        // Luego parseamos el JSON resultante para acceder a la propiedad 'id'.
         const decodedPayload = JSON.parse(atob(payloadPart));
 
         if (decodedPayload && decodedPayload.id) {
@@ -396,6 +617,10 @@ export class CementeriosAytoComponent {
     return userId;
   }
 
+  /**
+   * Carga todos los cementerios asociados a un ayuntamiento específico.
+   * @param id ID del ayuntamiento.
+   */
   cargarCementerios(id: number) {
     this.cementerioService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {
@@ -407,6 +632,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Carga todos los clientes asociados a un ayuntamiento específico.
+   * @param id ID del ayuntamiento.
+   */
   cargarClientes(id: number) {
     this.clienteService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {
@@ -418,6 +647,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Carga todos los difuntos asociados a un ayuntamiento específico.
+   * @param id ID del ayuntamiento.
+   */
   cargarDifuntos(id: number) {
     this.difuntoService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {
@@ -429,6 +662,10 @@ export class CementeriosAytoComponent {
     });
   }
 
+  /**
+   * Carga todos los servicios asociados a un ayuntamiento específico.
+   * @param id ID del ayuntamiento.
+   */
   cargarServicios(id: number) {
     this.servicioService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {

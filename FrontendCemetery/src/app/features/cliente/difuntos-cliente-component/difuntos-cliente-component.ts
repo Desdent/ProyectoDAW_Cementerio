@@ -22,11 +22,17 @@ export class DifuntosClienteComponent implements OnInit {
 
   fotosConError = new Set<number>();
 
+  /**
+   * Inicializa el componente recuperando el ID del cliente y sus difuntos.
+   */
   ngOnInit(): void {
     this.clienteId.set(this.authService.getUsuarioId());
     this.getDifuntos();
   }
 
+  /**
+   * Carga la lista de difuntos asociados al cliente actual.
+   */
   getDifuntos() {
     this.difuntoService.loadAllByCliente(this.clienteId()).subscribe({
       next: (res) => {
@@ -39,16 +45,30 @@ export class DifuntosClienteComponent implements OnInit {
     });
   }
 
+  /**
+   * Maneja errores en la carga de imágenes de difuntos.
+   * @param difuntoId ID del difunto cuya imagen falló.
+   * @param nombreFoto Nombre del archivo que dio error.
+   */
   onImageError(difuntoId: number, nombreFoto: string) {
     console.error(`Error cargando foto para difunto ID ${difuntoId}`);
-
+    // Añadimos el ID al set para que la UI sepa que debe mostrar un placeholder.
     this.fotosConError.add(difuntoId);
   }
 
+  /**
+   * Log de confirmación cuando una imagen se carga correctamente.
+   * @param difuntoId ID del difunto.
+   */
   onImageLoad(difuntoId: number) {
     console.log(`Foto cargada correctamente para difunto ID ${difuntoId}`);
   }
 
+  /**
+   * Determina si se debe mostrar la imagen por defecto.
+   * @param difuntoId ID del difunto a comprobar.
+   * @returns True si la imagen falló o no existe.
+   */
   shouldShowPlaceholder(difuntoId: number): boolean {
     return this.fotosConError.has(difuntoId);
   }

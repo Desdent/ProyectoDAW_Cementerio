@@ -35,6 +35,9 @@ export class MainPanelAytoComponent {
 
   aytoId: number = 0;
 
+  /**
+   * Inicializo el componente obteniendo el ID del ayuntamiento desde el token y disparando la carga de todos los datos estadísticos.
+   */
   ngOnInit() {
     this.aytoId = this.obtenerIdUsuario()!;
     this.cargarCementerios(this.aytoId);
@@ -43,15 +46,21 @@ export class MainPanelAytoComponent {
     this.cargarServicios(this.aytoId);
   }
 
-  // Esto es full IA, no tenia ni idea de como obtener la ID del token
+  /**
+   * Extraigo el identificador del usuario decodificando el payload del token JWT almacenado en el navegador.
+   * @returns El ID del usuario o null si el token no existe o es inválido.
+   */
   obtenerIdUsuario(): number | null {
     let userId: number | null = null;
     const token = localStorage.getItem('token');
 
     if (token) {
       try {
+        // El token JWT consta de tres partes: Header, Payload y Signature, separadas por puntos.
+        // Accedo a la segunda parte (índice 1), que contiene los datos del usuario.
         const payloadPart = token.split('.')[1];
 
+        // Decodifico la cadena Base64 mediante atob y convierto el JSON resultante en un objeto literal.
         const decodedPayload = JSON.parse(atob(payloadPart));
 
         if (decodedPayload && decodedPayload.id) {
@@ -66,6 +75,10 @@ export class MainPanelAytoComponent {
     return userId;
   }
 
+  /**
+   * Solicito al servicio la lista de cementerios pertenecientes al ayuntamiento y actualizo la señal correspondiente.
+   * @param id Identificador del ayuntamiento.
+   */
   cargarCementerios(id: number) {
     this.cementerioService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {
@@ -77,6 +90,10 @@ export class MainPanelAytoComponent {
     });
   }
 
+  /**
+   * Recupero los clientes registrados en el ayuntamiento a través del servicio y los almaceno en la señal de clientes.
+   * @param id Identificador del ayuntamiento.
+   */
   cargarClientes(id: number) {
     this.clienteService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {
@@ -89,6 +106,10 @@ export class MainPanelAytoComponent {
     });
   }
 
+  /**
+   * Obtengo el listado de difuntos asociados a este ayuntamiento para mostrar el recuento en el panel.
+   * @param id Identificador del ayuntamiento.
+   */
   cargarDifuntos(id: number) {
     this.difuntoService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {
@@ -100,6 +121,10 @@ export class MainPanelAytoComponent {
     });
   }
 
+  /**
+   * Cargo los servicios disponibles en el ayuntamiento invocando al servicio correspondiente.
+   * @param id Identificador del ayuntamiento.
+   */
   cargarServicios(id: number) {
     this.servicioService.loadAllByAyuntamiento(id).subscribe({
       next: (data) => {
