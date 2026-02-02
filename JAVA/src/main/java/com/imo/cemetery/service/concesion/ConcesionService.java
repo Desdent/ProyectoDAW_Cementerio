@@ -28,5 +28,6 @@ public interface ConcesionService {
     List<ConcesionResponseDTO> findAllCasiVencidas(); // Un mes? Un año? de lejanía a la fechaFin
     ConcesionResponseDTO findByPagoId(Long id);
     List<ConcesionResponseDTO> findAllByCementerioId(Long id);
+    List<ConcesionResponseDTO> findAllByClienteAndAyuntamiento(Long clienteId, Long aytoId);
 
 }

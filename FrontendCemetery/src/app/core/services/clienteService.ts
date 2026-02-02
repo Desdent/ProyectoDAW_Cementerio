@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Cliente } from '../../interfaces/cliente/cliente';
 import { ClientePost } from '../../interfaces/cliente/clientePost';
 import { ClienteUpdate } from '../../interfaces/cliente/clienteUpdate';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -31,6 +32,14 @@ export class ClienteService {
 
   loadAllByCementerio(id: number) {
     return this.http.get<Cliente[]>(`${this.apiUrl}/cementerio/${id}`);
+  }
+
+  getConcesionesPorAyuntamiento(clienteId: number, aytoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${clienteId}/concesiones/ayuntamiento/${aytoId}`);
+  }
+
+  getDifuntosPorAyuntamiento(clienteId: number, aytoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/cliente/${clienteId}/ayuntamiento/${aytoId}`);
   }
 
   save(cliente: ClientePost) {

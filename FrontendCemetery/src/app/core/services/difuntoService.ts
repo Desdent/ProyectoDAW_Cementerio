@@ -3,6 +3,7 @@ import { inject, Injectable, signal } from '@angular/core';
 import { Difunto } from '../../interfaces/difunto/difunto';
 import { DifuntoPost } from '../../interfaces/difunto/difuntoPost';
 import { DifuntoUpdate } from '../../interfaces/difunto/difuntoUpdate';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -42,6 +43,10 @@ export class DifuntoService {
     return this.http.get<Difunto[]>(`${this.apiUrl}/cementerio/${id}`);
   }
 
+  loadAllByParcela(id: number) {
+    return this.http.get<Difunto[]>(`${this.apiUrl}/parcela/${id}`);
+  }
+
   loadAllByCliente(id: number) {
     return this.http.get<Difunto[]>(`${this.apiUrl}/cliente/${id}`);
   }
@@ -60,5 +65,15 @@ export class DifuntoService {
 
   delete(id: number) {
     return this.http.delete(`${this.apiUrl}/${id}`);
+  }
+
+  exhumar(id: number) {
+    return this.http.delete(`${this.apiUrl}/exhumar/${id}`);
+  }
+
+  getDifuntosPorAyuntamiento(clienteId: number, aytoId: number): Observable<any[]> {
+    return this.http.get<any[]>(
+      `http://localhost:8080/api/v1/difuntos/cliente/${clienteId}/ayuntamiento/${aytoId}`,
+    );
   }
 }

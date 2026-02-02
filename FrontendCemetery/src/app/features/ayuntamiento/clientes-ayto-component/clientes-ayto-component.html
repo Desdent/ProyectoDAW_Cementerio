@@ -39,6 +39,21 @@
                   <button class="btn-action" title="Ver detalles" (click)="abrirModal_ver(cli)">
                     <i class="bi bi-eye"></i>
                   </button>
+
+                  <button
+                    class="btn-action"
+                    title="Ver Concesiones"
+                    (click)="abrirModalConcesiones(cli.id)"
+                  >
+                    <i class="bi bi-book-half"></i>
+                  </button>
+                  <button
+                    class="btn-action"
+                    title="Ver Difuntos de esta Concesión"
+                    (click)="abrirModalDifuntos(cli.id)"
+                  >
+                    <i class="bi bi-box2"></i>
+                  </button>
                   <button
                     class="btn-action"
                     title="Editar registro"
@@ -537,6 +552,118 @@
             Eliminar
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalConcesiones" tabindex="-1" aria-hidden="true" #modalConcesiones>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-file-earmark-text me-2 fs-4"></i>
+          <span class="modal-title-text">Concesiones del Cliente</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>INICIO</th>
+                <th>VENCIMIENTO</th>
+                <th>ESTADO</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (con of concesionesCliente(); track con.id) {
+                <tr>
+                  <td>{{ con.id }}</td>
+                  <td>{{ con.fechaInicio }}</td>
+                  <td>{{ con.fechaFin }}</td>
+                  <td>
+                    <span
+                      class="badge"
+                      [class.bg-success]="!con.vencida"
+                      [class.bg-danger]="con.vencida"
+                    >
+                      {{ con.vencida ? 'Vencida' : 'Vigente' }}
+                    </span>
+                  </td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="text-center p-4 text-muted">
+                    No se encontraron concesiones en este ayuntamiento.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-light">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="modalDifuntos" tabindex="-1" aria-hidden="true" #modalDifuntos>
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content modal-custom-border shadow-lg">
+      <div class="modal-header header-custom-modal border-0 p-4">
+        <h5 class="modal-title d-flex align-items-center">
+          <i class="bi bi-person-bounding-box me-2 fs-4"></i>
+          <span class="modal-title-text">Difuntos Asociados</span>
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white shadow-none"
+          (click)="cerrarModal()"
+        ></button>
+      </div>
+      <div class="modal-body p-4 bg-light">
+        <div class="table-responsive">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>NOMBRE COMPLETO</th>
+                <th>DEFUNCIÓN</th>
+                <th>ENTIERRO</th>
+                <th>UBICACIÓN</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (dif of difuntosCliente(); track dif.id) {
+                <tr>
+                  <td class="fw-medium">
+                    {{ dif.nombre }} {{ dif.apellido1 }} {{ dif.apellido2 }}
+                  </td>
+                  <td>{{ dif.yearDefuncion }}</td>
+                  <td>{{ dif.fechaEntierro }}</td>
+                  <td>Parcela #{{ dif.parcelaId }}</td>
+                </tr>
+              } @empty {
+                <tr>
+                  <td colspan="4" class="text-center p-4 text-muted">
+                    No se encontraron difuntos en este ayuntamiento.
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer border-0 p-4 bg-light">
+        <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cerrar</button>
       </div>
     </div>
   </div>

@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -29,7 +30,7 @@ public class FacturacionServiceImpl implements FacturacionService {
         Pago pago = pagoRepo.findById(dto.getPagoId())
                 .orElseThrow(() -> new EntityNotFoundException("Pago no encontrado"));
 
-        if (pago.getImporte().compareTo(dto.getImporte()) != 0) {
+        if (pago.getImporte().compareTo((dto.getImporte())) != 0) {
             throw new IllegalStateException("El importe de la factura no coincide con el importe del pago realizado");
         }
 

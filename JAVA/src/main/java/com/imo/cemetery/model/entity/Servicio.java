@@ -5,6 +5,8 @@ import com.imo.cemetery.model.enums.ServicioType;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,8 @@ public class Servicio {
     // Esto le indica a JPA que la columna es un Enum y el EnumType.String hace que guarde los valores en lugar de las posiciones. No se usa anotacion de relación
     @Column(nullable = false, unique = true)
     private ServicioType tipo;
+    @Column(nullable = false)
+    private BigDecimal precio;
 
 
     // >> RELACIONES <<

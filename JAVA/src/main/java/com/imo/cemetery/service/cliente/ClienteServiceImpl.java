@@ -150,10 +150,12 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public List<ClienteResponseDTO> findAllByAyuntamientoId(Long id)
     {
-        return repo.findAllDistinctByConcesiones_Parcelas_Zona_Cementerio_Ayuntamiento_Id(id)
+
+        List<ClienteResponseDTO> response = repo.findAllDistinctByConcesiones_Parcelas_Zona_Cementerio_Ayuntamiento_Id(id)
                 .stream()
                 .map(clienteMapper::toResponseDTO)
                 .toList();
+        return  response;
     }
 
     @Override

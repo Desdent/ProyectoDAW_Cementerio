@@ -147,6 +147,19 @@ public class DifuntoController {
         }
     }
 
+    @DeleteMapping("/exhumar/{id}")
+    public ResponseEntity<Void> exhumar(@PathVariable Long id) {
+        service.exhumar(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/cliente/{clienteId}/ayuntamiento/{aytoId}")
+    public ResponseEntity<List<DifuntoResponseDTO>> getDifuntosByClienteAndAyto(
+            @PathVariable Long clienteId,
+            @PathVariable Long aytoId) {
+        return ResponseEntity.ok(service.findAllByClienteAndAyuntamiento(clienteId, aytoId));
+    }
+
     /* Al final estos métodos no hacen falta porque cualquiera deberia poder consultar que muertos hay en un cementerio
     pero mira que guapos estan manolo me lo estaba currando
 

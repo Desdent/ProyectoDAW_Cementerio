@@ -63,12 +63,12 @@ public class ConcesionServiceImpl implements ConcesionService{
             throw new EntityNotFoundException("Una o más parcelas no existen");
         }
 
-        if (parcelas.stream().anyMatch(p -> p.getEstado() != com.imo.cemetery.model.enums.EstadoType.LIBRE)) {
+        if (parcelas.stream().anyMatch(p -> p.getEstado() != EstadoType.LIBRE)) {
             throw new IllegalStateException("Alguna de las parcelas ya está ocupada o reservada");
         }
 
 
-        com.imo.cemetery.model.entity.Pago pagoEntity = com.imo.cemetery.model.entity.Pago.builder()
+        Pago pagoEntity = Pago.builder()
                 .importe(pagoDto.getImporte())
                 .fecha(pagoDto.getFecha())
                 .metodo(pagoDto.getMetodo())
@@ -77,19 +77,19 @@ public class ConcesionServiceImpl implements ConcesionService{
                 .build();
 
 
-        com.imo.cemetery.model.entity.Concesion entity = concesionMapper.toEntity(concesionDto);
+        Concesion entity = concesionMapper.toEntity(concesionDto);
         entity.setCliente(cliente);
         entity.setPago(pagoEntity);
         entity.setVencida(false);
 
         // Se guarda la concesión y, por cascada, el pago.
-        final com.imo.cemetery.model.entity.Concesion savedEntity = repo.save(entity);
+        final Concesion savedEntity = repo.save(entity);
 
 
 
         parcelas.forEach(p -> {
             p.setConcesion(savedEntity);
-            p.setEstado(com.imo.cemetery.model.enums.EstadoType.RESERVADA);
+            p.setEstado(EstadoType.RESERVADA);
         });
 
         parcelaRepository.saveAll(parcelas);
@@ -225,6 +225,14 @@ public class ConcesionServiceImpl implements ConcesionService{
     @Override
     public List<ConcesionResponseDTO> findAllByCementerioId(Long id) {
         return repo.findAllByParcelas_Zona_Cementerio_Id(id)
+                .stream()
+                .map(concesionMapper::toResponseDTO)
+                .toList();
+    }
+
+    @Override
+    public List<ConcesionResponseDTO> findAllByClienteAndAyuntamiento(Long clienteId, Long aytoId) {
+        return repo.findConcesionesByClienteAndAyuntamiento(clienteId, aytoId)
                 .stream()
                 .map(concesionMapper::toResponseDTO)
                 .toList();

@@ -67,9 +67,25 @@
   border-color: #cbd5e1;
 }
 
+.btn-exhumar {
+  color: #64748b;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  min-height: 38px;
+}
+
+.btn-exhumar:hover {
+  background-color: #fef2f2;
+  color: #ef4444;
+  border-color: #fecaca;
+  transform: scale(1.1);
+}
+
 /* // BOTÓN PRINCIPAL (NUEVO REGISTRO) */
 .btn-primary-custom {
-  background-color: var(--kelpie-ash); /* O el color principal que prefieras */
+  background-color: var(--kelpie-ash);
   color: white;
   border: none;
   padding: 5px 10px;

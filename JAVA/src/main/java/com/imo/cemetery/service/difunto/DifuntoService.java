@@ -19,4 +19,6 @@ public interface DifuntoService {
     List<DifuntoResponseDTO> findAllByAyuntamientoId(Long id);
     List<DifuntoResponseDTO> findAllByCementerioId(Long id);
     List<DifuntoResponseDTO> findAllByCliente(Long id);
+    public void exhumar(Long difuntoId);
+    List<DifuntoResponseDTO> findAllByClienteAndAyuntamiento(Long clienteId, Long aytoId);
 }

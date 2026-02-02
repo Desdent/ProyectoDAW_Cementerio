@@ -24,6 +24,7 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     List<Cliente> findAllByCiudadId(Long ciudadId);
     List<Cliente> findAllByCiudadNombreIgnoreCase(String ciudadNombre);
 
+
     boolean existsByEmail(String email);
     boolean existsByDni(String dni);
 

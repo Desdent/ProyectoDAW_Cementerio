@@ -140,6 +140,13 @@ public class ConcesionController {
 
     }
 
+    @GetMapping("/cliente/{clienteId}/ayuntamiento/{aytoId}")
+    public ResponseEntity<List<ConcesionResponseDTO>> getConcesionesByClienteAndAyto(
+            @PathVariable Long clienteId,
+            @PathVariable Long aytoId) {
+        return ResponseEntity.ok(service.findAllByClienteAndAyuntamiento(clienteId, aytoId));
+    }
+
 
 
 

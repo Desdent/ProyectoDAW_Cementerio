@@ -6,6 +6,9 @@ import { ProvinciaService } from '../../../core/services/provinciaService';
 import { ClientePost } from '../../../interfaces/cliente/clientePost';
 import { FormsModule } from '@angular/forms';
 import { ClienteUpdate } from '../../../interfaces/cliente/clienteUpdate';
+import { Cliente } from '../../../interfaces/cliente/cliente';
+import { ConcesionService } from '../../../core/services/concesionService';
+import { DifuntoService } from '../../../core/services/difuntoService';
 
 @Component({
   selector: 'app-clientes-ayto-component',
@@ -17,18 +20,27 @@ export class ClientesAytoComponent {
   public clienteService = inject(ClienteService);
   public ciudadService = inject(CiudadService);
   public provinciaService = inject(ProvinciaService);
+  private concesionService = inject(ConcesionService);
+  private difuntoService = inject(DifuntoService);
 
   @ViewChild('htmlModal') modalElement!: ElementRef;
   @ViewChild('modalVer') modalVerRef!: ElementRef;
   @ViewChild('modalEditar') modalEditarRef!: ElementRef;
   @ViewChild('modalDelete') modalDeleteRef!: ElementRef;
+  @ViewChild('modalConcesiones') modalConcesionesRef!: ElementRef;
+  @ViewChild('modalDifuntos') modalDifuntosRef!: ElementRef;
 
   aytoId: number = 0;
+  clientes = signal<Cliente[]>([]);
+  concesionesCliente = signal<any[]>([]);
+  difuntosCliente = signal<any[]>([]);
 
   ngOnInit(): void {
     this.aytoId = this.obtenerIdUsuario()!;
-    this.clienteService.loadAllByAyuntamiento(this.aytoId);
+    this.cargarClientes();
     this.provinciaService.loadAll();
+    console.log(this.clientes());
+    this.paginaActual.set(1);
   }
 
   nuevoCliente: ClientePost = {
@@ -119,6 +131,30 @@ export class ClientesAytoComponent {
     }
   }
 
+  abrirModalConcesiones(clienteId: number) {
+    // Llamamos al servicio de CONCESIONES
+    this.concesionService.getConcesionesPorAyuntamiento(clienteId, this.aytoId).subscribe({
+      next: (data) => {
+        this.concesionesCliente.set(data);
+        this.modalBootstrap = new bootstrap.Modal(this.modalConcesionesRef.nativeElement);
+        this.modalBootstrap.show();
+      },
+      error: (err) => console.error('Error: Ruta no encontrada en ConcesionController', err),
+    });
+  }
+
+  abrirModalDifuntos(clienteId: number) {
+    // Llamamos al servicio de DIFUNTOS
+    this.difuntoService.getDifuntosPorAyuntamiento(clienteId, this.aytoId).subscribe({
+      next: (data) => {
+        this.difuntosCliente.set(data);
+        this.modalBootstrap = new bootstrap.Modal(this.modalDifuntosRef.nativeElement);
+        this.modalBootstrap.show();
+      },
+      error: (err) => console.error('Error: Ruta no encontrada en DifuntoController', err),
+    });
+  }
+
   cerrarModal() {
     this.modalBootstrap.hide();
   }
@@ -163,6 +199,19 @@ export class ClientesAytoComponent {
         this.resetForm();
       },
       error: (err) => console.error('Error al guardar', err),
+    });
+  }
+
+  cargarClientes() {
+    this.clienteService.loadAllByAyuntamiento(this.aytoId).subscribe({
+      next: (data) => {
+        this.clientes.set(data);
+
+        this.clienteService.clientes.set(data);
+
+        console.log('Clientes cargados en componente y servicio:', data);
+      },
+      error: (err) => console.error('Error al cargar clientes', err),
     });
   }
 

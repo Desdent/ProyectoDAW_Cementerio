@@ -25,4 +25,7 @@ export class ConcesionService {
   findAllByCliente(id: number) {
     return this.http.get<Concesion[]>(`${this.apiUrl}/cliente/${id}`);
   }
+  getConcesionesPorAyuntamiento(clienteId: number, aytoId: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/cliente/${clienteId}/ayuntamiento/${aytoId}`);
+  }
 }

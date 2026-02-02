@@ -29,4 +29,13 @@ public interface ConcesionRepository extends JpaRepository<Concesion, Long> {
     Optional<Concesion> findByPagoId(Long id);
     List<Concesion> findAllByParcelas_Zona_Cementerio_Id(Long id);
 
+    @Query("SELECT DISTINCT con FROM Concesion con " +
+            "JOIN con.parcelas p " +
+            "WHERE con.cliente.id = :clienteId " +
+            "AND p.zona.cementerio.ayuntamiento.id = :aytoId")
+    List<Concesion> findConcesionesByClienteAndAyuntamiento(
+            @Param("clienteId") Long clienteId,
+            @Param("aytoId") Long aytoId
+    );
+
 }
