@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * The type Tarifa servicio controller.
+ */
 @RestController
 @RequestMapping("/api/v1/tarifas-serv")
 @RequiredArgsConstructor
@@ -27,6 +30,12 @@ public class TarifaServicioController {
 
     // CRUD
 
+    /**
+     * Create response entity.
+     *
+     * @param dto the dto
+     * @return the response entity
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TarifaServicioResponseDTO> create(@Valid @RequestBody TarifaServicioCreateDTO dto)
@@ -34,18 +43,36 @@ public class TarifaServicioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<TarifaServicioResponseDTO>> findAll()
     {
         return ResponseEntity.ok(service.findAll());
     }
 
+    /**
+     * Find by id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<TarifaServicioResponseDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    /**
+     * Update response entity.
+     *
+     * @param id  the id
+     * @param dto the dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TarifaServicioResponseDTO> update(@PathVariable Long id,
@@ -54,6 +81,12 @@ public class TarifaServicioController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
@@ -66,12 +99,25 @@ public class TarifaServicioController {
 
     // BÚSQUEDAS Y FILTROS
 
+    /**
+     * Find all by cementerio response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/cementerio/{id}")
     public ResponseEntity<List<TarifaServicioResponseDTO>> findAllByCementerio(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByCementerio(id));
     }
 
+    /**
+     * Find precio servicio response entity.
+     *
+     * @param tipo the tipo
+     * @param id   the id
+     * @return the response entity
+     */
     @GetMapping("/servicio/{tipo}/cementerio/{id}")
     public ResponseEntity<TarifaServicioResponseDTO> findPrecioServicio(@PathVariable ServicioType tipo,
                                                                         @PathVariable Long id)

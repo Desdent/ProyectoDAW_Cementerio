@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * The type Servicio controller.
+ */
 @RestController
 @RequestMapping("/api/v1/servicios")
 @RequiredArgsConstructor
@@ -26,6 +29,12 @@ public class ServicioController {
 
     // CRUD
 
+    /**
+     * Create response entity.
+     *
+     * @param dto the dto
+     * @return the response entity
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ServicioResponseDTO> create (@Valid @RequestBody ServicioCreateDTO dto)
@@ -33,18 +42,36 @@ public class ServicioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<ServicioResponseDTO>> findAll()
     {
         return ResponseEntity.ok(service.findAll());
     }
 
+    /**
+     * Find by id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ServicioResponseDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    /**
+     * Update response entity.
+     *
+     * @param id  the id
+     * @param dto the dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ServicioResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ServicioUpdateDTO dto)
@@ -52,6 +79,12 @@ public class ServicioController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
@@ -64,18 +97,36 @@ public class ServicioController {
 
     // BÚSQUEDAS Y FILTROS
 
+    /**
+     * Find by tipo response entity.
+     *
+     * @param type the type
+     * @return the response entity
+     */
     @GetMapping("/tipo/{type}")
     public ResponseEntity<ServicioResponseDTO> findByTipo(@PathVariable ServicioType type)
     {
         return ResponseEntity.ok(service.findByTipo(type));
     }
 
+    /**
+     * Find all by cementerio response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/cementerio/{id}")
     public ResponseEntity<List<ServicioResponseDTO>> findAllByCementerio(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByCementerio(id));
     }
 
+    /**
+     * Find all by ayuntamiento response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/ayuntamiento/{id}")
     public ResponseEntity<List<ServicioResponseDTO>> findAllByAyuntamiento(@PathVariable Long id)
     {

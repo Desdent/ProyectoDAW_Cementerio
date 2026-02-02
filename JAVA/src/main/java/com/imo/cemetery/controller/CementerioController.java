@@ -26,6 +26,9 @@ import java.util.UUID;
 
 import java.util.List;
 
+/**
+ * The type Cementerio controller.
+ */
 @RestController
 @RequestMapping("/api/v1/cementerios")
 @RequiredArgsConstructor
@@ -37,6 +40,12 @@ public class CementerioController {
 
     // CRUD
 
+    /**
+     * Create response entity.
+     *
+     * @param dto the dto
+     * @return the response entity
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CementerioResponseDTO> create(@Valid @RequestBody CementerioCreateDTO dto)
@@ -44,6 +53,11 @@ public class CementerioController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<CementerioResponseDTO>> findAll()
     {
@@ -51,18 +65,37 @@ public class CementerioController {
         return response.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(response);
     }
 
+    /**
+     * Find by id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<CementerioResponseDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    /**
+     * Find by email response entity.
+     *
+     * @param email the email
+     * @return the response entity
+     */
     @GetMapping("/email/{email}")
     public ResponseEntity<CementerioResponseDTO> findByEmail(@PathVariable String email)
     {
         return ResponseEntity.ok(service.findByEmail(email));
     }
 
+    /**
+     * Update response entity.
+     *
+     * @param id  the id
+     * @param dto the dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<CementerioResponseDTO> update(@PathVariable Long id, @Valid @RequestBody CementerioUpdateDTO dto)
@@ -70,6 +103,12 @@ public class CementerioController {
         return ResponseEntity.ok(service.update(dto, id));
     }
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
@@ -81,42 +120,83 @@ public class CementerioController {
 
     // BÚSQUEDAS Y FILTROS
 
+    /**
+     * Search response entity.
+     *
+     * @param term the term
+     * @return the response entity
+     */
     @GetMapping("/search")
     public ResponseEntity<List<CementerioResponseDTO>> search(@RequestParam String term)
     {
         return ResponseEntity.ok(service.findAllBySearchingTerm(term));
     }
 
+    /**
+     * Filter by provincia response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/provincia/{id}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByProvincia(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByProvinciaId(id));
     }
 
+    /**
+     * Filter by ciudad response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/ciudad/{id}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByCiudad(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByCiudadId(id));
     }
 
+    /**
+     * Filter by ayuntamiento id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/ayuntamiento/{id}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByAyuntamientoId(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByAyuntamientoId(id));
     }
 
+    /**
+     * Filter by ayuntamiento email response entity.
+     *
+     * @param email the email
+     * @return the response entity
+     */
     @GetMapping("/ayuntamiento/email/{email}")
     public ResponseEntity<List<CementerioResponseDTO>> filterByAyuntamientoEmail(@PathVariable String email)
     {
         return ResponseEntity.ok(service.findAllByAyuntamientoEmail(email));
     }
 
+    /**
+     * Count by ayuntamiento id response entity.
+     *
+     * @param aytoId the ayto id
+     * @return the response entity
+     */
     @GetMapping("/count/{aytoId}")
     public ResponseEntity<Long> countByAyuntamientoId(@PathVariable Long aytoId)
     {
         return ResponseEntity.ok(service.countByAyuntamientoId(aytoId));
     }
 
+    /**
+     * My cementerios response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping("/my-cementerios")
     @PreAuthorize("hasRole('AYUNTAMIENTO')")
     public ResponseEntity<List<CementerioResponseDTO>> myCementerios()
@@ -124,6 +204,12 @@ public class CementerioController {
         return ResponseEntity.ok(service.findAllByLoggedAyuntamiento());
     }
 
+    /**
+     * Upload map response entity.
+     *
+     * @param file the file
+     * @return the response entity
+     */
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadMap(@RequestParam("archivo") MultipartFile file) {
         if (file.isEmpty()) {
@@ -140,14 +226,14 @@ public class CementerioController {
                 Files.createDirectories(pathDir);
             }
 
-            // 3. Generar nombre único: timestamp + nombre original
+            // Generar nombre único: timestamp + nombre original
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
             Path filePath = pathDir.resolve(fileName);
 
-            // 4. Guardar archivo
+            // Guardar archivo
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // 5. Devolver el nombre final para que Angular lo use en el JSON del cementerio
+            // Devolver el nombre final para que Angular lo use en el JSON del cementerio
             return ResponseEntity.ok(Map.of("nombreArchivo", fileName));
 
         } catch (IOException e) {
@@ -155,6 +241,12 @@ public class CementerioController {
         }
     }
 
+    /**
+     * Find by concesion response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/concesion/{id}")
     public ResponseEntity<CementerioResponseDTO> findByConcesion(@PathVariable Long id)
     {

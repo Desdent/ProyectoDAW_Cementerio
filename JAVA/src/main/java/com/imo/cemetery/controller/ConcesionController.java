@@ -24,6 +24,9 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Concesion controller.
+ */
 @RestController
 @RequestMapping("/api/v1/concesiones")
 @RequiredArgsConstructor
@@ -37,18 +40,33 @@ public class ConcesionController {
 
     // CRUD y básicass
 
-    // Sin esto no me funciona el create, aparentemente no se pueden usar dos requestbody
+    /**
+     * The type Compra request.
+     */
+// Sin esto no me funciona el create, aparentemente no se pueden usar dos requestbody
     // Si da tiempo sacarlo y meterlo en dtos: prioridad Baja
     public record CompraRequest(
             @Valid ConcesionCreateDTO concesion,
             @Valid PagoCreateDTO pago
     ) {}
+
+    /**
+     * Create response entity.
+     *
+     * @param request the request
+     * @return the response entity
+     */
     @PostMapping
     public ResponseEntity<ConcesionResponseDTO> create(@RequestBody @Valid CompraRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(service.create(request.concesion(), request.pago()));
     }
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<ConcesionResponseDTO>> findAll()
     {
@@ -57,6 +75,12 @@ public class ConcesionController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Find by id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ConcesionResponseDTO> findById(@PathVariable Long id)
     {
@@ -64,6 +88,13 @@ public class ConcesionController {
     }
 
 
+    /**
+     * Update response entity.
+     *
+     * @param id  the id
+     * @param dto the dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ConcesionResponseDTO> update(@PathVariable Long id, @RequestBody ConcesionUpdateDTO dto)
@@ -71,6 +102,12 @@ public class ConcesionController {
         return ResponseEntity.ok(service.update(dto, id));
     }
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
@@ -81,18 +118,36 @@ public class ConcesionController {
 
     // BÚSQUEDAS Y FILTROS
 
+    /**
+     * Find by parcela response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/parcela/{id}")
     public ResponseEntity<ConcesionResponseDTO> findByParcela(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findByParcelaId(id));
     }
 
+    /**
+     * Find all by cliente response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/cliente/{id}")
     public ResponseEntity<List<ConcesionResponseDTO>> findAllByCliente(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByClienteId(id));
     }
 
+    /**
+     * Find all by vencidas response entity.
+     *
+     * @param term the term
+     * @return the response entity
+     */
     @GetMapping("/vencida")
     public ResponseEntity<List<ConcesionResponseDTO>> findAllByVencidas(@RequestParam String term)
     {
@@ -111,6 +166,12 @@ public class ConcesionController {
         return response.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(response);
     }
 
+    /**
+     * Find all by fecha fin before response entity.
+     *
+     * @param fecha the fecha
+     * @return the response entity
+     */
     @GetMapping("/fecha/before")
     public ResponseEntity<List<ConcesionResponseDTO>> findAllByFechaFinBefore(@RequestParam
                                                                               @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -123,6 +184,11 @@ public class ConcesionController {
         return response.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(response);
     }
 
+    /**
+     * Find all casi vencidas response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping("/casi-vencidas")
     public ResponseEntity<List<ConcesionResponseDTO>> findAllCasiVencidas()
     {
@@ -131,6 +197,12 @@ public class ConcesionController {
         return response.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(response);
     }
 
+    /**
+     * Find by pago response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/concesion/{id}")
     public ResponseEntity<ConcesionResponseDTO> findByPago(@PathVariable Long id)
     {
@@ -140,6 +212,13 @@ public class ConcesionController {
 
     }
 
+    /**
+     * Gets concesiones by cliente and ayto.
+     *
+     * @param clienteId the cliente id
+     * @param aytoId    the ayto id
+     * @return the concesiones by cliente and ayto
+     */
     @GetMapping("/cliente/{clienteId}/ayuntamiento/{aytoId}")
     public ResponseEntity<List<ConcesionResponseDTO>> getConcesionesByClienteAndAyto(
             @PathVariable Long clienteId,

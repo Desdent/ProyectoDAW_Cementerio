@@ -10,15 +10,43 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The interface Pago repository.
+ */
 @Repository
 public interface PagoRepository extends JpaRepository<Pago, Long> {
 
+    /**
+     * Find all by fecha list.
+     *
+     * @param fecha the fecha
+     * @return the list
+     */
     List<Pago> findAllByFecha(LocalDate fecha);
 
+    /**
+     * Find all by metodo list.
+     *
+     * @param metodo the metodo
+     * @return the list
+     */
     List<Pago> findAllByMetodo(PagoType metodo);
 
+    /**
+     * Find all by fecha and metodo list.
+     *
+     * @param fecha  the fecha
+     * @param metodo the metodo
+     * @return the list
+     */
     List<Pago> findAllByFechaAndMetodo(LocalDate fecha, PagoType metodo);
 
+    /**
+     * Find all by cementerio id list.
+     *
+     * @param cementerioId the cementerio id
+     * @return the list
+     */
     @Query("SELECT p FROM Pago p " +
             "JOIN p.concesion c " +
             "JOIN c.parcelas parc " +

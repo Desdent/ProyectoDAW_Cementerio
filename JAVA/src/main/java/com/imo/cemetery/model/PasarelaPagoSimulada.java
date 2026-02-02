@@ -5,10 +5,18 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
+/**
+ * The type Pasarela pago simulada.
+ */
 @Component
 @Slf4j
 public class PasarelaPagoSimulada {
 
+    /**
+     * Procesar pago.
+     *
+     * @param importe the importe
+     */
     public void procesarPago(BigDecimal importe) {
         log.info("Conectando con la pasarela para procesar el importe: {} €", importe);
 

@@ -28,6 +28,9 @@ import java.time.Year;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Difunto controller.
+ */
 @RestController
 @RequestMapping("/api/v1/difuntos")
 @RequiredArgsConstructor
@@ -41,24 +44,48 @@ public class DifuntoController {
 
     // CRUD y básicos
 
+    /**
+     * Create response entity.
+     *
+     * @param dto the dto
+     * @return the response entity
+     */
     @PostMapping
     public ResponseEntity<DifuntoResponseDTO> create(@RequestBody @Valid DifuntoCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<DifuntoResponseDTO>> findAll()
     {
         return ResponseEntity.ok(service.findAll());
     }
 
+    /**
+     * Find by id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<DifuntoResponseDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    /**
+     * Update response entity.
+     *
+     * @param id  the id
+     * @param dto the dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') || hasRole('AYUNTAMIENTO')")
     public ResponseEntity<DifuntoResponseDTO> update(@PathVariable Long id, @Valid @RequestBody DifuntoUpdateDTO dto)
@@ -66,6 +93,12 @@ public class DifuntoController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN') || hasRole('AYUNTAMIENTO')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
@@ -77,18 +110,38 @@ public class DifuntoController {
 
     // BÚSQUEDA Y FILTROS
 
+    /**
+     * Find by parcela response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/parcela/{id}")
     public ResponseEntity<List<DifuntoResponseDTO>> findByParcela(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByParcela(id));
     }
 
+    /**
+     * Find all by year defuncion response entity.
+     *
+     * @param year the year
+     * @return the response entity
+     */
     @GetMapping("/anno-defuncion/{year}")
     public ResponseEntity<List<DifuntoResponseDTO>> findAllByYearDefuncion(@PathVariable int year)
     {
         return ResponseEntity.ok(service.findAllByYearDefuncion(Year.of(year)));
     }
 
+    /**
+     * Find by name response entity.
+     *
+     * @param name the name
+     * @param ap1  the ap 1
+     * @param ap2  the ap 2
+     * @return the response entity
+     */
     @GetMapping("/fullname")
     public ResponseEntity<List<DifuntoResponseDTO>> findByName(@RequestParam String name,
                                                                @RequestParam (required = false, defaultValue = "") String ap1,
@@ -97,12 +150,24 @@ public class DifuntoController {
         return ResponseEntity.ok(service.findByFullName(name, ap1, ap2));
     }
 
+    /**
+     * Find all by ayuntamiento id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/ayuntamiento/{id}")
     public ResponseEntity<List<DifuntoResponseDTO>> findAllByAyuntamientoId(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByAyuntamientoId(id));
     }
 
+    /**
+     * Find all by cementerio id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/cementerio/{id}")
     public ResponseEntity<List<DifuntoResponseDTO>> findAllByCementerioId(@PathVariable Long id)
     {
@@ -110,12 +175,24 @@ public class DifuntoController {
     }
 
 
+    /**
+     * Find all by difunto id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/cliente/{id}")
     public ResponseEntity<List<DifuntoResponseDTO>> findAllByDifuntoId(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findAllByCliente(id));
     }
 
+    /**
+     * Upload map response entity.
+     *
+     * @param file the file
+     * @return the response entity
+     */
     @PostMapping("/upload")
     public ResponseEntity<?> uploadMap(@RequestParam("archivo") MultipartFile file) {
         if (file.isEmpty()) {
@@ -147,12 +224,25 @@ public class DifuntoController {
         }
     }
 
+    /**
+     * Exhumar response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/exhumar/{id}")
     public ResponseEntity<Void> exhumar(@PathVariable Long id) {
         service.exhumar(id);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * Gets difuntos by cliente and ayto.
+     *
+     * @param clienteId the cliente id
+     * @param aytoId    the ayto id
+     * @return the difuntos by cliente and ayto
+     */
     @GetMapping("/cliente/{clienteId}/ayuntamiento/{aytoId}")
     public ResponseEntity<List<DifuntoResponseDTO>> getDifuntosByClienteAndAyto(
             @PathVariable Long clienteId,

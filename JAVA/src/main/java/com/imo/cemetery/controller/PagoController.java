@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * The type Pago controller.
+ */
 @RestController
 @RequestMapping("/api/v1/pagos")
 @RequiredArgsConstructor
@@ -28,6 +31,12 @@ public class PagoController {
 
     // CRUD Y BÁSICOS
 
+    /**
+     * Create response entity.
+     *
+     * @param dto the dto
+     * @return the response entity
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PagoResponseDTO> create(@Valid @RequestBody PagoCreateDTO dto)
@@ -35,18 +44,36 @@ public class PagoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<PagoResponseDTO>> findAll()
     {
         return ResponseEntity.ok(service.findAll());
     }
 
+    /**
+     * Find by id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<PagoResponseDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    /**
+     * Update response entity.
+     *
+     * @param id  the id
+     * @param dto the dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<PagoResponseDTO> update(@PathVariable Long id, @Valid @RequestBody PagoUpdateDTO dto)
@@ -54,6 +81,12 @@ public class PagoController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
@@ -66,6 +99,12 @@ public class PagoController {
 
     // BÚSQUEDAS Y FILTROS
 
+    /**
+     * Search response entity.
+     *
+     * @param fecha the fecha
+     * @return the response entity
+     */
     @GetMapping("/search/fecha")
     public ResponseEntity<List<PagoResponseDTO>> search(@RequestParam
                                                                   @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -74,6 +113,12 @@ public class PagoController {
         return ResponseEntity.ok(service.findAllByFecha(fecha));
     }
 
+    /**
+     * Search all by cementerio response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/search/cementerio/{id}")
     public ResponseEntity<List<PagoResponseDTO>> searchAllByCementerio(@PathVariable Long id)
     {

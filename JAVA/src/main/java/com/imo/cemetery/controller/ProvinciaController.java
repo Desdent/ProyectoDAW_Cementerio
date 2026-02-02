@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * The type Provincia controller.
+ */
 @RestController
 @RequestMapping("/api/v1/provincias")
 @RequiredArgsConstructor
@@ -21,6 +24,11 @@ public class ProvinciaController {
 
     private final ProvinciaService service;
 
+    /**
+     * Gets all.
+     *
+     * @return the all
+     */
     @GetMapping
     public ResponseEntity<List<ProvinciaResponseDTO>> getAll() {
         return ResponseEntity.ok(service.getAll());

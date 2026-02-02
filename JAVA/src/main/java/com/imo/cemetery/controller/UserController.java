@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * The type User controller.
+ */
 @CrossOrigin("*") // Permite entrar desde cualquier puerto distinto al de la aplicación
 @RestController
 @RequestMapping("controller/users")
@@ -22,6 +25,11 @@ public class UserController {
 
     private final UserServiceImpl service;
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserResponseDTO>> findAll() {
@@ -31,6 +39,12 @@ public class UserController {
         return ResponseEntity.ok(users); // Envía un 200 y construye el body con users
     }
 
+    /**
+     * Create response entity.
+     *
+     * @param dto the dto
+     * @return the response entity
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateDTO dto) { // @Valid se encarga de interceptar la peticion y aplicarlelos validators del dto
@@ -41,6 +55,12 @@ public class UserController {
     }
 
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {

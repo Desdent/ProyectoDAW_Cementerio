@@ -6,9 +6,18 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+/**
+ * The interface Ciudad repository.
+ */
 @Repository
 public interface CiudadRepository extends JpaRepository<Ciudad, Long> {
 
+    /**
+     * Find all by provincia id list.
+     *
+     * @param provinciaId the provincia id
+     * @return the list
+     */
     List<Ciudad> findAllByProvinciaId(Long provinciaId);
 
 }

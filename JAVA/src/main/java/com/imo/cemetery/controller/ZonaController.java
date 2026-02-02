@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * The type Zona controller.
+ */
 @RestController
 @RequestMapping("/api/v1/zonas")
 @RequiredArgsConstructor
@@ -27,6 +30,12 @@ public class ZonaController {
 
     // CRUD Y BÁSICOS
 
+    /**
+     * Create response entity.
+     *
+     * @param dto the dto
+     * @return the response entity
+     */
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ZonaResponseDTO> create(@Valid  @RequestBody ZonaCreateDTO dto)
@@ -34,18 +43,36 @@ public class ZonaController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
     }
 
+    /**
+     * Find all response entity.
+     *
+     * @return the response entity
+     */
     @GetMapping
     public ResponseEntity<List<ZonaResponseDTO>> findAll()
     {
         return ResponseEntity.ok(service.findAll());
     }
 
+    /**
+     * Find by id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/{id}")
     public ResponseEntity<ZonaResponseDTO> findById(@PathVariable Long id)
     {
         return ResponseEntity.ok(service.findById(id));
     }
 
+    /**
+     * Update response entity.
+     *
+     * @param id  the id
+     * @param dto the dto
+     * @return the response entity
+     */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ZonaResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ZonaUpdateDTO dto)
@@ -53,6 +80,12 @@ public class ZonaController {
         return ResponseEntity.ok(service.update(id, dto));
     }
 
+    /**
+     * Delete response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
@@ -65,12 +98,25 @@ public class ZonaController {
 
     // BÚSQUEDAS Y FILTROS
 
+    /**
+     * Search by nombre response entity.
+     *
+     * @param name the name
+     * @return the response entity
+     */
     @GetMapping("/search")
     public ResponseEntity<List<ZonaResponseDTO>> searchByNombre(@RequestParam (defaultValue = "") String name)
     {
         return ResponseEntity.ok(service.searchByNombre(name));
     }
 
+    /**
+     * Search by nombre in cementerio response entity.
+     *
+     * @param id   the id
+     * @param name the name
+     * @return the response entity
+     */
     @GetMapping("/search/cementerio/{id}")
     public ResponseEntity<List<ZonaResponseDTO>> searchByNombreInCementerio(@PathVariable Long id,
                                                                             @RequestParam (defaultValue = "") String name)
@@ -78,6 +124,12 @@ public class ZonaController {
         return ResponseEntity.ok(service.findByNombreEnCementerio(name, id));
     }
 
+    /**
+     * Find all by cementerio id response entity.
+     *
+     * @param id the id
+     * @return the response entity
+     */
     @GetMapping("/cementerio/{id}")
     public ResponseEntity<List<ZonaResponseDTO>> findAllByCementerioId(@PathVariable Long id)
     {
@@ -85,7 +137,12 @@ public class ZonaController {
         return ResponseEntity.ok(service.findAllByCementerioId(id));
     }
 
-    //TODO si da tiempo cambiar esto para que llame a un controller de ZonaType con servicio de por medio
+    /**
+     * Gets all tipos.
+     *
+     * @return the all tipos
+     */
+//TODO si da tiempo cambiar esto para que llame a un controller de ZonaType con servicio de por medio
     @GetMapping("/tipos")
     public ResponseEntity<List<String>> getAllTipos()
     {

@@ -15,17 +15,31 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * The type Jwt service.
+ */
 @Service
 public class JwtService {
 
     private final JwtBuilder jwtBuilder;
     private final SecretKey secretKey; // Clave secreta para firmar el token
 
+    /**
+     * Instantiates a new Jwt service.
+     *
+     * @param secretKey the secret key
+     */
     public JwtService(SecretKey secretKey) {
         this.secretKey = secretKey;
         this.jwtBuilder = Jwts.builder();
     }
 
+    /**
+     * Generate token string.
+     *
+     * @param user the user
+     * @return the string
+     */
     public String generateToken(User user) {
         Instant now = Instant.now();
         Date expiryDate = Date.from(now.plus(24, ChronoUnit.HOURS));
@@ -54,6 +68,12 @@ public class JwtService {
 
     }
 
+    /**
+     * Extract username string.
+     *
+     * @param token the token
+     * @return the string
+     */
     public String extractUsername(String token) {
         return Jwts.parser()
                 .verifyWith(secretKey)
@@ -63,6 +83,13 @@ public class JwtService {
                 .getSubject();
     }
 
+    /**
+     * Is token valid boolean.
+     *
+     * @param token       the token
+     * @param userDetails the user details
+     * @return the boolean
+     */
     public boolean isTokenValid(String token, UserDetails userDetails) {
         String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
