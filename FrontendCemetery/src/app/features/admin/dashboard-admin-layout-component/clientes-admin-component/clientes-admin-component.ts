@@ -4,12 +4,19 @@ import * as bootstrap from 'bootstrap';
 import { CiudadService } from '../../../../core/services/ciudadService';
 import { ProvinciaService } from '../../../../core/services/provinciaService';
 import { ClientePost } from '../../../../interfaces/cliente/clientePost';
-import { FormsModule } from '@angular/forms';
 import { ClienteUpdate } from '../../../../interfaces/cliente/clienteUpdate';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Validadores } from '../../../../validators/validadores';
 
 @Component({
   selector: 'app-clientes-admin-component',
-  imports: [FormsModule],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './clientes-admin-component.html',
   styleUrl: './clientes-admin-component.css',
 })
@@ -18,18 +25,14 @@ export class ClientesAdminComponent {
   public ciudadService = inject(CiudadService);
   public provinciaService = inject(ProvinciaService);
 
+  // ─── Reactive Forms ──────────────────────────────────────────────
+  public formCrearCliente!: FormGroup;
+  public formEditarCliente!: FormGroup;
+
   @ViewChild('htmlModal') modalElement!: ElementRef;
   @ViewChild('modalVer') modalVerRef!: ElementRef;
   @ViewChild('modalEditar') modalEditarRef!: ElementRef;
   @ViewChild('modalDelete') modalDeleteRef!: ElementRef;
-
-  /**
-   * Inicializa el componente cargando la lista completa de clientes y provincias.
-   */
-  ngOnInit(): void {
-    this.clienteService.loadAll();
-    this.provinciaService.loadAll();
-  }
 
   nuevoCliente: ClientePost = {
     nombre: '',
@@ -61,46 +64,78 @@ export class ClientesAdminComponent {
   modalBootstrap: any;
   provinciaSeleccionadaId = signal<number | null>(null);
 
+  constructor() {
+    this.inicializarFormularios();
+  }
+
   /**
-   * Cambia la página actual de la visualización paginada.
-   * @param nuevaPagina El número de la página a la que se desea navegar.
+   * Crea las instancias de FormGroup con sus validadores.
    */
+  private inicializarFormularios() {
+    this.formCrearCliente = new FormGroup({
+      nombre: new FormControl('', [Validators.required]),
+      dni: new FormControl('', [Validators.required, Validadores.dni()]),
+      email: new FormControl('', [Validators.required, Validadores.emailValidator()]),
+      apellido1: new FormControl('', [Validators.required]),
+      apellido2: new FormControl(''), // opcional
+      telefono: new FormControl('', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9),
+        Validadores.telefono(),
+      ]),
+      direccion: new FormControl('', [Validators.required]),
+      provincia: new FormControl('', [Validators.required]),
+      ciudadId: new FormControl('', [Validators.required]),
+    });
+
+    this.formEditarCliente = new FormGroup({
+      nombre: new FormControl('', [Validators.required]),
+      dni: new FormControl('', [Validators.required, Validadores.dni()]),
+      apellido1: new FormControl('', [Validators.required]),
+      apellido2: new FormControl(''), // opcional
+      telefono: new FormControl('', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9),
+        Validadores.telefono(),
+      ]),
+      direccion: new FormControl('', [Validators.required]),
+      provincia: new FormControl('', [Validators.required]),
+      localidad: new FormControl('', [Validators.required]),
+    });
+  }
+
+  // ─── Inicialización ───────────────────────────────────────────────
+  ngOnInit(): void {
+    this.clienteService.loadAll();
+    this.provinciaService.loadAll();
+  }
+
+  // ─── Paginación ───────────────────────────────────────────────────
   cambiarPagina(nuevaPagina: number) {
     if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas()) {
       this.paginaActual.set(nuevaPagina);
     }
   }
 
-  /**
-   * Calcula el número total de páginas basándose en la cantidad total de registros.
-   * @returns El número total de páginas (mínimo 1).
-   */
   totalPaginas() {
     const totalRegistros = this.clienteService.amount();
     return Math.ceil(totalRegistros / this.elementosPorPagina) || 1;
   }
 
-  /**
-   * Señal computada que genera un array con los números de página disponibles.
-   */
   paginas = computed(() => {
     const total = Math.ceil(this.clienteService.amount() / this.elementosPorPagina) || 1;
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
-  /**
-   * Obtiene la lista de clientes que deben mostrarse en la página actual.
-   * @returns Un subconjunto del array de clientes.
-   */
   get clientesPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.clienteService.clientes().slice(inicio, fin);
   }
 
-  /**
-   * Abre el modal para la creación de un nuevo cliente.
-   */
+  // ─── Modales ──────────────────────────────────────────────────────
   abrirModal() {
     if (this.modalElement && this.modalElement.nativeElement) {
       this.modalBootstrap = new bootstrap.Modal(this.modalElement.nativeElement);
@@ -108,10 +143,6 @@ export class ClientesAdminComponent {
     }
   }
 
-  /**
-   * Abre el modal de confirmación para eliminar un cliente.
-   * @param cliente El objeto cliente que se pretende eliminar.
-   */
   abrirModal_delete(cliente: any) {
     this.id = cliente.id;
     this.obtenerCliente(cliente.id);
@@ -122,44 +153,35 @@ export class ClientesAdminComponent {
     }
   }
 
-  /**
-   * Abre el modal para editar la información de un cliente existente.
-   * @param cliente El objeto cliente a editar.
-   */
   abrirModal_editar(cliente: any) {
     this.id = cliente.id;
-    this.obtenerCliente(cliente.id);
-
-    if (this.modalEditarRef && this.modalEditarRef.nativeElement) {
-      this.modalBootstrap = new bootstrap.Modal(this.modalEditarRef.nativeElement);
-      this.modalBootstrap.show();
-    }
+    // obtenerCliente hace el patchValue y abre el modal en el callback
+    this.obtenerCliente(cliente.id, () => {
+      if (this.modalEditarRef && this.modalEditarRef.nativeElement) {
+        this.modalBootstrap = new bootstrap.Modal(this.modalEditarRef.nativeElement);
+        this.modalBootstrap.show();
+      }
+    });
   }
 
-  /**
-   * Abre el modal para visualizar los detalles de un cliente.
-   * @param cliente El objeto cliente a visualizar.
-   */
   abrirModal_ver(cliente: any) {
     this.id = cliente.id;
-    this.obtenerCliente(cliente.id);
-    if (this.modalVerRef && this.modalVerRef.nativeElement) {
-      this.modalBootstrap = new bootstrap.Modal(this.modalVerRef.nativeElement);
-      this.modalBootstrap.show();
+    this.obtenerCliente(cliente.id, () => {
+      if (this.modalVerRef && this.modalVerRef.nativeElement) {
+        this.modalBootstrap = new bootstrap.Modal(this.modalVerRef.nativeElement);
+        this.modalBootstrap.show();
+      }
+    });
+  }
+
+  cerrarModal() {
+    if (this.modalBootstrap) {
+      this.resetForm();
+      this.modalBootstrap.hide();
     }
   }
 
-  /**
-   * Cierra el modal de Bootstrap que esté activo.
-   */
-  cerrarModal() {
-    this.modalBootstrap.hide();
-  }
-
-  /**
-   * Maneja el cambio en el selector de provincias para cargar las ciudades asociadas.
-   * @param value El valor seleccionado (puede ser ID numérico o nombre).
-   */
+  // ─── Provincia / Ciudad ───────────────────────────────────────────
   onProvinciaChange(value: any) {
     let id: number | undefined;
 
@@ -177,11 +199,19 @@ export class ClientesAdminComponent {
     }
   }
 
-  /**
-   * Envía la información del nuevo cliente al servidor para guardarlo.
-   */
+  // ─── CRUD Cliente ─────────────────────────────────────────────────
   guardarCliente() {
-    console.log(this.nuevoCliente);
+    if (this.formCrearCliente.invalid) {
+      this.formCrearCliente.markAllAsTouched();
+      return;
+    }
+
+    // Construimos el objeto con los valores validados del formulario
+    this.nuevoCliente = {
+      ...this.nuevoCliente,
+      ...this.formCrearCliente.value,
+    };
+
     this.clienteService.save(this.nuevoCliente).subscribe({
       next: (res) => {
         console.log('Cliente guardado', res);
@@ -193,26 +223,71 @@ export class ClientesAdminComponent {
     });
   }
 
-  /**
-   * Actualiza la información de un cliente existente.
-   * @param id El identificador único del cliente a actualizar.
-   */
   actuCliente(id: number) {
-    console.log(this.nuevoCliente);
+    if (this.formEditarCliente.invalid) {
+      this.formEditarCliente.markAllAsTouched();
+      return;
+    }
+
+    // Actualizamos clienteEditar con los valores frescos del formulario
+    this.clienteEditar = {
+      ...this.clienteEditar,
+      ...this.formEditarCliente.value,
+    };
+
     this.clienteService.update(this.clienteEditar, id).subscribe({
       next: (res) => {
         console.log('Cliente actualizado', res);
         this.cerrarModal();
-        this.clienteService.loadAll(); // Refrescar la tabla
-        this.resetForm(); // Limpiar el objeto
+        this.clienteService.loadAll();
+        this.resetForm();
       },
       error: (err) => console.error('Error al guardar', err),
     });
   }
 
   /**
-   * Restablece los objetos de datos y estados de selección a sus valores iniciales.
+   * Obtiene los datos de un cliente por su ID, rellena el formulario reactivo
+   * y ejecuta un callback opcional al finalizar (para abrir el modal después).
    */
+  obtenerCliente(id: number, callback?: () => void) {
+    this.clienteService.find(id).subscribe((data) => {
+      // Objeto para el modal "ver" (lectura directa con [value])
+      this.clienteEditar = {
+        nombre: data.nombre,
+        dni: data.dni,
+        apellido1: data.apellido1,
+        apellido2: data.apellido2,
+        telefono: data.telefono,
+        direccion: data.direccion,
+        localidad: data.localidad,
+        provincia: data.provincia,
+      };
+
+      // Rellenamos el formulario reactivo de editar
+      this.formEditarCliente.patchValue({
+        nombre: data.nombre,
+        dni: data.dni,
+        apellido1: data.apellido1,
+        apellido2: data.apellido2,
+        telefono: data.telefono,
+        direccion: data.direccion,
+        provincia: data.provincia,
+        localidad: data.localidad,
+      });
+
+      // Cargamos ciudades de la provincia correspondiente
+      const prov = this.provinciaService.provincias().find((p) => p.nombre === data.provincia);
+      if (prov) {
+        this.provinciaSeleccionadaId.set(prov.id);
+        this.ciudadService.loadByProvinciaId(prov.id);
+      }
+
+      if (callback) callback();
+    });
+  }
+
+  // ─── Utilidades ───────────────────────────────────────────────────
   resetForm() {
     this.nuevoCliente = {
       nombre: '',
@@ -235,46 +310,16 @@ export class ClientesAdminComponent {
       localidad: '',
       provincia: '',
     };
-    this.provinciaSeleccionadaId.set(null); // Bloquear de nuevo el select de ciudades
+
+    this.formCrearCliente.reset();
+    this.formEditarCliente.reset();
+    this.provinciaSeleccionadaId.set(null);
   }
 
-  /**
-   * Obtiene los datos de un cliente por su ID y prepara el objeto de edición.
-   * @param id El identificador del cliente.
-   */
-  obtenerCliente(id: number) {
-    this.clienteService.find(id).subscribe((data) => {
-      this.clienteEditar = {
-        nombre: data.nombre,
-        dni: data.dni,
-        apellido1: data.apellido1,
-        apellido2: data.apellido2,
-        telefono: data.telefono,
-        direccion: data.direccion,
-        localidad: data.localidad,
-        provincia: data.provincia,
-      };
-
-      const prov = this.provinciaService.provincias().find((p) => p.nombre === data.provincia);
-      if (prov) {
-        this.provinciaSeleccionadaId.set(prov.id);
-        this.ciudadService.loadByProvinciaId(prov.id);
-      }
-    });
-  }
-
-  /**
-   * Guarda temporalmente el ID de un cliente.
-   * @param idExterior El ID a almacenar.
-   */
   guardarId(idExterior: number) {
     this.id = idExterior;
   }
 
-  /**
-   * Elimina un cliente del sistema tras la confirmación.
-   * @param idExterior El identificador del cliente a eliminar.
-   */
   delete(idExterior: number) {
     this.clienteService.delete(idExterior).subscribe({
       next: () => {

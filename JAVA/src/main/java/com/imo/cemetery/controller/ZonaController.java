@@ -37,7 +37,7 @@ public class ZonaController {
      * @return the response entity
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<ZonaResponseDTO> create(@Valid  @RequestBody ZonaCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
@@ -74,7 +74,7 @@ public class ZonaController {
      * @return the response entity
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<ZonaResponseDTO> update(@PathVariable Long id, @Valid @RequestBody ZonaUpdateDTO dto)
     {
         return ResponseEntity.ok(service.update(id, dto));
@@ -87,7 +87,7 @@ public class ZonaController {
      * @return the response entity
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
         service.deleteById(id);

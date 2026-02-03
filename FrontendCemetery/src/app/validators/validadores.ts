@@ -284,4 +284,97 @@ export class Validadores {
       return input > ref ? { fechaPosterior: { max: ref, actual: input } } : null;
     };
   }
+
+  // ─── Validadores nuevos para difuntos ─────────────────────────────
+
+  /**
+   * Validador individual de año mínimo.
+   * Uso: Validadores.anioMinimo(1900)
+   * El control debe contener un número >= al mínimo indicado.
+   */
+  static anioMinimo(min: number): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (control.value === null || control.value === undefined || control.value === '') {
+        return null; // required se encarga de esto
+      }
+
+      const valor = Number(control.value);
+      if (isNaN(valor) || valor < min) {
+        return { anioMinimo: { min, actual: valor } };
+      }
+
+      return null;
+    };
+  }
+
+  /**
+   * Validador cross-field de grupo: el año de defunción debe ser >= al año de nacimiento.
+   * Se aplica como validator del FormGroup, no del control individual.
+   * Devuelve el error 'defuncionAnteriorNacimiento' en el grupo.
+   *
+   * Uso en el FormGroup:
+   *   new FormGroup({ ... }, { validators: [Validadores.anioDefuncionPosterior()] })
+   *
+   * En el template se chequea con:
+   *   formDifunto.hasError('defuncionAnteriorNacimiento')
+   */
+  static anioDefuncionPosterior(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const nacimiento = group.get('yearNacimiento')?.value;
+      const defuncion = group.get('yearDefuncion')?.value;
+
+      // Si alguno de los dos está vacío, no comparo (required lo gestiona por separado)
+      if (
+        nacimiento === null ||
+        nacimiento === undefined ||
+        nacimiento === '' ||
+        defuncion === null ||
+        defuncion === undefined ||
+        defuncion === ''
+      ) {
+        return null;
+      }
+
+      const anioNac = Number(nacimiento);
+      const anioDef = Number(defuncion);
+
+      if (isNaN(anioNac) || isNaN(anioDef)) return null;
+
+      return anioDef < anioNac
+        ? { defuncionAnteriorNacimiento: { nacimiento: anioNac, defuncion: anioDef } }
+        : null;
+    };
+  }
+
+  /**
+   * Validador cross-field de grupo: la fecha de entierro debe caer en o después del año de nacimiento.
+   * Se aplica como validator del FormGroup junto con anioDefuncionPosterior().
+   *
+   * Uso en el FormGroup:
+   *   new FormGroup({ ... }, { validators: [..., Validadores.fechaEntierroPosteriorNacimiento()] })
+   *
+   * En el template se chequea con:
+   *   formDifunto.hasError('entierroAnteriorNacimiento')
+   */
+  static fechaEntierroPosteriorNacimiento(): ValidatorFn {
+    return (group: AbstractControl): ValidationErrors | null => {
+      const nacimiento = group.get('yearNacimiento')?.value;
+      const fechaEntierro = group.get('fechaEntierro')?.value;
+
+      if (nacimiento === null || nacimiento === undefined || nacimiento === '' || !fechaEntierro) {
+        return null;
+      }
+
+      const anioNac = Number(nacimiento);
+      if (isNaN(anioNac)) return null;
+
+      // fechaEntierro viene como string 'YYYY-MM-DD'; extraemos el año directamente
+      const anioEntierro = Number(fechaEntierro.toString().substring(0, 4));
+      if (isNaN(anioEntierro)) return null;
+
+      return anioEntierro < anioNac
+        ? { entierroAnteriorNacimiento: { nacimiento: anioNac, entierro: anioEntierro } }
+        : null;
+    };
+  }
 }

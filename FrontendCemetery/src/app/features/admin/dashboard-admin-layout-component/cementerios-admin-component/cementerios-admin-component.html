@@ -123,8 +123,9 @@
   </div>
 </div>
 
-<!-- MODAL AÑADIR CEMENTERIO -->
-
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL AÑADIR CEMENTERIO
+     ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalAddCementerio" tabindex="-1" aria-hidden="true" #htmlModal>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -139,70 +140,111 @@
           (click)="cerrarModal()"
         ></button>
       </div>
+
       <div class="modal-body p-4 bg-light">
-        <form id="formCliente" class="row g-3">
+        <form class="row g-3" [formGroup]="formCrearCementerio">
+          <!-- Nombre -->
           <div class="col-md-6">
             <label class="form-label-custom">Nombre *</label>
             <input
-              [(ngModel)]="nuevoCementerio.nombre"
-              name="nombre"
+              formControlName="nombre"
               type="text"
               class="form-control-custom"
               placeholder="Ej. Cementerio La Cruz"
-              required
             />
+            @if (formCrearCementerio.get('nombre')?.touched) {
+              @if (formCrearCementerio.get('nombre')?.hasError('required')) {
+                <span class="error-msg">El nombre es obligatorio</span>
+              }
+            }
           </div>
+
+          <!-- Email -->
           <div class="col-md-6">
             <label class="form-label-custom">Email *</label>
             <input
-              [(ngModel)]="nuevoCementerio.email"
-              name="email"
+              formControlName="email"
               type="text"
               class="form-control-custom"
               placeholder="Ej. email@gmail.com"
-              required
             />
+            @if (formCrearCementerio.get('email')?.touched) {
+              @if (formCrearCementerio.get('email')?.hasError('required')) {
+                <span class="error-msg">El email es obligatorio</span>
+              }
+              @if (formCrearCementerio.get('email')?.hasError('email')) {
+                <span class="error-msg">Formato de email no válido</span>
+              }
+            }
           </div>
+
+          <!-- Teléfono -->
           <div class="col-md-6">
             <label class="form-label-custom">Teléfono *</label>
             <input
-              [(ngModel)]="nuevoCementerio.telefono"
+              formControlName="telefono"
               type="tel"
-              name="telefono"
               class="form-control-custom"
               placeholder="900 000 000"
-              required
             />
+            @if (formCrearCementerio.get('telefono')?.touched) {
+              @if (formCrearCementerio.get('telefono')?.hasError('required')) {
+                <span class="error-msg">El teléfono es obligatorio</span>
+              }
+              @if (
+                formCrearCementerio.get('telefono')?.hasError('minlength') ||
+                formCrearCementerio.get('telefono')?.hasError('maxlength')
+              ) {
+                <span class="error-msg">El teléfono debe contener 9 dígitos</span>
+              }
+              @if (formCrearCementerio.get('telefono')?.hasError('telefono')) {
+                <span class="error-msg">Teléfono no válido (debe empezar por 9, 7 o 6)</span>
+              }
+            }
           </div>
+
+          <!-- Dirección -->
           <div class="col-12">
             <label class="form-label-custom">Dirección *</label>
             <input
-              [(ngModel)]="nuevoCementerio.direccion"
+              formControlName="direccion"
               type="text"
-              name="direccion"
               class="form-control-custom"
               placeholder="C/ Mayor, 12, 2ºB"
-              required
             />
+            @if (formCrearCementerio.get('direccion')?.touched) {
+              @if (formCrearCementerio.get('direccion')?.hasError('required')) {
+                <span class="error-msg">La dirección es obligatoria</span>
+              }
+            }
           </div>
+
+          <!-- Ayuntamiento ID -->
           <div class="col-12">
             <label class="form-label-custom">ID del Ayuntamiento *</label>
             <input
-              [(ngModel)]="nuevoCementerio.ayuntamientoId"
+              formControlName="ayuntamientoId"
               type="number"
-              name="ayuntamientoId"
               class="form-control-custom"
               placeholder="1"
-              required
             />
+            @if (formCrearCementerio.get('ayuntamientoId')?.touched) {
+              @if (formCrearCementerio.get('ayuntamientoId')?.hasError('required')) {
+                <span class="error-msg">El ID del ayuntamiento es obligatorio</span>
+              }
+              @if (formCrearCementerio.get('ayuntamientoId')?.hasError('numeroPositivo')) {
+                <span class="error-msg">Debe ser un número mayor que 0</span>
+              }
+            }
           </div>
+
+          <!-- Mapa (sin validación obligatoria, se gestiona fuera del form) -->
           <div class="col-12">
             <label class="form-label-custom">Mapa del Cementerio</label>
             <div class="input-group-custom">
               <input
                 type="text"
-                [(ngModel)]="nuevoCementerio.mapa"
-                name="mapa"
+                [value]="nuevoCementerio.mapa"
                 class="form-control-custom"
                 placeholder="No se ha seleccionado archivo"
                 readonly
@@ -224,7 +266,9 @@
                   <button
                     type="button"
                     class="btn-close-small"
-                    (click)="mapaPreview.set(null); nuevoCementerio.mapa = ''"
+                    (click)="
+                      mapaPreview.set(null); nuevoCementerio.mapa = ''; archivoParaSubir = null
+                    "
                   >
                     <i class="bi bi-x"></i>
                   </button>
@@ -239,6 +283,7 @@
           </div>
         </form>
       </div>
+
       <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
         <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
         <button
@@ -253,8 +298,9 @@
   </div>
 </div>
 
-<!-- MODAL EDITAR CEMENTERIO -->
-
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL EDITAR CEMENTERIO
+     ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalCementerioeditar" tabindex="-1" aria-hidden="true" #modalEditar>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -271,59 +317,90 @@
       </div>
 
       <div class="modal-body p-4 bg-light">
-        <form id="formClienteEditar" class="row g-3">
+        <form class="row g-3" [formGroup]="formEditarCementerio">
+          <!-- Nombre -->
           <div class="col-md-6">
             <label class="form-label-custom">Nombre *</label>
             <input
-              [(ngModel)]="cementerioEditar.nombre"
-              name="nombre"
+              formControlName="nombre"
               type="text"
               class="form-control-custom"
               placeholder="Ej. Cementerio La Cruz"
-              required
             />
+            @if (formEditarCementerio.get('nombre')?.touched) {
+              @if (formEditarCementerio.get('nombre')?.hasError('required')) {
+                <span class="error-msg">El nombre es obligatorio</span>
+              }
+            }
           </div>
+
+          <!-- Email -->
           <div class="col-md-6">
             <label class="form-label-custom">Email *</label>
             <input
-              [(ngModel)]="cementerioEditar.email"
-              name="email"
+              formControlName="email"
               type="text"
               class="form-control-custom"
               placeholder="Ej. email@gmail.com"
-              required
             />
+            @if (formEditarCementerio.get('email')?.touched) {
+              @if (formEditarCementerio.get('email')?.hasError('required')) {
+                <span class="error-msg">El email es obligatorio</span>
+              }
+              @if (formEditarCementerio.get('email')?.hasError('email')) {
+                <span class="error-msg">Formato de email no válido</span>
+              }
+            }
           </div>
+
+          <!-- Teléfono -->
           <div class="col-md-6">
             <label class="form-label-custom">Teléfono *</label>
             <input
-              [(ngModel)]="cementerioEditar.telefono"
+              formControlName="telefono"
               type="tel"
-              name="telefono"
               class="form-control-custom"
               placeholder="900 000 000"
-              required
             />
+            @if (formEditarCementerio.get('telefono')?.touched) {
+              @if (formEditarCementerio.get('telefono')?.hasError('required')) {
+                <span class="error-msg">El teléfono es obligatorio</span>
+              }
+              @if (
+                formEditarCementerio.get('telefono')?.hasError('minlength') ||
+                formEditarCementerio.get('telefono')?.hasError('maxlength')
+              ) {
+                <span class="error-msg">El teléfono debe contener 9 dígitos</span>
+              }
+              @if (formEditarCementerio.get('telefono')?.hasError('telefono')) {
+                <span class="error-msg">Teléfono no válido (debe empezar por 9, 7 o 6)</span>
+              }
+            }
           </div>
+
+          <!-- Dirección -->
           <div class="col-12">
             <label class="form-label-custom">Dirección *</label>
             <input
-              [(ngModel)]="cementerioEditar.direccion"
+              formControlName="direccion"
               type="text"
-              name="direccion"
               class="form-control-custom"
               placeholder="C/ Mayor, 12, 2ºB"
-              required
             />
+            @if (formEditarCementerio.get('direccion')?.touched) {
+              @if (formEditarCementerio.get('direccion')?.hasError('required')) {
+                <span class="error-msg">La dirección es obligatoria</span>
+              }
+            }
           </div>
 
+          <!-- Mapa (fuera del FormGroup, se gestiona manualmente) -->
           <div class="col-12">
             <label class="form-label-custom">Mapa del Cementerio</label>
             <div class="input-group-custom">
               <input
                 type="text"
-                [(ngModel)]="cementerioEditar.mapa"
-                name="mapa"
+                [value]="cementerioEditar.mapa"
                 class="form-control-custom"
                 placeholder="No se ha seleccionado archivo"
                 readonly
@@ -365,8 +442,9 @@
   </div>
 </div>
 
-<!-- MODAL VER CEMENTERIO -->
-
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL VER CEMENTERIO (solo lectura, sin formulario reactivo)
+     ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalCementerio_ver" tabindex="-1" aria-hidden="true" #modalVer>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -383,13 +461,12 @@
       </div>
 
       <div class="modal-body p-4 bg-light">
-        <form id="formClienteVer" class="row g-3">
+        <form class="row g-3">
           <div class="col-md-6">
             <label class="form-label-custom">Nombre</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.nombre"
-              name="nombre"
+              [value]="cementerioEditar.nombre"
               type="text"
               class="form-control-custom"
             />
@@ -398,8 +475,7 @@
             <label class="form-label-custom">Email</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.email"
-              name="email"
+              [value]="cementerioEditar.email"
               type="text"
               class="form-control-custom"
             />
@@ -408,9 +484,8 @@
             <label class="form-label-custom">Teléfono</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.telefono"
+              [value]="cementerioEditar.telefono"
               type="tel"
-              name="telefono"
               class="form-control-custom"
             />
           </div>
@@ -418,9 +493,8 @@
             <label class="form-label-custom">Dirección</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.direccion"
+              [value]="cementerioEditar.direccion"
               type="text"
-              name="direccion"
               class="form-control-custom"
             />
           </div>
@@ -508,8 +582,9 @@
   </div>
 </div>
 
-<!-- MODAL EDITAR ZONAS -->
-
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL EDITAR ZONAS
+     ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalVerZonas" tabindex="-1" aria-hidden="true" #verZonas>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -524,8 +599,10 @@
           (click)="cerrarModal()"
         ></button>
       </div>
+
       <div class="modal-body p-4 bg-light">
         <div class="row g-3">
+          <!-- Selector de zona (fuera del FormGroup, dispara onZonaChange) -->
           <div class="col-12">
             <label class="form-label-custom">Seleccionar Zona a Editar</label>
             <select class="form-select-custom" name="ez_selector" (change)="onZonaChange($event)">
@@ -536,64 +613,78 @@
             </select>
           </div>
 
+          <!-- Formulario reactivo: solo aparece cuando hay zona seleccionada -->
           @if (zonaSelected()) {
             <hr class="my-4" />
-            <form class="row g-3">
+            <form class="row g-3" [formGroup]="formEditarZona">
+              <!-- Nombre zona -->
               <div class="col-md-6">
                 <label class="form-label-custom">Nombre de Zona *</label>
-                <input
-                  required
-                  [(ngModel)]="zonaSelected()!.nombre"
-                  name="ez_nombre"
-                  type="text"
-                  class="form-control-custom"
-                />
+                <input formControlName="nombre" type="text" class="form-control-custom" />
+                @if (formEditarZona.get('nombre')?.touched) {
+                  @if (formEditarZona.get('nombre')?.hasError('required')) {
+                    <span class="error-msg">El nombre es obligatorio</span>
+                  }
+                }
               </div>
 
+              <!-- Tipo zona -->
               <div class="col-md-6">
                 <label class="form-label-custom">Tipo de Zona *</label>
-                <select
-                  required
-                  [(ngModel)]="zonaSelected()!.tipo"
-                  name="ez_tipo"
-                  class="form-select-custom"
-                >
+                <select formControlName="tipo" class="form-select-custom">
                   <option value="" disabled>Seleccione Tipo</option>
                   @for (tipo of tipos(); track tipo) {
                     <option [value]="tipo">{{ tipo }}</option>
                   }
                 </select>
+                @if (formEditarZona.get('tipo')?.touched) {
+                  @if (formEditarZona.get('tipo')?.hasError('required')) {
+                    <span class="error-msg">El tipo es obligatorio</span>
+                  }
+                }
               </div>
 
+              <!-- Puntos coordenadas -->
               <div class="col-md-12">
                 <label class="form-label-custom">Puntos de Coordenadas *</label>
-                <input
-                  required
-                  [(ngModel)]="zonaSelected()!.puntos"
-                  name="ez_puntos"
-                  type="text"
-                  class="form-control-custom"
-                />
+                <input formControlName="puntos" type="text" class="form-control-custom" />
+                @if (formEditarZona.get('puntos')?.touched) {
+                  @if (formEditarZona.get('puntos')?.hasError('required')) {
+                    <span class="error-msg">Las coordenadas son obligatorias</span>
+                  }
+                  @if (formEditarZona.get('puntos')?.hasError('coordenadas')) {
+                    @let errCoord = formEditarZona.get('puntos')?.getError('coordenadas').error;
+                    <span class="error-msg">{{ errCoord }}</span>
+                  }
+                }
               </div>
+
+              <!-- Filas -->
               <div class="col-md-6">
                 <label class="form-label-custom">Filas *</label>
-                <input
-                  required
-                  [(ngModel)]="zonaSelected()!.filas"
-                  name="ez_filas"
-                  type="number"
-                  class="form-control-custom"
-                />
+                <input formControlName="filas" type="number" class="form-control-custom" />
+                @if (formEditarZona.get('filas')?.touched) {
+                  @if (formEditarZona.get('filas')?.hasError('required')) {
+                    <span class="error-msg">Las filas son obligatorias</span>
+                  }
+                  @if (formEditarZona.get('filas')?.hasError('numeroPositivo')) {
+                    <span class="error-msg">Debe ser un número mayor que 0</span>
+                  }
+                }
               </div>
+
+              <!-- Columnas -->
               <div class="col-md-6">
                 <label class="form-label-custom">Columnas *</label>
-                <input
-                  required
-                  [(ngModel)]="zonaSelected()!.columnas"
-                  name="ez_columnas"
-                  type="number"
-                  class="form-control-custom"
-                />
+                <input formControlName="columnas" type="number" class="form-control-custom" />
+                @if (formEditarZona.get('columnas')?.touched) {
+                  @if (formEditarZona.get('columnas')?.hasError('required')) {
+                    <span class="error-msg">Las columnas son obligatorias</span>
+                  }
+                  @if (formEditarZona.get('columnas')?.hasError('numeroPositivo')) {
+                    <span class="error-msg">Debe ser un número mayor que 0</span>
+                  }
+                }
               </div>
             </form>
           } @else if (zonas().length > 0) {
@@ -607,6 +698,7 @@
           }
         </div>
       </div>
+
       <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
         <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
         @if (zonaSelected()) {
@@ -630,8 +722,9 @@
   </div>
 </div>
 
-<!-- MODAL AÑADIR ZONAS -->
-
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL AÑADIR ZONAS
+     ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalAddZonas" tabindex="-1" aria-hidden="true" #addZonas>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -646,61 +739,91 @@
           (click)="cerrarModal()"
         ></button>
       </div>
+
       <div class="modal-body p-4 bg-light">
-        <form class="row g-3">
+        <form class="row g-3" [formGroup]="formAddZona">
+          <!-- Nombre -->
           <div class="col-md-6">
             <label class="form-label-custom">Nombre *</label>
             <input
-              [(ngModel)]="nuevaZona.nombre"
-              name="nz_nombre"
+              formControlName="nombre"
               type="text"
               class="form-control-custom"
               placeholder="Ej. Zona Y"
-              required
             />
+            @if (formAddZona.get('nombre')?.touched) {
+              @if (formAddZona.get('nombre')?.hasError('required')) {
+                <span class="error-msg">El nombre es obligatorio</span>
+              }
+            }
           </div>
+
+          <!-- Tipo -->
           <div class="col-md-6">
             <label class="form-label-custom">Tipo *</label>
-            <select required name="nz_tipo" class="form-select-custom" [(ngModel)]="nuevaZona.tipo">
+            <select formControlName="tipo" class="form-select-custom">
               <option value="" disabled selected>Seleccione un tipo</option>
               @for (tipo of tipos(); track tipo) {
                 <option [value]="tipo">{{ tipo }}</option>
               }
             </select>
+            @if (formAddZona.get('tipo')?.touched) {
+              @if (formAddZona.get('tipo')?.hasError('required')) {
+                <span class="error-msg">El tipo es obligatorio</span>
+              }
+            }
           </div>
+
+          <!-- Puntos coordenadas -->
           <div class="col-md-6">
             <label class="form-label-custom">Puntos de Coordenadas *</label>
             <input
-              [(ngModel)]="nuevaZona.puntos"
+              formControlName="puntos"
               type="text"
-              name="nz_puntos"
               class="form-control-custom"
               placeholder="x1,y1,x2,y2..."
-              required
             />
+            @if (formAddZona.get('puntos')?.touched) {
+              @if (formAddZona.get('puntos')?.hasError('required')) {
+                <span class="error-msg">Las coordenadas son obligatorias</span>
+              }
+              @if (formAddZona.get('puntos')?.hasError('coordenadas')) {
+                @let errCoord = formAddZona.get('puntos')?.getError('coordenadas').error;
+                <span class="error-msg">{{ errCoord }}</span>
+              }
+            }
           </div>
+
+          <!-- Filas -->
           <div class="col-md-3">
             <label class="form-label-custom">Filas *</label>
-            <input
-              [(ngModel)]="nuevaZona.filas"
-              type="number"
-              name="nz_filas"
-              class="form-control-custom"
-              required
-            />
+            <input formControlName="filas" type="number" class="form-control-custom" />
+            @if (formAddZona.get('filas')?.touched) {
+              @if (formAddZona.get('filas')?.hasError('required')) {
+                <span class="error-msg">Las filas son obligatorias</span>
+              }
+              @if (formAddZona.get('filas')?.hasError('numeroPositivo')) {
+                <span class="error-msg">Debe ser mayor que 0</span>
+              }
+            }
           </div>
+
+          <!-- Columnas -->
           <div class="col-md-3">
             <label class="form-label-custom">Columnas *</label>
-            <input
-              [(ngModel)]="nuevaZona.columnas"
-              type="number"
-              name="nz_columnas"
-              class="form-control-custom"
-              required
-            />
+            <input formControlName="columnas" type="number" class="form-control-custom" />
+            @if (formAddZona.get('columnas')?.touched) {
+              @if (formAddZona.get('columnas')?.hasError('required')) {
+                <span class="error-msg">Las columnas son obligatorias</span>
+              }
+              @if (formAddZona.get('columnas')?.hasError('numeroPositivo')) {
+                <span class="error-msg">Debe ser mayor que 0</span>
+              }
+            }
           </div>
         </form>
       </div>
+
       <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
         <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
         <button
@@ -715,8 +838,9 @@
   </div>
 </div>
 
-<!-- MODAL BORRAR CEMENTERIO -->
-
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL BORRAR CEMENTERIO
+     ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalCementerio_delete" tabindex="-1" aria-hidden="true" #modalDelete>
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -751,6 +875,9 @@
   </div>
 </div>
 
+<!-- ══════════════════════════════════════════════════════════════════
+     MODAL VER MAPA
+     ══════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalVerMapa" tabindex="-1" aria-hidden="true" #modalMapa>
   <div class="modal-dialog modal-dialog-centered modal-xl">
     <div class="modal-content modal-custom-border shadow-lg">

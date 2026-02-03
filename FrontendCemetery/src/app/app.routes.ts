@@ -17,7 +17,6 @@ import { ClientesAytoComponent } from './features/ayuntamiento/clientes-ayto-com
 import { DashboardLayoutAytoComponent } from './features/ayuntamiento/dashboard-layout-ayto-component/dashboard-layout-ayto-component';
 import { MainClienteComponent } from './features/cliente/main-cliente-component/main-cliente-component';
 import { DashboardLayoutClienteComponent } from './features/cliente/dashboard-layout-cliente-component/dashboard-layout-cliente-component';
-import { CementeriosClienteComponent } from './features/cliente/cementerios-cliente-component/cementerios-cliente-component';
 import { DifuntosClienteComponent } from './features/cliente/difuntos-cliente-component/difuntos-cliente-component';
 import { ConcesionesClienteComponent } from './features/cliente/concesiones-cliente-component/concesiones-cliente-component';
 import { SearchComponent } from './features/search-component/search-component';
@@ -94,11 +93,6 @@ export const routes: Routes = [
         path: '',
         component: MainClienteComponent,
       },
-      {
-        path: 'cementerios',
-        component: CementeriosClienteComponent,
-      },
-
       {
         path: 'difuntos',
         component: DifuntosClienteComponent,

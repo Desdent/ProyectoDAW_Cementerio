@@ -4,15 +4,22 @@ import * as bootstrap from 'bootstrap';
 import { CiudadService } from '../../../core/services/ciudadService';
 import { ProvinciaService } from '../../../core/services/provinciaService';
 import { ClientePost } from '../../../interfaces/cliente/clientePost';
-import { FormsModule } from '@angular/forms';
 import { ClienteUpdate } from '../../../interfaces/cliente/clienteUpdate';
 import { Cliente } from '../../../interfaces/cliente/cliente';
 import { ConcesionService } from '../../../core/services/concesionService';
 import { DifuntoService } from '../../../core/services/difuntoService';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Validadores } from '../../../validators/validadores';
 
 @Component({
   selector: 'app-clientes-ayto-component',
-  imports: [FormsModule],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './clientes-ayto-component.html',
   styleUrl: './clientes-ayto-component.css',
 })
@@ -22,6 +29,10 @@ export class ClientesAytoComponent {
   public provinciaService = inject(ProvinciaService);
   private concesionService = inject(ConcesionService);
   private difuntoService = inject(DifuntoService);
+
+  // ─── Reactive Forms ──────────────────────────────────────────────
+  public formCrearCliente!: FormGroup;
+  public formEditarCliente!: FormGroup;
 
   @ViewChild('htmlModal') modalElement!: ElementRef;
   @ViewChild('modalVer') modalVerRef!: ElementRef;
@@ -34,17 +45,6 @@ export class ClientesAytoComponent {
   clientes = signal<Cliente[]>([]);
   concesionesCliente = signal<any[]>([]);
   difuntosCliente = signal<any[]>([]);
-
-  /**
-   * Inicializo el componente recuperando el ID del ayuntamiento desde el token y cargando los datos iniciales.
-   */
-  ngOnInit(): void {
-    this.aytoId = this.obtenerIdUsuario()!;
-    this.cargarClientes();
-    this.provinciaService.loadAll();
-    console.log(this.clientes());
-    this.paginaActual.set(1);
-  }
 
   nuevoCliente: ClientePost = {
     nombre: '',
@@ -76,58 +76,90 @@ export class ClientesAytoComponent {
   modalBootstrap: any;
   provinciaSeleccionadaId = signal<number | null>(null);
 
+  constructor() {
+    this.inicializarFormularios();
+  }
+
   /**
-   * Cambio la página actual de la visualización paginada.
-   * @param nuevaPagina El número de la página a la que deseo navegar.
+   * Crea las instancias de FormGroup con sus validadores.
    */
+  private inicializarFormularios() {
+    this.formCrearCliente = new FormGroup({
+      nombre: new FormControl('', [Validators.required]),
+      dni: new FormControl('', [Validators.required, Validadores.dni()]),
+      email: new FormControl('', [Validators.required, Validadores.emailValidator()]),
+      apellido1: new FormControl('', [Validators.required]),
+      apellido2: new FormControl(''),
+      telefono: new FormControl('', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9),
+        Validadores.telefono(),
+      ]),
+      direccion: new FormControl('', [Validators.required]),
+      provincia: new FormControl('', [Validators.required]),
+      ciudadId: new FormControl('', [Validators.required]),
+    });
+
+    this.formEditarCliente = new FormGroup({
+      nombre: new FormControl('', [Validators.required]),
+      dni: new FormControl('', [Validators.required, Validadores.dni()]),
+      apellido1: new FormControl('', [Validators.required]),
+      apellido2: new FormControl(''),
+      telefono: new FormControl('', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9),
+        Validadores.telefono(),
+      ]),
+      direccion: new FormControl('', [Validators.required]),
+      provincia: new FormControl('', [Validators.required]),
+      localidad: new FormControl('', [Validators.required]),
+    });
+  }
+
+  // ─── Inicialización ───────────────────────────────────────────────
+  /**
+   * Inicializo el componente recuperando el ID del ayuntamiento desde el token y cargando los datos iniciales.
+   */
+  ngOnInit(): void {
+    this.aytoId = this.obtenerIdUsuario()!;
+    this.cargarClientes();
+    this.provinciaService.loadAll();
+    this.paginaActual.set(1);
+  }
+
+  // ─── Paginación ───────────────────────────────────────────────────
   cambiarPagina(nuevaPagina: number) {
     if (nuevaPagina >= 1 && nuevaPagina <= this.totalPaginas()) {
       this.paginaActual.set(nuevaPagina);
     }
   }
 
-  /**
-   * Calculo el número total de páginas basándome en la cantidad total de registros de clientes.
-   * @returns El número total de páginas.
-   */
   totalPaginas() {
     const totalRegistros = this.clienteService.amount();
     return Math.ceil(totalRegistros / this.elementosPorPagina) || 1;
   }
 
-  /**
-   * Genero un array con los números de página disponibles para la navegación.
-   */
   paginas = computed(() => {
     const total = Math.ceil(this.clienteService.amount() / this.elementosPorPagina) || 1;
     return Array.from({ length: total }, (_, i) => i + 1);
   });
 
-  /**
-   * Obtengo la lista de clientes que deben mostrarse en la página actual.
-   * @returns Un subconjunto del array de clientes.
-   */
   get clientesPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
     return this.clienteService.clientes().slice(inicio, fin);
   }
 
-  /**
-   * Abro el modal para la creación de un nuevo cliente.
-   */
+  // ─── Modales ──────────────────────────────────────────────────────
   abrirModal() {
     if (this.modalElement && this.modalElement.nativeElement) {
-      // Utilizo la API de Bootstrap para instanciar y mostrar el modal manualmente.
       this.modalBootstrap = new bootstrap.Modal(this.modalElement.nativeElement);
       this.modalBootstrap.show();
     }
   }
 
-  /**
-   * Preparo el modal de confirmación para eliminar un cliente.
-   * @param cliente El objeto cliente que pretendo eliminar.
-   */
   abrirModal_delete(cliente: any) {
     this.id = cliente.id;
     this.obtenerCliente(cliente.id);
@@ -138,39 +170,30 @@ export class ClientesAytoComponent {
     }
   }
 
-  /**
-   * Cargo los datos del cliente y abro el modal para editar su información.
-   * @param cliente El objeto cliente a editar.
-   */
   abrirModal_editar(cliente: any) {
     this.id = cliente.id;
-    this.obtenerCliente(cliente.id);
-
-    if (this.modalEditarRef && this.modalEditarRef.nativeElement) {
-      this.modalBootstrap = new bootstrap.Modal(this.modalEditarRef.nativeElement);
-      this.modalBootstrap.show();
-    }
+    this.obtenerCliente(cliente.id, () => {
+      if (this.modalEditarRef && this.modalEditarRef.nativeElement) {
+        this.modalBootstrap = new bootstrap.Modal(this.modalEditarRef.nativeElement);
+        this.modalBootstrap.show();
+      }
+    });
   }
 
-  /**
-   * Abro el modal para visualizar los detalles completos de un cliente.
-   * @param cliente El objeto cliente a visualizar.
-   */
   abrirModal_ver(cliente: any) {
     this.id = cliente.id;
-    this.obtenerCliente(cliente.id);
-    if (this.modalVerRef && this.modalVerRef.nativeElement) {
-      this.modalBootstrap = new bootstrap.Modal(this.modalVerRef.nativeElement);
-      this.modalBootstrap.show();
-    }
+    this.obtenerCliente(cliente.id, () => {
+      if (this.modalVerRef && this.modalVerRef.nativeElement) {
+        this.modalBootstrap = new bootstrap.Modal(this.modalVerRef.nativeElement);
+        this.modalBootstrap.show();
+      }
+    });
   }
 
   /**
-   * Consulto las concesiones de un cliente específico filtradas por mi ayuntamiento y las muestro.
-   * @param clienteId ID del cliente.
+   * Consulto las concesiones de un cliente específico filtradas por mi ayuntamiento.
    */
   abrirModalConcesiones(clienteId: number) {
-    // Llamamos al servicio de CONCESIONES
     this.concesionService.getConcesionesPorAyuntamiento(clienteId, this.aytoId).subscribe({
       next: (data) => {
         this.concesionesCliente.set(data);
@@ -182,11 +205,9 @@ export class ClientesAytoComponent {
   }
 
   /**
-   * Busco los difuntos asociados a un cliente dentro de mi ayuntamiento para mostrarlos en un modal.
-   * @param clienteId ID del cliente.
+   * Busco los difuntos asociados a un cliente dentro de mi ayuntamiento.
    */
   abrirModalDifuntos(clienteId: number) {
-    // Llamamos al servicio de DIFUNTOS
     this.difuntoService.getDifuntosPorAyuntamiento(clienteId, this.aytoId).subscribe({
       next: (data) => {
         this.difuntosCliente.set(data);
@@ -197,21 +218,17 @@ export class ClientesAytoComponent {
     });
   }
 
-  /**
-   * Cierro el modal de Bootstrap que esté activo en este momento.
-   */
   cerrarModal() {
-    this.modalBootstrap.hide();
+    if (this.modalBootstrap) {
+      this.resetForm();
+      this.modalBootstrap.hide();
+    }
   }
 
-  /**
-   * Gestiono el cambio en el selector de provincias para cargar las ciudades asociadas.
-   * @param value El valor seleccionado (ID numérico o nombre).
-   */
+  // ─── Provincia / Ciudad ───────────────────────────────────────────
   onProvinciaChange(value: any) {
     let id: number | undefined;
 
-    // Verifico si el valor recibido es el nombre de la provincia o su ID.
     if (isNaN(value)) {
       id = this.provinciaService.provincias().find((p) => p.nombre === value)?.id;
     } else {
@@ -219,7 +236,6 @@ export class ClientesAytoComponent {
     }
 
     if (id) {
-      // Si obtengo un ID válido, actualizo la señal y cargo las ciudades de esa provincia.
       this.provinciaSeleccionadaId.set(id);
       this.ciudadService.loadByProvinciaId(id);
     } else {
@@ -227,11 +243,18 @@ export class ClientesAytoComponent {
     }
   }
 
-  /**
-   * Envío la información del nuevo cliente al servidor para guardarlo.
-   */
+  // ─── CRUD Cliente ─────────────────────────────────────────────────
   guardarCliente() {
-    console.log(this.nuevoCliente);
+    if (this.formCrearCliente.invalid) {
+      this.formCrearCliente.markAllAsTouched();
+      return;
+    }
+
+    this.nuevoCliente = {
+      ...this.nuevoCliente,
+      ...this.formCrearCliente.value,
+    };
+
     this.clienteService.save(this.nuevoCliente).subscribe({
       next: (res) => {
         console.log('Cliente guardado', res);
@@ -243,12 +266,17 @@ export class ClientesAytoComponent {
     });
   }
 
-  /**
-   * Actualizo la información de un cliente existente en la base de datos.
-   * @param id El identificador único del cliente a actualizar.
-   */
   actuCliente(id: number) {
-    console.log(this.nuevoCliente);
+    if (this.formEditarCliente.invalid) {
+      this.formEditarCliente.markAllAsTouched();
+      return;
+    }
+
+    this.clienteEditar = {
+      ...this.clienteEditar,
+      ...this.formEditarCliente.value,
+    };
+
     this.clienteService.update(this.clienteEditar, id).subscribe({
       next: (res) => {
         console.log('Cliente actualizado', res);
@@ -267,19 +295,54 @@ export class ClientesAytoComponent {
     this.clienteService.loadAllByAyuntamiento(this.aytoId).subscribe({
       next: (data) => {
         this.clientes.set(data);
-
-        // Sincronizo también los datos en el servicio para mantener la consistencia global.
         this.clienteService.clientes.set(data);
-
-        console.log('Clientes cargados en componente y servicio:', data);
       },
       error: (err) => console.error('Error al cargar clientes', err),
     });
   }
 
   /**
-   * Restablezco los objetos de datos y estados de selección a sus valores iniciales.
+   * Recupero la información detallada de un cliente por su ID,
+   * relleno el formulario reactivo y ejecuto un callback opcional.
    */
+  obtenerCliente(id: number, callback?: () => void) {
+    this.clienteService.find(id).subscribe((data) => {
+      // Objeto para el modal "ver" (lectura directa con [value])
+      this.clienteEditar = {
+        nombre: data.nombre,
+        dni: data.dni,
+        apellido1: data.apellido1,
+        apellido2: data.apellido2,
+        telefono: data.telefono,
+        direccion: data.direccion,
+        localidad: data.localidad,
+        provincia: data.provincia,
+      };
+
+      // Rellenamos el formulario reactivo de editar
+      this.formEditarCliente.patchValue({
+        nombre: data.nombre,
+        dni: data.dni,
+        apellido1: data.apellido1,
+        apellido2: data.apellido2,
+        telefono: data.telefono,
+        direccion: data.direccion,
+        provincia: data.provincia,
+        localidad: data.localidad,
+      });
+
+      // Activamos el selector de ciudades de la provincia correspondiente
+      const prov = this.provinciaService.provincias().find((p) => p.nombre === data.provincia);
+      if (prov) {
+        this.provinciaSeleccionadaId.set(prov.id);
+        this.ciudadService.loadByProvinciaId(prov.id);
+      }
+
+      if (callback) callback();
+    });
+  }
+
+  // ─── Utilidades ───────────────────────────────────────────────────
   resetForm() {
     this.nuevoCliente = {
       nombre: '',
@@ -302,40 +365,12 @@ export class ClientesAytoComponent {
       localidad: '',
       provincia: '',
     };
+
+    this.formCrearCliente.reset();
+    this.formEditarCliente.reset();
     this.provinciaSeleccionadaId.set(null);
   }
 
-  /**
-   * Recupero la información detallada de un cliente por su ID para preparar la edición.
-   * @param id El identificador del cliente.
-   */
-  obtenerCliente(id: number) {
-    this.clienteService.find(id).subscribe((data) => {
-      // Mapeo los datos recibidos al objeto que utiliza el formulario de edición.
-      this.clienteEditar = {
-        nombre: data.nombre,
-        dni: data.dni,
-        apellido1: data.apellido1,
-        apellido2: data.apellido2,
-        telefono: data.telefono,
-        direccion: data.direccion,
-        localidad: data.localidad,
-        provincia: data.provincia,
-      };
-
-      // Busco la provincia por nombre para activar automáticamente el selector de ciudades.
-      const prov = this.provinciaService.provincias().find((p) => p.nombre === data.provincia);
-      if (prov) {
-        this.provinciaSeleccionadaId.set(prov.id);
-        this.ciudadService.loadByProvinciaId(prov.id);
-      }
-    });
-  }
-
-  /**
-   * Elimino a un cliente del sistema tras la confirmación del usuario.
-   * @param idExterior El identificador del cliente a eliminar.
-   */
   delete(idExterior: number) {
     this.clienteService.delete(idExterior).subscribe({
       next: () => {
@@ -343,7 +378,6 @@ export class ClientesAytoComponent {
         this.clienteService.loadAllByAyuntamiento(this.aytoId);
         this.cerrarModal();
 
-        // Si la página se queda vacía al eliminar, retrocedo una página si es posible.
         if (this.clientesPaginados.length === 0 && this.paginaActual() > 1) {
           this.paginaActual.update((p) => p - 1);
         }
@@ -354,7 +388,6 @@ export class ClientesAytoComponent {
 
   /**
    * Extraigo el ID de mi usuario decodificando el token JWT almacenado en el navegador.
-   * @returns El ID del usuario o null si no puedo obtenerlo.
    */
   obtenerIdUsuario(): number | null {
     let userId: number | null = null;
@@ -362,8 +395,6 @@ export class ClientesAytoComponent {
 
     if (token) {
       try {
-        // Divido el token para obtener el payload (la segunda parte).
-        // Decodifico el Base64 y convierto el JSON resultante en un objeto.
         const payloadPart = token.split('.')[1];
         const decodedPayload = JSON.parse(atob(payloadPart));
 

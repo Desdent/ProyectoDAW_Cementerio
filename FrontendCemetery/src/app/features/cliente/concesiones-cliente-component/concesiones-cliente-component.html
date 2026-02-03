@@ -43,6 +43,9 @@
   </div>
 </div>
 
+<!-- ════════════════════════════════════════════════════════════════════
+     MODAL AÑADIR DIFUNTO
+     ════════════════════════════════════════════════════════════════════ -->
 <div class="modal fade" id="modalAddDifunto" tabindex="-1" #modalAddDifunto>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -59,6 +62,7 @@
       </div>
 
       <div class="modal-body p-4 bg-light">
+        <!-- ── Paso 1: Selección de parcela (sin cambios) ── -->
         @if (!parcelaSeleccionadaId()) {
           <div class="text-center p-4">
             <h6 class="fw-bold mb-4">Seleccione una parcela de su concesión:</h6>
@@ -86,6 +90,7 @@
           </div>
         }
 
+        <!-- ── Paso 2a: Parcela ocupada → alerta + exhumación (sin cambios) ── -->
         @if (parcelaSeleccionadaId()) {
           @if (difuntoEnParcela()) {
             <div class="alert alert-warning border-0 shadow-sm p-4 text-center">
@@ -104,81 +109,112 @@
                 </button>
               </div>
             </div>
+
+            <!-- ── Paso 2b: Parcela libre → formulario reactivo ── -->
           } @else {
             <div
               class="alert alert-info d-flex justify-content-between align-items-center mb-4 border-0 shadow-sm"
             >
-              <span
-                ><i class="bi bi-info-circle-fill me-2"></i> Inhumando en
-                <strong>Parcela #{{ parcelaSeleccionadaId() }}</strong></span
-              >
+              <span>
+                <i class="bi bi-info-circle-fill me-2"></i> Inhumando en
+                <strong>Parcela #{{ parcelaSeleccionadaId() }}</strong>
+              </span>
               <button class="btn btn-sm btn-outline-info" (click)="parcelaSeleccionadaId.set(null)">
                 Cambiar Parcela
               </button>
             </div>
 
-            <form id="formDifunto" class="row g-3">
+            <form class="row g-3" [formGroup]="formDifunto">
+              <!-- Nombre -->
               <div class="col-md-6">
                 <label class="form-label-custom">Nombre *</label>
-                <input
-                  [(ngModel)]="difunto.nombre"
-                  name="nombre"
-                  type="text"
-                  class="form-control-custom"
-                  required
-                />
+                <input formControlName="nombre" type="text" class="form-control-custom" />
+                @if (formDifunto.get('nombre')?.touched) {
+                  @if (formDifunto.get('nombre')?.hasError('required')) {
+                    <span class="error-msg">El nombre es obligatorio</span>
+                  }
+                }
               </div>
+
+              <!-- Primer Apellido -->
               <div class="col-md-6">
                 <label class="form-label-custom">Primer Apellido *</label>
-                <input
-                  [(ngModel)]="difunto.apellido1"
-                  name="apellido1"
-                  type="text"
-                  class="form-control-custom"
-                  required
-                />
+                <input formControlName="apellido1" type="text" class="form-control-custom" />
+                @if (formDifunto.get('apellido1')?.touched) {
+                  @if (formDifunto.get('apellido1')?.hasError('required')) {
+                    <span class="error-msg">El primer apellido es obligatorio</span>
+                  }
+                }
               </div>
+
+              <!-- Segundo Apellido (opcional) -->
               <div class="col-md-6">
                 <label class="form-label-custom">Segundo Apellido</label>
-                <input
-                  [(ngModel)]="difunto.apellido2"
-                  name="apellido2"
-                  type="text"
-                  class="form-control-custom"
-                />
+                <input formControlName="apellido2" type="text" class="form-control-custom" />
               </div>
+
+              <!-- Año Nacimiento -->
               <div class="col-md-3">
                 <label class="form-label-custom">Año Nacimiento *</label>
-                <input
-                  [ngModel]="difunto.yearNacimiento"
-                  (ngModelChange)="difunto.yearNacimiento = +$event"
-                  name="yearNacimiento"
-                  type="text"
-                  class="form-control-custom"
-                  required
-                />
+                <input formControlName="yearNacimiento" type="number" class="form-control-custom" />
+                @if (formDifunto.get('yearNacimiento')?.touched) {
+                  @if (formDifunto.get('yearNacimiento')?.hasError('required')) {
+                    <span class="error-msg">El año de nacimiento es obligatorio</span>
+                  }
+                  @if (formDifunto.get('yearNacimiento')?.hasError('numeroPositivo')) {
+                    <span class="error-msg">Debe ser un número mayor que 0</span>
+                  }
+                  @if (formDifunto.get('yearNacimiento')?.hasError('anioMinimo')) {
+                    <span class="error-msg">El año mínimo permitido es 1900</span>
+                  }
+                }
               </div>
+
+              <!-- Año Defunción -->
               <div class="col-md-3">
                 <label class="form-label-custom">Año Defunción *</label>
-                <input
-                  [ngModel]="difunto.yearDefuncion"
-                  (ngModelChange)="difunto.yearDefuncion = +$event"
-                  name="yearDefuncion"
-                  type="text"
-                  class="form-control-custom"
-                  required
-                />
+                <input formControlName="yearDefuncion" type="number" class="form-control-custom" />
+                @if (formDifunto.get('yearDefuncion')?.touched) {
+                  @if (formDifunto.get('yearDefuncion')?.hasError('required')) {
+                    <span class="error-msg">El año de defunción es obligatorio</span>
+                  }
+                  @if (formDifunto.get('yearDefuncion')?.hasError('numeroPositivo')) {
+                    <span class="error-msg">Debe ser un número mayor que 0</span>
+                  }
+                  @if (formDifunto.get('yearDefuncion')?.hasError('anioMinimo')) {
+                    <span class="error-msg">El año mínimo permitido es 1900</span>
+                  }
+                }
+                @if (
+                  formDifunto.hasError('defuncionAnteriorNacimiento') &&
+                  formDifunto.get('yearDefuncion')?.touched
+                ) {
+                  <span class="error-msg"
+                    >El año de defunción no puede ser anterior al de nacimiento</span
+                  >
+                }
               </div>
+
+              <!-- Fecha Entierro -->
               <div class="col-md-6">
                 <label class="form-label-custom">Fecha Entierro *</label>
-                <input
-                  [(ngModel)]="difunto.fechaEntierro"
-                  name="fechaEntierro"
-                  type="date"
-                  class="form-control-custom"
-                  required
-                />
+                <input formControlName="fechaEntierro" type="date" class="form-control-custom" />
+                @if (formDifunto.get('fechaEntierro')?.touched) {
+                  @if (formDifunto.get('fechaEntierro')?.hasError('required')) {
+                    <span class="error-msg">La fecha de entierro es obligatoria</span>
+                  }
+                }
+                @if (
+                  formDifunto.hasError('entierroAnteriorNacimiento') &&
+                  formDifunto.get('fechaEntierro')?.touched
+                ) {
+                  <span class="error-msg"
+                    >La fecha de entierro no puede ser anterior al año de nacimiento</span
+                  >
+                }
               </div>
+
+              <!-- Foto (fuera del FormGroup, gestionada manualmente) -->
               <div class="col-12">
                 <label class="form-label-custom">Foto</label>
                 <div class="input-group-custom">
@@ -207,20 +243,18 @@
                   />
                 }
               </div>
+
+              <!-- Epitafio (opcional) -->
               <div class="col-12">
                 <label class="form-label-custom">Epitafio</label>
-                <textarea
-                  [(ngModel)]="difunto.mensaje"
-                  name="mensaje"
-                  class="form-control-custom"
-                  rows="2"
-                ></textarea>
+                <textarea formControlName="mensaje" class="form-control-custom" rows="2"></textarea>
               </div>
             </form>
           }
         }
       </div>
 
+      <!-- Footer: el botón guardar solo aparece con parcela libre -->
       <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
         <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
         @if (parcelaSeleccionadaId() && !difuntoEnParcela()) {

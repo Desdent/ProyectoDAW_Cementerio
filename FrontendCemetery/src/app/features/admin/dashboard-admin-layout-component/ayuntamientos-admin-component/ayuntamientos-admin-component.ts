@@ -5,11 +5,18 @@ import { ProvinciaService } from '../../../../core/services/provinciaService';
 import { ayuntamientoPost } from '../../../../interfaces/ayuntamiento/ayuntamientoPost';
 import { ayuntamientoUpdate } from '../../../../interfaces/ayuntamiento/ayuntamientoUpdate';
 import * as bootstrap from 'bootstrap';
-import { FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
+import { Validadores } from '../../../../validators/validadores';
 
 @Component({
   selector: 'app-ayuntamientos-admin-component',
-  imports: [FormsModule],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './ayuntamientos-admin-component.html',
   styleUrl: './ayuntamientos-admin-component.css',
 })
@@ -17,11 +24,43 @@ export class AyuntamientosAdminComponent {
   public ayuntamientoService = inject(AyuntamientoService);
   public ciudadService = inject(CiudadService);
   public provinciaService = inject(ProvinciaService);
+  public formAyto: FormGroup;
+  public formEditarAyto: FormGroup;
 
   @ViewChild('htmlModal') modalElement!: ElementRef;
   @ViewChild('modalVer') modalVerRef!: ElementRef;
   @ViewChild('modalEditar') modalEditarRef!: ElementRef;
   @ViewChild('modalDelete') modalDeleteRef!: ElementRef;
+
+  constructor() {
+    this.formAyto = new FormGroup({
+      nif: new FormControl('', [Validators.required, Validadores.nif()]),
+      nombre: new FormControl('', [Validators.required]),
+      telefono: new FormControl('', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9),
+        Validadores.telefono(),
+      ]),
+      email: new FormControl('', [Validators.required, Validadores.emailValidator()]),
+      direccion: new FormControl('', [Validators.required]),
+      ciudadId: new FormControl('', [Validators.required]),
+      provincia: new FormControl('', [Validators.required]),
+    });
+
+    this.formEditarAyto = new FormGroup({
+      nombre: new FormControl('', [Validators.required]),
+      telefono: new FormControl('', [
+        Validators.required,
+        Validators.minLength(9),
+        Validators.maxLength(9),
+        Validadores.telefono(),
+      ]),
+      direccion: new FormControl('', [Validators.required]),
+      localidad: new FormControl('', [Validators.required]),
+      provincia: new FormControl('', [Validators.required]),
+    });
+  }
 
   nuevoAyuntamiento: ayuntamientoPost = {
     nif: '',
@@ -177,13 +216,24 @@ export class AyuntamientosAdminComponent {
    * Envía la información del nuevo ayuntamiento al servidor para guardarlo.
    */
   guardarAyuntamiento() {
+    if (this.formAyto.invalid) {
+      this.formAyto.markAllAsTouched();
+      return;
+    }
+
+    const datosAGuardar: ayuntamientoPost = {
+      ...this.nuevoAyuntamiento, // Valores por defecto (como password)
+      ...this.formAyto.value, // Valores validados del formulario
+    };
+
     console.log(this.nuevoAyuntamiento);
-    this.ayuntamientoService.save(this.nuevoAyuntamiento).subscribe({
+    this.ayuntamientoService.save(datosAGuardar).subscribe({
       next: (res) => {
         console.log('Cliente guardado', res);
         this.cerrarModal();
         this.ayuntamientoService.loadAll();
         this.resetForm();
+        this.formAyto.reset();
       },
       error: (err) => console.error('Error al guardar', err),
     });
@@ -194,18 +244,27 @@ export class AyuntamientosAdminComponent {
    * @param id El identificador único del ayuntamiento a actualizar.
    */
   actuAyuntamiento(id: number) {
-    console.log(this.nuevoAyuntamiento);
-    this.ayuntamientoService.update(this.ayuntamientoEditar, id).subscribe({
+    if (this.formEditarAyto.invalid) {
+      this.formEditarAyto.markAllAsTouched();
+      console.log('Errores actuales:', this.formAyto.value);
+      return;
+    }
+
+    // Extraemos los datos frescos del formulario
+    const datosParaEnviar = this.formEditarAyto.value;
+    console.log('Enviando datos del formulario:', datosParaEnviar);
+
+    this.ayuntamientoService.update(datosParaEnviar, id).subscribe({
       next: (res) => {
         console.log('Cliente actualizado', res);
         this.cerrarModal();
-        this.ayuntamientoService.loadAll(); // Refrescar la tabla
-        this.resetForm(); // Limpiar el objeto
+        this.ayuntamientoService.loadAll();
+        this.formEditarAyto.reset();
+        this.resetForm();
       },
       error: (err) => console.error('Error al guardar', err),
     });
   }
-
   /**
    * Restablece los objetos de datos y estados de selección a sus valores iniciales.
    */
@@ -236,13 +295,13 @@ export class AyuntamientosAdminComponent {
    */
   obtenerAyuntamiento(id: number) {
     this.ayuntamientoService.find(id).subscribe((data) => {
-      this.ayuntamientoEditar = {
+      this.formEditarAyto.patchValue({
         nombre: data.nombre,
         telefono: data.telefono,
         direccion: data.direccion,
         localidad: data.nombreCiudad,
         provincia: data.nombreProvincia,
-      };
+      });
 
       const prov = this.provinciaService
         .provincias()

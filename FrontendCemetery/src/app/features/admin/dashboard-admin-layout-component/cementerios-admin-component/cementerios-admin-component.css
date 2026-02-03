@@ -283,3 +283,6 @@
   margin: 0;
   font-size: 0.9rem;
 }
+.error-msg {
+  color: red;
+}

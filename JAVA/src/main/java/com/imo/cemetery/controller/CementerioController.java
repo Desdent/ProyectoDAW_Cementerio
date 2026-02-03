@@ -47,7 +47,7 @@ public class CementerioController {
      * @return the response entity
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<CementerioResponseDTO> create(@Valid @RequestBody CementerioCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));
@@ -97,7 +97,7 @@ public class CementerioController {
      * @return the response entity
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<CementerioResponseDTO> update(@PathVariable Long id, @Valid @RequestBody CementerioUpdateDTO dto)
     {
         return ResponseEntity.ok(service.update(dto, id));
@@ -110,7 +110,7 @@ public class CementerioController {
      * @return the response entity
      */
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
         service.deleteById(id);

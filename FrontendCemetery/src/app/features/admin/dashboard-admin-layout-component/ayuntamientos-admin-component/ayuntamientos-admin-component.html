@@ -97,7 +97,7 @@
         <div class="modal-header header-custom-modal border-0 p-4">
           <h5 class="modal-title d-flex align-items-center">
             <i class="bi bi-person-plus-fill me-2 fs-4"></i>
-            <span class="modal-title-text">Registrar Nuevo Ayuntamiento</span>
+            <span class="modal-title-text">Registraree Nuevo Ayuntamiento</span>
           </h5>
           <button
             type="button"
@@ -107,63 +107,112 @@
         </div>
 
         <div class="modal-body p-4 bg-light">
-          <form id="formCliente" class="row g-3">
+          <form id="formCliente" class="row g-3" [formGroup]="formAyto">
             <div class="col-md-6">
               <label class="form-label-custom">Nombre *</label>
               <input
-                [(ngModel)]="nuevoAyuntamiento.nombre"
-                name="nombre"
+                formControlName="nombre"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. Juan"
                 required
               />
+              @if (formAyto.get('nombre')?.touched) {
+                @if (formAyto.get('nombre')?.hasError('required')) {
+                  <span class="error-msg">El nombre es obligatorio</span>
+                }
+              }
             </div>
             <div class="col-md-6">
               <label class="form-label-custom">NIF *</label>
               <input
-                [(ngModel)]="nuevoAyuntamiento.nif"
-                name="nif"
+                formControlName="nif"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. 11111111X"
                 required
               />
+              @if (formAyto.get('nif')?.touched) {
+                @if (formAyto.get('nif')?.hasError('required')) {
+                  <span class="error-msg">El nif es obliatorio</span>
+                }
+                @if (formAyto.get('nif')?.hasError('nif')) {
+                  @let errorNif = formAyto.get('nif')?.getError('nif').error;
+
+                  @if (errorNif === 'Formato inválido') {
+                    <span class="error-msg">NIF incorrecto (Ej. P1234567A)</span>
+                  }
+
+                  @if (errorNif === 'Tipo de organización inválido para ayuntamiento') {
+                    <span class="error-msg">Letra Inicial Incorrecta (P, Q, S, W)</span>
+                  }
+
+                  @if (errorNif.includes('carácter de control')) {
+                    <span class="error-msg">{{ errorNif }}</span>
+                  }
+                }
+              }
             </div>
             <div class="col-md-6">
               <label class="form-label-custom">Email *</label>
               <input
-                [(ngModel)]="nuevoAyuntamiento.email"
-                name="email"
+                formControlName="email"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. email@gmail.com"
                 required
               />
+              @if (formAyto.get('email')?.touched) {
+                @if (formAyto.get('email')?.hasError('required')) {
+                  <span class="error-msg">El email es obligatorio</span>
+                }
+
+                @if (formAyto.get('email')?.hasError('email')) {
+                  <span class="error-msg">Formato de email no válido</span>
+                }
+              }
             </div>
 
             <div class="col-md-6">
               <label class="form-label-custom">Teléfono *</label>
               <input
-                [(ngModel)]="nuevoAyuntamiento.telefono"
+                formControlName="telefono"
                 type="tel"
-                name="telefono"
                 class="form-control-custom"
                 placeholder="600 000 000"
                 required
               />
+              @if (formAyto.get('telefono')?.touched) {
+                @if (formAyto.get('telefono')?.hasError('required')) {
+                  <span class="error-msg">El teléfono es obligatorio</span>
+                }
+                @if (formAyto.get('telefono')?.hasError('minlength')) {
+                  <span class="error-msg">El Teléfono debe contener 9 dígitos</span>
+                }
+                @if (formAyto.get('telefono')?.hasError('maxlength')) {
+                  <span class="error-msg">El Teléfono debe contener 9 dígitos</span>
+                }
+
+                @if (formAyto.get('telefono')?.hasError('telefono')) {
+                  <span class="error-msg">Teléfono no válido (Debe empezar por 9, 7 o 6)</span>
+                }
+              }
             </div>
 
             <div class="col-12">
               <label class="form-label-custom">Dirección *</label>
               <input
-                [(ngModel)]="nuevoAyuntamiento.direccion"
+                formControlName="direccion"
                 type="text"
-                name="direccion"
                 class="form-control-custom"
                 placeholder="C/ Mayor, 12, 2ºB"
                 required
               />
+              @if (formAyto.get('direccion')?.touched) {
+                @if (formAyto.get('direccion')?.hasError('required')) {
+                  <span class="error-msg">La direccion es obligatoria</span>
+                }
+              }
             </div>
 
             <!-- ignorar input provincia -->
@@ -171,7 +220,7 @@
               <label class="form-label-custom">Provincia *</label>
               <select
                 class="form-select-custom"
-                name="provincia"
+                formControlName="provincia"
                 #provSelect
                 (change)="onProvinciaChange(provSelect.value)"
               >
@@ -180,14 +229,18 @@
                   <option [value]="p.id">{{ p.nombre }}</option>
                 }
               </select>
+              @if (formAyto.get('provincia')?.touched) {
+                @if (formAyto.get('provincia')?.hasError('required')) {
+                  <span class="error-msg">Debes seleccionar una Provincia</span>
+                }
+              }
             </div>
 
             <div class="col-md-6">
               <label class="form-label-custom">Localidad *</label>
               <select
-                [(ngModel)]="nuevoAyuntamiento.ciudadId"
+                formControlName="ciudadId"
                 class="form-select-custom"
-                name="idCiudad"
                 [disabled]="!provinciaSeleccionadaId()"
               >
                 <option value="" disabled selected>
@@ -200,6 +253,11 @@
                   <option [value]="ciu.id">{{ ciu.nombre }}</option>
                 }
               </select>
+              @if (formAyto.get('ciudadId')?.touched) {
+                @if (formAyto.get('ciudadId')?.hasError('required')) {
+                  <span class="error-msg">Debes seleccionar una Localidad</span>
+                }
+              }
             </div>
           </form>
         </div>
@@ -220,7 +278,7 @@
     </div>
   </div>
 
-  <div class="modal fade" id="modalCliente_editar" tabindex="-1" aria-hidden="true" #modalEditar>
+  <div class="modal fade" id="modalAyto_editar" tabindex="-1" aria-hidden="true" #modalEditar>
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content modal-custom-border shadow-lg">
         <div class="modal-header header-custom-modal border-0 p-4">
@@ -236,55 +294,81 @@
         </div>
 
         <div class="modal-body p-4 bg-light">
-          <form id="formClienteEditar" class="row g-3">
+          <form id="formAytoEditar" class="row g-3" [formGroup]="formEditarAyto">
             <div class="col-md-6">
               <label class="form-label-custom">Nombre *</label>
               <input
                 type="text"
-                [(ngModel)]="ayuntamientoEditar.nombre"
-                name="nombre"
+                formControlName="nombre"
                 class="form-control-custom"
                 placeholder="Ej. Juan"
                 required
               />
+              @if (formEditarAyto.get('nombre')?.touched) {
+                @if (formEditarAyto.get('nombre')?.hasError('required')) {
+                  <span class="error-msg">El nombre es obligatorio</span>
+                }
+              }
             </div>
 
             <div class="col-md-6">
               <label class="form-label-custom">Teléfono *</label>
               <input
                 type="tel"
-                [(ngModel)]="ayuntamientoEditar.telefono"
-                name="telefono"
+                formControlName="telefono"
                 class="form-control-custom"
                 placeholder="600 000 000"
                 required
               />
+              @if (formEditarAyto.get('telefono')?.touched) {
+                @if (formEditarAyto.get('telefono')?.hasError('required')) {
+                  <span class="error-msg">El teléfono es obligatorio</span>
+                }
+                @if (formEditarAyto.get('telefono')?.hasError('minlength')) {
+                  <span class="error-msg">El Teléfono debe contener 9 dígitos</span>
+                }
+                @if (formEditarAyto.get('telefono')?.hasError('maxlength')) {
+                  <span class="error-msg">El Teléfono debe contener 9 dígitos</span>
+                }
+
+                @if (formEditarAyto.get('telefono')?.hasError('telefono')) {
+                  <span class="error-msg">Teléfono no válido (Debe empezar por 9, 7 o 6)</span>
+                }
+              }
             </div>
 
             <div class="col-12">
               <label class="form-label-custom">Dirección *</label>
               <input
                 type="text"
-                [(ngModel)]="ayuntamientoEditar.direccion"
-                name="direccion"
+                formControlName="direccion"
                 class="form-control-custom"
                 placeholder="C/ Mayor, 12, 2ºB"
                 required
               />
+              @if (formEditarAyto.get('direccion')?.touched) {
+                @if (formEditarAyto.get('direccion')?.hasError('required')) {
+                  <span class="error-msg">La direccion es obligatoria</span>
+                }
+              }
             </div>
 
             <div class="col-md-6">
               <label class="form-label-custom">Provincia *</label>
               <select
                 class="form-select-custom"
-                name="provinciaEdit"
-                [(ngModel)]="ayuntamientoEditar.provincia"
+                formControlName="provincia"
                 #provSelectEdit
                 (change)="onProvinciaChange(provSelectEdit.value)"
               >
                 <option value="" disabled>Seleccione provincia</option>
                 @for (p of provinciaService.provincias(); track p.id) {
                   <option [value]="p.nombre">{{ p.nombre }}</option>
+                }
+                @if (formEditarAyto.get('provincia')?.touched) {
+                  @if (formEditarAyto.get('provincia')?.hasError('required')) {
+                    <span class="error-msg">Debes seleccionar una Provincia</span>
+                  }
                 }
               </select>
             </div>
@@ -293,8 +377,7 @@
               <label class="form-label-custom">Localidad *</label>
               <select
                 class="form-select-custom"
-                name="localidadEdit"
-                [(ngModel)]="ayuntamientoEditar.localidad"
+                formControlName="localidad"
                 [disabled]="!provinciaSeleccionadaId()"
               >
                 <option value="" disabled>
@@ -304,6 +387,11 @@
                 </option>
                 @for (ciu of ciudadService.ciudades(); track ciu.id) {
                   <option [value]="ciu.nombre">{{ ciu.nombre }}</option>
+                }
+                @if (formEditarAyto.get('ciudadId')?.touched) {
+                  @if (formEditarAyto.get('ciudadId')?.hasError('required')) {
+                    <span class="error-msg">Debes seleccionar una Localidad</span>
+                  }
                 }
               </select>
             </div>

@@ -76,13 +76,11 @@
               Anterior
             </button>
           </li>
-
           @for (n of paginas(); track n) {
             <li class="page-item" [class.active]="paginaActual() === n">
               <button class="page-link" (click)="cambiarPagina(n)">{{ n }}</button>
             </li>
           }
-
           <li class="page-item">
             <button
               class="page-link"
@@ -97,6 +95,9 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════════════════════════════
+       MODAL CREAR CLIENTE
+       ════════════════════════════════════════════════════════════════ -->
   <div class="modal fade" id="modalCliente" tabindex="-1" aria-hidden="true" #htmlModal>
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content modal-custom-border shadow-lg">
@@ -113,93 +114,141 @@
         </div>
 
         <div class="modal-body p-4 bg-light">
-          <form id="formCliente" class="row g-3">
+          <form class="row g-3" [formGroup]="formCrearCliente">
+            <!-- Nombre -->
             <div class="col-md-6">
               <label class="form-label-custom">Nombre *</label>
               <input
-                [(ngModel)]="nuevoCliente.nombre"
-                name="nombre"
+                formControlName="nombre"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. Juan"
-                required
               />
+              @if (formCrearCliente.get('nombre')?.touched) {
+                @if (formCrearCliente.get('nombre')?.hasError('required')) {
+                  <span class="error-msg">El nombre es obligatorio</span>
+                }
+              }
             </div>
+
+            <!-- DNI -->
             <div class="col-md-6">
               <label class="form-label-custom">DNI *</label>
               <input
-                [(ngModel)]="nuevoCliente.dni"
-                name="dni"
+                formControlName="dni"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. 11111111X"
-                required
               />
+              @if (formCrearCliente.get('dni')?.touched) {
+                @if (formCrearCliente.get('dni')?.hasError('required')) {
+                  <span class="error-msg">El DNI es obligatorio</span>
+                }
+                @if (formCrearCliente.get('dni')?.hasError('dni')) {
+                  @let errDni = formCrearCliente.get('dni')?.getError('dni').error;
+                  @if (errDni === 'Formato inválido') {
+                    <span class="error-msg">DNI incorrecto (Ej. 12345678A)</span>
+                  }
+                  @if (errDni !== 'Formato inválido') {
+                    <span class="error-msg">{{ errDni }}</span>
+                  }
+                }
+              }
             </div>
+
+            <!-- Email -->
             <div class="col-md-6">
               <label class="form-label-custom">Email *</label>
               <input
-                [(ngModel)]="nuevoCliente.email"
-                name="email"
+                formControlName="email"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. email@gmail.com"
-                required
               />
+              @if (formCrearCliente.get('email')?.touched) {
+                @if (formCrearCliente.get('email')?.hasError('required')) {
+                  <span class="error-msg">El email es obligatorio</span>
+                }
+                @if (formCrearCliente.get('email')?.hasError('email')) {
+                  <span class="error-msg">Formato de email no válido</span>
+                }
+              }
             </div>
 
+            <!-- Primer Apellido -->
             <div class="col-md-6">
-              <label class="form-label-custom">Primer Apellido * </label>
+              <label class="form-label-custom">Primer Apellido *</label>
               <input
-                [(ngModel)]="nuevoCliente.apellido1"
-                name="apellido1"
+                formControlName="apellido1"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. Pérez"
-                required
               />
+              @if (formCrearCliente.get('apellido1')?.touched) {
+                @if (formCrearCliente.get('apellido1')?.hasError('required')) {
+                  <span class="error-msg">El primer apellido es obligatorio</span>
+                }
+              }
             </div>
 
+            <!-- Segundo Apellido (opcional) -->
             <div class="col-md-6">
               <label class="form-label-custom">Segundo Apellido</label>
               <input
-                [(ngModel)]="nuevoCliente.apellido2"
-                name="apellido2"
+                formControlName="apellido2"
                 type="text"
                 class="form-control-custom"
                 placeholder="Ej. García"
               />
             </div>
+
+            <!-- Teléfono -->
             <div class="col-md-6">
               <label class="form-label-custom">Teléfono *</label>
               <input
-                [(ngModel)]="nuevoCliente.telefono"
+                formControlName="telefono"
                 type="tel"
-                name="telefono"
                 class="form-control-custom"
                 placeholder="600 000 000"
-                required
               />
+              @if (formCrearCliente.get('telefono')?.touched) {
+                @if (formCrearCliente.get('telefono')?.hasError('required')) {
+                  <span class="error-msg">El teléfono es obligatorio</span>
+                }
+                @if (
+                  formCrearCliente.get('telefono')?.hasError('minlength') ||
+                  formCrearCliente.get('telefono')?.hasError('maxlength')
+                ) {
+                  <span class="error-msg">El teléfono debe contener 9 dígitos</span>
+                }
+                @if (formCrearCliente.get('telefono')?.hasError('telefono')) {
+                  <span class="error-msg">Teléfono no válido (debe empezar por 9, 7 o 6)</span>
+                }
+              }
             </div>
 
+            <!-- Dirección -->
             <div class="col-12">
               <label class="form-label-custom">Dirección *</label>
               <input
-                [(ngModel)]="nuevoCliente.direccion"
+                formControlName="direccion"
                 type="text"
-                name="direccion"
                 class="form-control-custom"
                 placeholder="C/ Mayor, 12, 2ºB"
-                required
               />
+              @if (formCrearCliente.get('direccion')?.touched) {
+                @if (formCrearCliente.get('direccion')?.hasError('required')) {
+                  <span class="error-msg">La dirección es obligatoria</span>
+                }
+              }
             </div>
 
-            <!-- ignorar input provincia -->
+            <!-- Provincia -->
             <div class="col-md-6">
               <label class="form-label-custom">Provincia *</label>
               <select
                 class="form-select-custom"
-                name="provincia"
+                formControlName="provincia"
                 #provSelect
                 (change)="onProvinciaChange(provSelect.value)"
               >
@@ -208,14 +257,19 @@
                   <option [value]="p.id">{{ p.nombre }}</option>
                 }
               </select>
+              @if (formCrearCliente.get('provincia')?.touched) {
+                @if (formCrearCliente.get('provincia')?.hasError('required')) {
+                  <span class="error-msg">Debes seleccionar una provincia</span>
+                }
+              }
             </div>
 
+            <!-- Localidad -->
             <div class="col-md-6">
               <label class="form-label-custom">Localidad *</label>
               <select
-                [(ngModel)]="nuevoCliente.ciudadId"
+                formControlName="ciudadId"
                 class="form-select-custom"
-                name="idCiudad"
                 [disabled]="!provinciaSeleccionadaId()"
               >
                 <option value="" disabled selected>
@@ -223,11 +277,15 @@
                     provinciaSeleccionadaId() ? 'Seleccione localidad' : 'Primero elija provincia'
                   }}
                 </option>
-
                 @for (ciu of ciudadService.ciudades(); track ciu.id) {
                   <option [value]="ciu.id">{{ ciu.nombre }}</option>
                 }
               </select>
+              @if (formCrearCliente.get('ciudadId')?.touched) {
+                @if (formCrearCliente.get('ciudadId')?.hasError('required')) {
+                  <span class="error-msg">Debes seleccionar una localidad</span>
+                }
+              }
             </div>
           </form>
         </div>
@@ -248,6 +306,9 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════════════════════════════
+       MODAL EDITAR CLIENTE
+       ════════════════════════════════════════════════════════════════ -->
   <div class="modal fade" id="modalCliente_editar" tabindex="-1" aria-hidden="true" #modalEditar>
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content modal-custom-border shadow-lg">
@@ -264,81 +325,122 @@
         </div>
 
         <div class="modal-body p-4 bg-light">
-          <form id="formClienteEditar" class="row g-3">
+          <form class="row g-3" [formGroup]="formEditarCliente">
+            <!-- Nombre -->
             <div class="col-md-6">
               <label class="form-label-custom">Nombre *</label>
               <input
+                formControlName="nombre"
                 type="text"
-                [(ngModel)]="clienteEditar.nombre"
-                name="nombre"
                 class="form-control-custom"
                 placeholder="Ej. Juan"
-                required
               />
+              @if (formEditarCliente.get('nombre')?.touched) {
+                @if (formEditarCliente.get('nombre')?.hasError('required')) {
+                  <span class="error-msg">El nombre es obligatorio</span>
+                }
+              }
             </div>
+
+            <!-- DNI -->
             <div class="col-md-6">
               <label class="form-label-custom">DNI *</label>
               <input
+                formControlName="dni"
                 type="text"
-                [(ngModel)]="clienteEditar.dni"
-                name="dni"
                 class="form-control-custom"
-                placeholder="Ej. Juan"
-                required
+                placeholder="Ej. 11111111X"
               />
+              @if (formEditarCliente.get('dni')?.touched) {
+                @if (formEditarCliente.get('dni')?.hasError('required')) {
+                  <span class="error-msg">El DNI es obligatorio</span>
+                }
+                @if (formEditarCliente.get('dni')?.hasError('dni')) {
+                  @let errDni = formEditarCliente.get('dni')?.getError('dni').error;
+                  @if (errDni === 'Formato inválido') {
+                    <span class="error-msg">DNI incorrecto (Ej. 12345678A)</span>
+                  }
+                  @if (errDni !== 'Formato inválido') {
+                    <span class="error-msg">{{ errDni }}</span>
+                  }
+                }
+              }
             </div>
+
+            <!-- Primer Apellido -->
             <div class="col-md-6">
               <label class="form-label-custom">Primer Apellido *</label>
               <input
+                formControlName="apellido1"
                 type="text"
-                [(ngModel)]="clienteEditar.apellido1"
-                name="apellido1"
                 class="form-control-custom"
                 placeholder="Ej. Pérez"
-                required
               />
+              @if (formEditarCliente.get('apellido1')?.touched) {
+                @if (formEditarCliente.get('apellido1')?.hasError('required')) {
+                  <span class="error-msg">El primer apellido es obligatorio</span>
+                }
+              }
             </div>
 
+            <!-- Segundo Apellido (opcional) -->
             <div class="col-md-6">
               <label class="form-label-custom">Segundo Apellido</label>
               <input
+                formControlName="apellido2"
                 type="text"
-                [(ngModel)]="clienteEditar.apellido2"
-                name="apellido2"
                 class="form-control-custom"
                 placeholder="Ej. García"
               />
             </div>
+
+            <!-- Teléfono -->
             <div class="col-md-6">
               <label class="form-label-custom">Teléfono *</label>
               <input
+                formControlName="telefono"
                 type="tel"
-                [(ngModel)]="clienteEditar.telefono"
-                name="telefono"
                 class="form-control-custom"
                 placeholder="600 000 000"
-                required
               />
+              @if (formEditarCliente.get('telefono')?.touched) {
+                @if (formEditarCliente.get('telefono')?.hasError('required')) {
+                  <span class="error-msg">El teléfono es obligatorio</span>
+                }
+                @if (
+                  formEditarCliente.get('telefono')?.hasError('minlength') ||
+                  formEditarCliente.get('telefono')?.hasError('maxlength')
+                ) {
+                  <span class="error-msg">El teléfono debe contener 9 dígitos</span>
+                }
+                @if (formEditarCliente.get('telefono')?.hasError('telefono')) {
+                  <span class="error-msg">Teléfono no válido (debe empezar por 9, 7 o 6)</span>
+                }
+              }
             </div>
 
+            <!-- Dirección -->
             <div class="col-12">
               <label class="form-label-custom">Dirección *</label>
               <input
+                formControlName="direccion"
                 type="text"
-                [(ngModel)]="clienteEditar.direccion"
-                name="direccion"
                 class="form-control-custom"
                 placeholder="C/ Mayor, 12, 2ºB"
-                required
               />
+              @if (formEditarCliente.get('direccion')?.touched) {
+                @if (formEditarCliente.get('direccion')?.hasError('required')) {
+                  <span class="error-msg">La dirección es obligatoria</span>
+                }
+              }
             </div>
 
+            <!-- Provincia (opciones por nombre, onProvinciaChange resuelve el ID) -->
             <div class="col-md-6">
               <label class="form-label-custom">Provincia *</label>
               <select
                 class="form-select-custom"
-                name="provinciaEdit"
-                [(ngModel)]="clienteEditar.provincia"
+                formControlName="provincia"
                 #provSelectEdit
                 (change)="onProvinciaChange(provSelectEdit.value)"
               >
@@ -347,14 +449,19 @@
                   <option [value]="p.nombre">{{ p.nombre }}</option>
                 }
               </select>
+              @if (formEditarCliente.get('provincia')?.touched) {
+                @if (formEditarCliente.get('provincia')?.hasError('required')) {
+                  <span class="error-msg">Debes seleccionar una provincia</span>
+                }
+              }
             </div>
 
+            <!-- Localidad (opciones por nombre) -->
             <div class="col-md-6">
               <label class="form-label-custom">Localidad *</label>
               <select
                 class="form-select-custom"
-                name="localidadEdit"
-                [(ngModel)]="clienteEditar.localidad"
+                formControlName="localidad"
                 [disabled]="!provinciaSeleccionadaId()"
               >
                 <option value="" disabled>
@@ -366,6 +473,11 @@
                   <option [value]="ciu.nombre">{{ ciu.nombre }}</option>
                 }
               </select>
+              @if (formEditarCliente.get('localidad')?.touched) {
+                @if (formEditarCliente.get('localidad')?.hasError('required')) {
+                  <span class="error-msg">Debes seleccionar una localidad</span>
+                }
+              }
             </div>
           </form>
         </div>
@@ -386,6 +498,9 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════════════════════════════
+       MODAL VER CLIENTE (solo lectura, sin FormGroup)
+       ════════════════════════════════════════════════════════════════ -->
   <div class="modal fade" id="modalCliente_ver" tabindex="-1" aria-hidden="true" #modalVer>
     <div class="modal-dialog modal-dialog-centered modal-lg">
       <div class="modal-content modal-custom-border shadow-lg">
@@ -402,97 +517,72 @@
         </div>
 
         <div class="modal-body p-4 bg-light">
-          <form id="formClienteVer" class="row g-3">
+          <form class="row g-3">
             <div class="col-md-6">
               <label class="form-label-custom">Nombre</label>
               <input
                 readonly
+                [value]="clienteEditar.nombre"
                 type="text"
-                [(ngModel)]="clienteEditar.nombre"
-                name="nombre"
                 class="form-control-custom"
-                placeholder="Ej. Juan"
               />
             </div>
             <div class="col-md-6">
               <label class="form-label-custom">DNI</label>
-              <input
-                readonly
-                type="text"
-                [(ngModel)]="clienteEditar.dni"
-                name="dni"
-                class="form-control-custom"
-                placeholder="Ej. Juan"
-              />
+              <input readonly [value]="clienteEditar.dni" type="text" class="form-control-custom" />
             </div>
             <div class="col-md-6">
               <label class="form-label-custom">Primer Apellido</label>
               <input
                 readonly
+                [value]="clienteEditar.apellido1"
                 type="text"
-                [(ngModel)]="clienteEditar.apellido1"
-                name="apellido1"
                 class="form-control-custom"
-                placeholder="Ej. Pérez"
               />
             </div>
-
             <div class="col-md-6">
               <label class="form-label-custom">Segundo Apellido</label>
               <input
                 readonly
+                [value]="clienteEditar.apellido2"
                 type="text"
-                [(ngModel)]="clienteEditar.apellido2"
-                name="apellido2"
                 class="form-control-custom"
-                placeholder="Ej. García"
               />
             </div>
             <div class="col-md-6">
               <label class="form-label-custom">Teléfono</label>
               <input
                 readonly
+                [value]="clienteEditar.telefono"
                 type="tel"
-                [(ngModel)]="clienteEditar.telefono"
-                name="telefono"
                 class="form-control-custom"
-                placeholder="600 000 000"
               />
             </div>
-
             <div class="col-12">
               <label class="form-label-custom">Dirección</label>
               <input
                 readonly
+                [value]="clienteEditar.direccion"
                 type="text"
-                [(ngModel)]="clienteEditar.direccion"
-                name="direccion"
                 class="form-control-custom"
-                placeholder="C/ Mayor, 12, 2ºB"
               />
             </div>
-
             <div class="col-12">
               <label class="form-label-custom">Ciudad</label>
               <input
                 readonly
+                [value]="clienteEditar.localidad"
                 type="text"
-                [(ngModel)]="clienteEditar.localidad"
-                name="localidad"
                 class="form-control-custom"
-                placeholder="C/ Mayor, 12, 2ºB"
               />
             </div>
-
             <div class="col-12">
               <label class="form-label-custom">Provincia</label>
               <input
                 readonly
+                [value]="clienteEditar.provincia"
                 type="text"
-                [(ngModel)]="clienteEditar.provincia"
-                name="provincia"
                 class="form-control-custom"
-                placeholder="C/ Mayor, 12, 2ºB"
               />
             </div>
           </form>
@@ -505,6 +595,9 @@
     </div>
   </div>
 
+  <!-- ════════════════════════════════════════════════════════════════
+       MODAL ELIMINAR CLIENTE
+       ════════════════════════════════════════════════════════════════ -->
   <div class="modal fade" id="modalCliente_delete" tabindex="-1" aria-hidden="true" #modalDelete>
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content modal-custom-border shadow-lg">

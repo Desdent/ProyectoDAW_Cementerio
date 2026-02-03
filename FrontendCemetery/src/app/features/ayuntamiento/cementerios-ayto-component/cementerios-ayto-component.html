@@ -128,8 +128,6 @@
   </div>
 </div>
 
-<!-- MODAL AÑADIR CEMENTERIO -->
-
 <div class="modal fade" id="modalAddCementerio" tabindex="-1" aria-hidden="true" #htmlModal>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -145,69 +143,97 @@
         ></button>
       </div>
       <div class="modal-body p-4 bg-light">
-        <form id="formCliente" class="row g-3">
+        <form [formGroup]="cementerioForm" class="row g-3">
           <div class="col-md-6">
             <label class="form-label-custom">Nombre *</label>
             <input
-              [(ngModel)]="nuevoCementerio.nombre"
-              name="nombre"
+              formControlName="nombre"
               type="text"
               class="form-control-custom"
+              [class.is-invalid]="
+                cementerioForm.get('nombre')?.invalid && cementerioForm.get('nombre')?.touched
+              "
               placeholder="Ej. Cementerio La Cruz"
-              required
             />
+            @if (cementerioForm.get('nombre')?.invalid && cementerioForm.get('nombre')?.touched) {
+              @if (cementerioForm.get('nombre')?.hasError('required')) {
+                <span class="msg-error">El nombre es obligatorio.</span>
+              }
+            }
           </div>
+
           <div class="col-md-6">
             <label class="form-label-custom">Email *</label>
             <input
-              [(ngModel)]="nuevoCementerio.email"
-              name="email"
+              formControlName="email"
               type="text"
               class="form-control-custom"
+              [class.is-invalid]="
+                cementerioForm.get('email')?.invalid && cementerioForm.get('email')?.touched
+              "
               placeholder="Ej. email@gmail.com"
-              required
             />
+            @if (cementerioForm.get('email')?.invalid && cementerioForm.get('email')?.touched) {
+              @if (cementerioForm.get('email')?.hasError('required')) {
+                <span class="msg-error">El email es obligatorio.</span>
+              }
+              @if (cementerioForm.get('email')?.hasError('email')) {
+                <span class="msg-error">El formato del email no es válido.</span>
+              }
+            }
           </div>
+
           <div class="col-md-6">
             <label class="form-label-custom">Teléfono *</label>
             <input
-              [(ngModel)]="nuevoCementerio.telefono"
+              formControlName="telefono"
               type="tel"
-              name="telefono"
               class="form-control-custom"
+              [class.is-invalid]="
+                cementerioForm.get('telefono')?.invalid && cementerioForm.get('telefono')?.touched
+              "
               placeholder="900 000 000"
-              required
             />
+            @if (
+              cementerioForm.get('telefono')?.invalid && cementerioForm.get('telefono')?.touched
+            ) {
+              @if (cementerioForm.get('telefono')?.hasError('required')) {
+                <span class="msg-error">El teléfono es obligatorio.</span>
+              }
+              @if (cementerioForm.get('telefono')?.hasError('telefono')) {
+                <span class="msg-error"
+                  >Formato incorrecto (9 dígitos empezando por 6, 7 o 9).</span
+                >
+              }
+            }
           </div>
+
           <div class="col-12">
             <label class="form-label-custom">Dirección *</label>
             <input
-              [(ngModel)]="nuevoCementerio.direccion"
+              formControlName="direccion"
               type="text"
-              name="direccion"
               class="form-control-custom"
+              [class.is-invalid]="
+                cementerioForm.get('direccion')?.invalid && cementerioForm.get('direccion')?.touched
+              "
               placeholder="C/ Mayor, 12, 2ºB"
-              required
             />
+            @if (
+              cementerioForm.get('direccion')?.invalid && cementerioForm.get('direccion')?.touched
+            ) {
+              @if (cementerioForm.get('direccion')?.hasError('required')) {
+                <span class="msg-error">La dirección es obligatoria.</span>
+              }
+            }
           </div>
-          <div class="col-12">
-            <label class="form-label-custom">ID del Ayuntamiento *</label>
-            <input
-              [(ngModel)]="nuevoCementerio.ayuntamientoId"
-              type="number"
-              name="ayuntamientoId"
-              class="form-control-custom"
-              placeholder="1"
-              required
-            />
-          </div>
+
           <div class="col-12">
             <label class="form-label-custom">Mapa del Cementerio</label>
             <div class="input-group-custom">
               <input
                 type="text"
-                [(ngModel)]="nuevoCementerio.mapa"
-                name="mapa"
+                formControlName="mapa"
                 class="form-control-custom"
                 placeholder="No se ha seleccionado archivo"
                 readonly
@@ -226,11 +252,7 @@
               <div class="map-preview-wrapper mt-3">
                 <div class="preview-header d-flex justify-content-between">
                   <small class="text-muted">Vista previa del mapa:</small>
-                  <button
-                    type="button"
-                    class="btn-close-small"
-                    (click)="mapaPreview.set(null); nuevoCementerio.mapa = ''"
-                  >
+                  <button type="button" class="btn-close-small" (click)="limpiarMapaPreview()">
                     <i class="bi bi-x"></i>
                   </button>
                 </div>
@@ -249,6 +271,7 @@
         <button
           type="button"
           class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+          [disabled]="cementerioForm.invalid"
           (click)="guardarCementerio()"
         >
           <i class="bi bi-save"></i> Guardar Cementerio
@@ -257,8 +280,6 @@
     </div>
   </div>
 </div>
-
-<!-- MODAL EDITAR CEMENTERIO -->
 
 <div class="modal fade" id="modalCementerioeditar" tabindex="-1" aria-hidden="true" #modalEditar>
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -276,63 +297,88 @@
       </div>
 
       <div class="modal-body p-4 bg-light">
-        <form id="formClienteEditar" class="row g-3">
+        <form [formGroup]="cementerioForm" class="row g-3">
           <div class="col-md-6">
             <label class="form-label-custom">Nombre *</label>
             <input
-              [(ngModel)]="cementerioEditar.nombre"
-              name="nombre"
+              formControlName="nombre"
               type="text"
               class="form-control-custom"
-              placeholder="Ej. Cementerio La Cruz"
-              required
+              [class.is-invalid]="
+                cementerioForm.get('nombre')?.invalid && cementerioForm.get('nombre')?.touched
+              "
             />
+            @if (cementerioForm.get('nombre')?.invalid && cementerioForm.get('nombre')?.touched) {
+              @if (cementerioForm.get('nombre')?.hasError('required')) {
+                <span class="msg-error">El nombre es obligatorio.</span>
+              }
+            }
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Email *</label>
             <input
-              [(ngModel)]="cementerioEditar.email"
-              name="email"
+              formControlName="email"
               type="text"
               class="form-control-custom"
-              placeholder="Ej. email@gmail.com"
-              required
+              [class.is-invalid]="
+                cementerioForm.get('email')?.invalid && cementerioForm.get('email')?.touched
+              "
             />
+            @if (cementerioForm.get('email')?.invalid && cementerioForm.get('email')?.touched) {
+              @if (cementerioForm.get('email')?.hasError('required')) {
+                <span class="msg-error">El email es obligatorio.</span>
+              }
+              @if (cementerioForm.get('email')?.hasError('email')) {
+                <span class="msg-error">El formato del email no es válido.</span>
+              }
+            }
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Teléfono *</label>
             <input
-              [(ngModel)]="cementerioEditar.telefono"
+              formControlName="telefono"
               type="tel"
-              name="telefono"
               class="form-control-custom"
-              placeholder="900 000 000"
-              required
+              [class.is-invalid]="
+                cementerioForm.get('telefono')?.invalid && cementerioForm.get('telefono')?.touched
+              "
             />
+            @if (
+              cementerioForm.get('telefono')?.invalid && cementerioForm.get('telefono')?.touched
+            ) {
+              @if (cementerioForm.get('telefono')?.hasError('required')) {
+                <span class="msg-error">El teléfono es obligatorio.</span>
+              }
+              @if (cementerioForm.get('telefono')?.hasError('telefono')) {
+                <span class="msg-error"
+                  >Formato incorrecto (9 dígitos empezando por 6, 7 o 9).</span
+                >
+              }
+            }
           </div>
           <div class="col-12">
             <label class="form-label-custom">Dirección *</label>
             <input
-              [(ngModel)]="cementerioEditar.direccion"
+              formControlName="direccion"
               type="text"
-              name="direccion"
               class="form-control-custom"
-              placeholder="C/ Mayor, 12, 2ºB"
-              required
+              [class.is-invalid]="
+                cementerioForm.get('direccion')?.invalid && cementerioForm.get('direccion')?.touched
+              "
             />
+            @if (
+              cementerioForm.get('direccion')?.invalid && cementerioForm.get('direccion')?.touched
+            ) {
+              @if (cementerioForm.get('direccion')?.hasError('required')) {
+                <span class="msg-error">La dirección es obligatoria.</span>
+              }
+            }
           </div>
 
           <div class="col-12">
             <label class="form-label-custom">Mapa del Cementerio</label>
             <div class="input-group-custom">
-              <input
-                type="text"
-                [(ngModel)]="cementerioEditar.mapa"
-                name="mapa"
-                class="form-control-custom"
-                placeholder="No se ha seleccionado archivo"
-                readonly
-              />
+              <input type="text" formControlName="mapa" class="form-control-custom" readonly />
               <label class="btn-file-upload">
                 <i class="bi bi-folder2-open me-2"></i> Cambiar Mapa
                 <input
@@ -361,7 +407,8 @@
         <button
           type="button"
           class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
-          (click)="actuCementerio(id)"
+          [disabled]="cementerioForm.invalid"
+          (click)="actuCementerio()"
         >
           <i class="bi bi-save"></i> Guardar Cambios
         </button>
@@ -369,8 +416,6 @@
     </div>
   </div>
 </div>
-
-<!-- MODAL VER CEMENTERIO -->
 
 <div class="modal fade" id="modalCementerio_ver" tabindex="-1" aria-hidden="true" #modalVer>
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -388,13 +433,12 @@
       </div>
 
       <div class="modal-body p-4 bg-light">
-        <form id="formClienteVer" class="row g-3">
+        <form class="row g-3">
           <div class="col-md-6">
             <label class="form-label-custom">Nombre</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.nombre"
-              name="nombre"
+              [value]="cementerioVisualizar.nombre"
               type="text"
               class="form-control-custom"
             />
@@ -403,8 +447,7 @@
             <label class="form-label-custom">Email</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.email"
-              name="email"
+              [value]="cementerioVisualizar.email"
               type="text"
               class="form-control-custom"
             />
@@ -413,9 +456,8 @@
             <label class="form-label-custom">Teléfono</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.telefono"
+              [value]="cementerioVisualizar.telefono"
               type="tel"
-              name="telefono"
               class="form-control-custom"
             />
           </div>
@@ -423,9 +465,8 @@
             <label class="form-label-custom">Dirección</label>
             <input
               readonly
-              [(ngModel)]="cementerioEditar.direccion"
+              [value]="cementerioVisualizar.direccion"
               type="text"
-              name="direccion"
               class="form-control-custom"
             />
           </div>
@@ -433,13 +474,16 @@
           <div class="col-12 mt-3">
             <label class="form-label-custom">Imagen del Mapa</label>
             <div class="border rounded bg-white p-2 text-center">
-              @if (cementerioEditar.mapa) {
+              @if (cementerioVisualizar.mapa) {
                 <img
-                  [src]="'http://localhost:8080/uploads/mapas/' + cementerioEditar.mapa"
+                  [src]="'http://localhost:8080/uploads/mapas/' + cementerioVisualizar.mapa"
                   class="img-fluid rounded shadow-sm"
                   style="max-height: 250px; cursor: pointer"
                   (click)="
-                    verMapa({ nombre: cementerioEditar.nombre, mapa: cementerioEditar.mapa })
+                    verMapa({
+                      nombre: cementerioVisualizar.nombre,
+                      mapa: cementerioVisualizar.mapa,
+                    })
                   "
                 />
                 <p class="text-muted small mt-2">
@@ -463,11 +507,7 @@
             <div class="row g-3">
               <div class="col-md-6">
                 <label class="form-label-custom">Seleccionar Zona</label>
-                <select
-                  class="form-select-custom"
-                  name="ver_zonasSelect"
-                  (change)="onZonaChange($event)"
-                >
+                <select class="form-select-custom" (change)="onZonaChange($event)">
                   <option value="" disabled selected>Elija una zona para ver detalles</option>
                   @for (t of zonas(); track t.id) {
                     <option [value]="t.id">{{ t.nombre }}</option>
@@ -513,8 +553,6 @@
   </div>
 </div>
 
-<!-- MODAL EDITAR ZONAS -->
-
 <div class="modal fade" id="modalVerZonas" tabindex="-1" aria-hidden="true" #verZonas>
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content modal-custom-border shadow-lg">
@@ -533,7 +571,7 @@
         <div class="row g-3">
           <div class="col-12">
             <label class="form-label-custom">Seleccionar Zona a Editar</label>
-            <select class="form-select-custom" name="ez_selector" (change)="onZonaChange($event)">
+            <select class="form-select-custom" (change)="onZonaChangeForEdit($event)">
               <option value="" disabled selected>Seleccione la zona que desea modificar</option>
               @for (t of zonas(); track t.id) {
                 <option [value]="t.id">{{ t.nombre }}</option>
@@ -541,64 +579,106 @@
             </select>
           </div>
 
-          @if (zonaSelected()) {
+          @if (zonaEditandoId()) {
             <hr class="my-4" />
-            <form class="row g-3">
+            <form [formGroup]="zonaForm" class="row g-3">
               <div class="col-md-6">
                 <label class="form-label-custom">Nombre de Zona *</label>
                 <input
-                  required
-                  [(ngModel)]="zonaSelected()!.nombre"
-                  name="ez_nombre"
+                  formControlName="nombre"
                   type="text"
                   class="form-control-custom"
+                  [class.is-invalid]="
+                    zonaForm.get('nombre')?.invalid && zonaForm.get('nombre')?.touched
+                  "
                 />
+                @if (zonaForm.get('nombre')?.invalid && zonaForm.get('nombre')?.touched) {
+                  @if (zonaForm.get('nombre')?.hasError('required')) {
+                    <span class="msg-error">El nombre es obligatorio.</span>
+                  }
+                }
               </div>
 
               <div class="col-md-6">
                 <label class="form-label-custom">Tipo de Zona *</label>
                 <select
-                  required
-                  [(ngModel)]="zonaSelected()!.tipo"
-                  name="ez_tipo"
+                  formControlName="tipo"
                   class="form-select-custom"
+                  [class.is-invalid]="
+                    zonaForm.get('tipo')?.invalid && zonaForm.get('tipo')?.touched
+                  "
                 >
                   <option value="" disabled>Seleccione Tipo</option>
                   @for (tipo of tipos(); track tipo) {
                     <option [value]="tipo">{{ tipo }}</option>
                   }
                 </select>
+                @if (zonaForm.get('tipo')?.invalid && zonaForm.get('tipo')?.touched) {
+                  @if (zonaForm.get('tipo')?.hasError('required')) {
+                    <span class="msg-error">El tipo de zona es obligatorio.</span>
+                  }
+                }
               </div>
 
               <div class="col-md-12">
                 <label class="form-label-custom">Puntos de Coordenadas *</label>
                 <input
-                  required
-                  [(ngModel)]="zonaSelected()!.puntos"
-                  name="ez_puntos"
+                  formControlName="puntos"
                   type="text"
                   class="form-control-custom"
+                  [class.is-invalid]="
+                    zonaForm.get('puntos')?.invalid && zonaForm.get('puntos')?.touched
+                  "
+                  placeholder="x1,y1,x2,y2..."
                 />
+                @if (zonaForm.get('puntos')?.invalid && zonaForm.get('puntos')?.touched) {
+                  @if (zonaForm.get('puntos')?.hasError('required')) {
+                    <span class="msg-error">Las coordenadas son obligatorias.</span>
+                  }
+                  @if (zonaForm.get('puntos')?.hasError('coordenadas')) {
+                    <span class="msg-error">{{
+                      zonaForm.get('puntos')?.getError('coordenadas').error
+                    }}</span>
+                  }
+                }
               </div>
               <div class="col-md-6">
                 <label class="form-label-custom">Filas *</label>
                 <input
-                  required
-                  [(ngModel)]="zonaSelected()!.filas"
-                  name="ez_filas"
+                  formControlName="filas"
                   type="number"
                   class="form-control-custom"
+                  [class.is-invalid]="
+                    zonaForm.get('filas')?.invalid && zonaForm.get('filas')?.touched
+                  "
                 />
+                @if (zonaForm.get('filas')?.invalid && zonaForm.get('filas')?.touched) {
+                  @if (zonaForm.get('filas')?.hasError('required')) {
+                    <span class="msg-error">Obligatorio.</span>
+                  }
+                  @if (zonaForm.get('filas')?.hasError('numeroPositivo')) {
+                    <span class="msg-error">Debe ser mayor que 0.</span>
+                  }
+                }
               </div>
               <div class="col-md-6">
                 <label class="form-label-custom">Columnas *</label>
                 <input
-                  required
-                  [(ngModel)]="zonaSelected()!.columnas"
-                  name="ez_columnas"
+                  formControlName="columnas"
                   type="number"
                   class="form-control-custom"
+                  [class.is-invalid]="
+                    zonaForm.get('columnas')?.invalid && zonaForm.get('columnas')?.touched
+                  "
                 />
+                @if (zonaForm.get('columnas')?.invalid && zonaForm.get('columnas')?.touched) {
+                  @if (zonaForm.get('columnas')?.hasError('required')) {
+                    <span class="msg-error">Obligatorio.</span>
+                  }
+                  @if (zonaForm.get('columnas')?.hasError('numeroPositivo')) {
+                    <span class="msg-error">Debe ser mayor que 0.</span>
+                  }
+                }
               </div>
             </form>
           } @else if (zonas().length > 0) {
@@ -614,18 +694,19 @@
       </div>
       <div class="modal-footer border-0 p-4 bg-light justify-content-end gap-2">
         <button type="button" class="btn-action px-4 py-2" (click)="cerrarModal()">Cancelar</button>
-        @if (zonaSelected()) {
+        @if (zonaEditandoId()) {
           <button
             type="button"
             class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
-            (click)="guardarZonas(zonaSelected()!.id)"
+            [disabled]="zonaForm.invalid"
+            (click)="guardarZonas()"
           >
             <i class="bi bi-save"></i> Actualizar Zona
           </button>
           <button
             type="button"
             class="btn btn-danger px-4 py-2 shadow-sm rounded-3"
-            (click)="deleteZona(zonaSelected()!.id)"
+            (click)="deleteZona(zonaEditandoId()!)"
           >
             Eliminar Zona
           </button>
@@ -634,8 +715,6 @@
     </div>
   </div>
 </div>
-
-<!-- MODAL AÑADIR ZONAS -->
 
 <div class="modal fade" id="modalAddZonas" tabindex="-1" aria-hidden="true" #addZonas>
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -652,57 +731,99 @@
         ></button>
       </div>
       <div class="modal-body p-4 bg-light">
-        <form class="row g-3">
+        <form [formGroup]="zonaForm" class="row g-3">
           <div class="col-md-6">
             <label class="form-label-custom">Nombre *</label>
             <input
-              [(ngModel)]="nuevaZona.nombre"
-              name="nz_nombre"
+              formControlName="nombre"
               type="text"
               class="form-control-custom"
+              [class.is-invalid]="
+                zonaForm.get('nombre')?.invalid && zonaForm.get('nombre')?.touched
+              "
               placeholder="Ej. Zona Y"
-              required
             />
+            @if (zonaForm.get('nombre')?.invalid && zonaForm.get('nombre')?.touched) {
+              @if (zonaForm.get('nombre')?.hasError('required')) {
+                <span class="msg-error">El nombre es obligatorio.</span>
+              }
+            }
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Tipo *</label>
-            <select required name="nz_tipo" class="form-select-custom" [(ngModel)]="nuevaZona.tipo">
+            <select
+              formControlName="tipo"
+              class="form-select-custom"
+              [class.is-invalid]="zonaForm.get('tipo')?.invalid && zonaForm.get('tipo')?.touched"
+            >
               <option value="" disabled selected>Seleccione un tipo</option>
               @for (tipo of tipos(); track tipo) {
                 <option [value]="tipo">{{ tipo }}</option>
               }
             </select>
+            @if (zonaForm.get('tipo')?.invalid && zonaForm.get('tipo')?.touched) {
+              @if (zonaForm.get('tipo')?.hasError('required')) {
+                <span class="msg-error">El tipo de zona es obligatorio.</span>
+              }
+            }
           </div>
           <div class="col-md-6">
             <label class="form-label-custom">Puntos de Coordenadas *</label>
             <input
-              [(ngModel)]="nuevaZona.puntos"
+              formControlName="puntos"
               type="text"
-              name="nz_puntos"
               class="form-control-custom"
               placeholder="x1,y1,x2,y2..."
-              required
+              [class.is-invalid]="
+                zonaForm.get('puntos')?.invalid && zonaForm.get('puntos')?.touched
+              "
             />
+            @if (zonaForm.get('puntos')?.invalid && zonaForm.get('puntos')?.touched) {
+              @if (zonaForm.get('puntos')?.hasError('required')) {
+                <span class="msg-error">Las coordenadas son obligatorias.</span>
+              }
+              @if (zonaForm.get('puntos')?.hasError('coordenadas')) {
+                <span class="msg-error">{{
+                  zonaForm.get('puntos')?.getError('coordenadas').error
+                }}</span>
+              }
+            }
           </div>
           <div class="col-md-3">
             <label class="form-label-custom">Filas *</label>
             <input
-              [(ngModel)]="nuevaZona.filas"
+              formControlName="filas"
               type="number"
-              name="nz_filas"
               class="form-control-custom"
-              required
+              [class.is-invalid]="zonaForm.get('filas')?.invalid && zonaForm.get('filas')?.touched"
             />
+            @if (zonaForm.get('filas')?.invalid && zonaForm.get('filas')?.touched) {
+              @if (zonaForm.get('filas')?.hasError('required')) {
+                <span class="msg-error">Obligatorio.</span>
+              }
+              @if (zonaForm.get('filas')?.hasError('numeroPositivo')) {
+                <span class="msg-error">Debe ser mayor que 0.</span>
+              }
+            }
           </div>
           <div class="col-md-3">
             <label class="form-label-custom">Columnas *</label>
             <input
-              [(ngModel)]="nuevaZona.columnas"
+              formControlName="columnas"
               type="number"
-              name="nz_columnas"
               class="form-control-custom"
-              required
+              [class.is-invalid]="
+                zonaForm.get('columnas')?.invalid && zonaForm.get('columnas')?.touched
+              "
             />
+            @if (zonaForm.get('columnas')?.invalid && zonaForm.get('columnas')?.touched) {
+              @if (zonaForm.get('columnas')?.hasError('required')) {
+                <span class="msg-error">Obligatorio.</span>
+              }
+              @if (zonaForm.get('columnas')?.hasError('numeroPositivo')) {
+                <span class="msg-error">Debe ser mayor que 0.</span>
+              }
+            }
           </div>
         </form>
       </div>
@@ -711,6 +832,7 @@
         <button
           type="button"
           class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
+          [disabled]="zonaForm.invalid"
           (click)="addZona()"
         >
           <i class="bi bi-plus-lg"></i> Añadir Zona
@@ -719,8 +841,6 @@
     </div>
   </div>
 </div>
-
-<!-- MODAL ABRIR ZONAS -->
 
 <div class="modal fade" id="modalParcelas" tabindex="-1" aria-hidden="true" #modalParcelas>
   <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -759,12 +879,15 @@
               </p>
             </div>
 
-            <div class="col-md-12">
+            <form [formGroup]="parcelaForm" class="col-md-12">
               <label class="form-label-custom">Seleccionar Ubicación Libre *</label>
               <select
                 class="form-select-custom"
+                formControlName="ubicacion"
                 (change)="onSeleccionarHueco($event)"
-                name="ubicacion"
+                [class.is-invalid]="
+                  parcelaForm.get('ubicacion')?.invalid && parcelaForm.get('ubicacion')?.touched
+                "
               >
                 <option value="" disabled selected>Seleccione Fila y Columna disponible</option>
                 @for (h of disponibilidadParcelas(); track $index) {
@@ -773,7 +896,12 @@
                   </option>
                 }
               </select>
-            </div>
+              @if (parcelaForm.get('ubicacion')?.invalid && parcelaForm.get('ubicacion')?.touched) {
+                @if (parcelaForm.get('ubicacion')?.hasError('required')) {
+                  <span class="msg-error">Debe seleccionar una ubicación libre.</span>
+                }
+              }
+            </form>
           }
         </div>
       </div>
@@ -783,7 +911,7 @@
         <button
           type="button"
           class="btn-primary-custom px-4 py-2 m-0 shadow-sm"
-          [disabled]="nuevaParcela.fila === 0 || nuevaParcela.zonaId === 0"
+          [disabled]="parcelaForm.invalid || !zonaParaParcelas()"
           (click)="guardarParcela()"
         >
           <i class="bi bi-plus-circle"></i> Crear Parcela
@@ -792,8 +920,6 @@
     </div>
   </div>
 </div>
-
-<!-- MODAL BORRAR CEMENTERIO -->
 
 <div class="modal fade" id="modalCementerio_delete" tabindex="-1" aria-hidden="true" #modalDelete>
   <div class="modal-dialog modal-dialog-centered">

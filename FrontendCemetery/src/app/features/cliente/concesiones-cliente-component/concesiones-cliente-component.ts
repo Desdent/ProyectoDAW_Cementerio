@@ -1,19 +1,25 @@
 import { Component, computed, ElementRef, inject, signal, ViewChild, OnInit } from '@angular/core';
 import * as bootstrap from 'bootstrap';
-import { FormsModule } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Concesion } from '../../../interfaces/concesion/concesion';
 import { AuthService } from '../../../core/services/authService';
 import { ConcesionService } from '../../../core/services/concesionService';
 import { CementerioService } from '../../../core/services/cementerioService';
-import { Cementerio } from '../../../interfaces/cementerio/cementerio';
 import { DifuntoPost } from '../../../interfaces/difunto/difuntoPost';
 import { DifuntoService } from '../../../core/services/difuntoService';
 import { ParcelaService } from '../../../core/services/parcelaService';
+import { Validadores } from '../../../validators/validadores';
 
 @Component({
   selector: 'app-concesiones-cliente-component',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './concesiones-cliente-component.html',
   styleUrl: './concesiones-cliente-component.css',
 })
@@ -23,6 +29,9 @@ export class ConcesionesClienteComponent implements OnInit {
   public cementerioService = inject(CementerioService);
   public difuntoService = inject(DifuntoService);
   public parcelaService = inject(ParcelaService);
+
+  // ─── Reactive Form ────────────────────────────────────────────────
+  public formDifunto!: FormGroup;
 
   id = signal<number>(0);
   archivoParaSubir: File | null = null;
@@ -36,12 +45,11 @@ export class ConcesionesClienteComponent implements OnInit {
   nombresCementerios = signal<Record<number, string>>({});
   parcelasDisponibles = signal<any[]>([]);
   parcelaSeleccionadaId = signal<number | null>(null);
-
-  // NUEVA SEÑAL: Para gestionar la exhumación
   difuntoEnParcela = signal<any | null>(null);
 
   @ViewChild('modalAddDifunto') addDifunto!: ElementRef;
 
+  // Objeto que se envía al backend (foto se gestiona fuera del form)
   difunto: DifuntoPost = {
     nombre: '',
     apellido1: '',
@@ -54,17 +62,53 @@ export class ConcesionesClienteComponent implements OnInit {
     parcelaId: 0,
   };
 
+  constructor() {
+    this.inicializarFormulario();
+  }
+
   /**
-   * Inicializa el componente obteniendo el ID del cliente y cargando sus concesiones.
+   * Crea la instancia del FormGroup con sus validadores.
    */
+  private inicializarFormulario() {
+    this.formDifunto = new FormGroup(
+      {
+        nombre: new FormControl('', [Validators.required]),
+        apellido1: new FormControl('', [Validators.required]),
+        apellido2: new FormControl(''),
+        yearNacimiento: new FormControl<number | null>(null, [
+          Validators.required,
+          Validadores.numeroPositivo(),
+          Validadores.anioMinimo(1900),
+        ]),
+        yearDefuncion: new FormControl<number | null>(null, [
+          Validators.required,
+          Validadores.numeroPositivo(),
+          Validadores.anioMinimo(1900),
+        ]),
+        fechaEntierro: new FormControl(new Date().toLocaleDateString('en-CA'), [
+          Validators.required,
+        ]),
+        mensaje: new FormControl(''),
+        // foto NO está en el FormGroup: se gestiona manualmente con onFotoSelected
+      },
+      {
+        validators: [
+          Validadores.anioDefuncionPosterior(),
+          Validadores.fechaEntierroPosteriorNacimiento(),
+        ],
+      },
+    );
+  }
+
+  // ─── Inicialización ───────────────────────────────────────────────
   ngOnInit(): void {
     this.id.set(this.authService.getUsuarioId());
     this.getConcesiones();
   }
 
+  // ─── Modal ────────────────────────────────────────────────────────
   /**
-   * Abre el modal para añadir un difunto a una concesión, cargando las parcelas disponibles.
-   * @param concesion La concesión seleccionada.
+   * Abre el modal cargando las parcelas de la concesión seleccionada.
    */
   abrirModal(concesion: Concesion) {
     this.resetForm();
@@ -80,17 +124,20 @@ export class ConcesionesClienteComponent implements OnInit {
     }
   }
 
+  cerrarModal() {
+    if (this.modalBootstrap) this.modalBootstrap.hide();
+    this.resetForm();
+  }
+
+  // ─── Parcelas ─────────────────────────────────────────────────────
   /**
-   * Maneja la selección de una parcela y verifica si está ocupada para permitir exhumaciones.
-   * @param parcela El objeto parcela seleccionado.
+   * Selecciona una parcela y verifica si está ocupada para habilitar exhumación.
    */
   seleccionarParcela(parcela: any) {
     this.parcelaSeleccionadaId.set(parcela.id);
     this.difunto.parcelaId = parcela.id;
     this.difuntoEnParcela.set(null);
 
-    // Si la parcela está ocupada, buscamos al difunto enterrado en ella
-    // para habilitar la opción de exhumación.
     if (parcela.estado === 'OCUPADA') {
       this.difuntoService.loadAllByParcela(parcela.id).subscribe({
         next: (res) => {
@@ -101,7 +148,7 @@ export class ConcesionesClienteComponent implements OnInit {
   }
 
   /**
-   * Gestiona el proceso de exhumación de un familiar tras confirmación del usuario.
+   * Gestiona la exhumación de un familiar tras confirmación.
    */
   exhumarFamiliar() {
     const d = this.difuntoEnParcela();
@@ -118,15 +165,24 @@ export class ConcesionesClienteComponent implements OnInit {
           this.cerrarModal();
           this.getConcesiones();
         },
-        error: (err) => alert('Error: Pago rechazado o fallo en el servidor.'),
+        error: () => alert('Error: Pago rechazado o fallo en el servidor.'),
       });
     }
   }
 
-  /**
-   * Inicia el proceso de guardado de un difunto, subiendo la foto primero si existe.
-   */
+  // ─── CRUD Difunto ─────────────────────────────────────────────────
   guardarDifunto() {
+    if (this.formDifunto.invalid) {
+      this.formDifunto.markAllAsTouched();
+      return;
+    }
+
+    // Volcamos los valores del formulario al objeto difunto
+    this.difunto = {
+      ...this.difunto, // mantiene parcelaId y foto (gestionados fuera del form)
+      ...this.formDifunto.value, // sobreescribe los campos del form
+    };
+
     if (this.archivoParaSubir) {
       this.difuntoService.subirImagen(this.archivoParaSubir).subscribe({
         next: (res) => {
@@ -140,9 +196,6 @@ export class ConcesionesClienteComponent implements OnInit {
     }
   }
 
-  /**
-   * Realiza la petición HTTP para guardar los datos del difunto.
-   */
   private procederAGuardarDifunto() {
     this.difuntoService.save(this.difunto).subscribe({
       next: () => {
@@ -153,10 +206,7 @@ export class ConcesionesClienteComponent implements OnInit {
     });
   }
 
-  // --- MÉTODOS DE APOYO (Paginación y reset) ---
-  /**
-   * Recupera todas las concesiones del cliente actual y carga los nombres de los cementerios asociados.
-   */
+  // ─── Concesiones y Cementerios ────────────────────────────────────
   getConcesiones() {
     this.concesionService.findAllByCliente(this.id()).subscribe({
       next: (res) => {
@@ -167,53 +217,27 @@ export class ConcesionesClienteComponent implements OnInit {
     });
   }
 
-  /**
-   * Carga el nombre del cementerio asociado a una concesión.
-   * @param concesionId ID de la concesión.
-   */
   private cargarNombreCementerio(concesionId: number) {
     this.cementerioService.findByConcesion(concesionId).subscribe({
-      // Actualizamos el mapa de nombres de cementerios de forma reactiva.
       next: (cem) => this.nombresCementerios.update((m) => ({ ...m, [concesionId]: cem.nombre })),
     });
   }
 
-  /**
-   * Calcula el número total de páginas para la lista de concesiones.
-   */
+  // ─── Paginación ───────────────────────────────────────────────────
   totalPaginas = () => Math.ceil(this.cantConcesiones() / this.elementosPorPagina) || 1;
 
-  /**
-   * Señal computada que genera un array con los números de página.
-   */
   paginas = computed(() => Array.from({ length: this.totalPaginas() }, (_, i) => i + 1));
 
-  /**
-   * Obtiene las concesiones que deben mostrarse en la página actual.
-   */
   get camposPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     return this.concesiones().slice(inicio, inicio + this.elementosPorPagina);
   }
 
-  /**
-   * Cambia la página actual de la visualización.
-   */
   cambiarPagina(n: number) {
     if (n >= 1 && n <= this.totalPaginas()) this.paginaActual.set(n);
   }
 
-  /**
-   * Cierra el modal activo y limpia el formulario.
-   */
-  cerrarModal() {
-    if (this.modalBootstrap) this.modalBootstrap.hide();
-    this.resetForm();
-  }
-
-  /**
-   * Restablece el objeto difunto y los estados de selección a sus valores iniciales.
-   */
+  // ─── Utilidades ───────────────────────────────────────────────────
   resetForm() {
     this.parcelaSeleccionadaId.set(null);
     this.difuntoEnParcela.set(null);
@@ -230,16 +254,16 @@ export class ConcesionesClienteComponent implements OnInit {
       foto: '',
       parcelaId: 0,
     };
+    this.formDifunto.reset({
+      fechaEntierro: new Date().toLocaleDateString('en-CA'),
+    });
   }
 
-  /**
-   * Maneja la selección de una foto, generando una previsualización local.
-   * @param event Evento de cambio del input file.
-   */
   onFotoSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
       this.archivoParaSubir = file;
+      this.difunto.foto = file.name;
       const reader = new FileReader();
       reader.onload = () => this.fotoPreview.set(reader.result as string);
       reader.readAsDataURL(file);
