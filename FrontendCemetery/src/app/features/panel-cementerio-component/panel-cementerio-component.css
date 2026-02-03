@@ -139,3 +139,7 @@
 .row-in-cart {
   background-color: rgba(0, 123, 255, 0.05);
 }
+
+.link {
+  text-decoration: none;
+}
