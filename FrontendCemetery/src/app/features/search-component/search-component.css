@@ -156,3 +156,7 @@
 .letter-spacing {
   letter-spacing: 2px;
 }
+
+.zona-svg {
+  cursor: pointer;
+}
