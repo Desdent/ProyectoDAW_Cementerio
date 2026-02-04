@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, ViewChild, ElementRef } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Parcela } from '../../interfaces/parcela/parcela';
@@ -6,6 +6,7 @@ import { ConcesionService } from '../../core/services/concesionService';
 import { concesionPost } from '../../interfaces/concesion/concesionPost';
 import { PagoPost } from '../../interfaces/pago/pagoPost';
 import { AuthService } from '../../core/services/authService';
+import * as bootstrap from 'bootstrap';
 
 @Component({
   selector: 'app-carrito',
@@ -21,6 +22,9 @@ export class CarritoComponent implements OnInit {
 
   items = signal<Parcela[]>([]);
   total = computed(() => this.items().length * 1500.0);
+
+  @ViewChild('modalExito') modalExito!: ElementRef;
+  private modalInstance: any;
 
   /**
    * Inicializo el componente disparando la carga de los elementos guardados previamente.
@@ -83,10 +87,14 @@ export class CarritoComponent implements OnInit {
     // Realizo la petición al servicio para persistir la compra en la base de datos.
     this.concesionService.comprarConcesion(concesionDto, pagoDto).subscribe({
       next: (res) => {
-        alert(`¡Compra exitosa! Referencia: ${pagoDto.transaccionId}`);
         // Limpio el carrito tras el éxito de la operación.
         localStorage.removeItem('carrito');
-        this.router.navigate(['/mis-concesiones']);
+        this.modalInstance = new bootstrap.Modal(this.modalExito.nativeElement);
+        this.modalInstance.show();
+        setTimeout(() => {
+          this.modalInstance.hide();
+          this.router.navigate(['/login']);
+        }, 3000);
       },
       error: (err) => {
         console.error('Error en la compra:', err);

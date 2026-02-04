@@ -32,11 +32,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
+
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            String jwtToken = authorizationHeader.substring(7);
+        // 1. Si no hay cabecera o no empieza por Bearer, ignoramos y seguimos
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
+        String jwtToken = authorizationHeader.substring(7);
+
+        // 2. Controlamos que el contenido del token no sea la palabra "null" o esté vacío
+        if (jwtToken.isEmpty() || jwtToken.equalsIgnoreCase("null")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        try {
+            // 3. Intentamos extraer el username. Si el JWT es malformado, saltará al catch
             String username = jwtService.extractUsername(jwtToken);
 
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -53,6 +67,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
+        } catch (Exception e) {
+            // Si hay error en el token (malformado, expirado, etc.),
+            // simplemente no autenticamos y dejamos que siga.
+            // Spring Security bloqueará después si la ruta no es pública.
+            logger.error("Error procesando JWT: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);

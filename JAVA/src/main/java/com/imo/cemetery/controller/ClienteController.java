@@ -36,7 +36,6 @@ public class ClienteController {
      * @return the response entity
      */
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClienteResponseDTO> create(@Valid @RequestBody ClienteCreateDTO dto)
     {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(dto));

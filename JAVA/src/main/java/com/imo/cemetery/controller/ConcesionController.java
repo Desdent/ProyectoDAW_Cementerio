@@ -109,6 +109,7 @@ public class ConcesionController {
      * @return the response entity
      */
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id)
     {
         service.deleteById(id);

@@ -160,3 +160,14 @@
 .zona-svg {
   cursor: pointer;
 }
+
+.btn-action {
+  margin-top: 5px;
+  background-color: var(--kelpie-navy);
+  color: var(--kelpie-cream);
+  border: none;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}

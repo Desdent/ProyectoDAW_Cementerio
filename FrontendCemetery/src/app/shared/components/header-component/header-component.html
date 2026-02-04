@@ -5,7 +5,13 @@
     <div class="collapse navbar-collapse" id="navK">
       <ul class="navbar-nav mx-auto gap-lg-4 text-uppercase">
         <li class="nav-item">
-          <a class="nav-link link-navy" routerLink="/" fragment="como-funciona">Cómo funciona</a>
+          @if (!email()) {
+            <a class="nav-link link-navy" routerLink="/register" fragment="como-funciona"
+              >Registro</a
+            >
+          } @else {
+            <a class="nav-link link-navy" routerLink="/perfil" fragment="como-funciona">Panel</a>
+          }
         </li>
         <li class="nav-item">
           <a class="nav-link link-navy" routerLink="search" fragment="search">Campos</a>
@@ -23,7 +29,7 @@
           </button>
         } @else {
           <a routerLink="/login" class="login-text">Acceso</a>
-          <button class="btn btn-kelpie px-4 py-2" routerLink="/pago">COMPRAR</button>
+          <button class="btn btn-kelpie px-4 py-2" routerLink="/register">REGISTRARSE</button>
         }
       </div>
     </div>

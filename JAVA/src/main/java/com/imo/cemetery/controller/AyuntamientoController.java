@@ -59,6 +59,7 @@ public class AyuntamientoController {
      * @return the response entity
      */
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AyuntamientoResponseDTO> findById(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
@@ -71,7 +72,7 @@ public class AyuntamientoController {
      * @return the response entity
      */
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AYUNTAMIENTO')")
     public ResponseEntity<AyuntamientoResponseDTO> update(@PathVariable Long id, @Valid @RequestBody AyuntamientoUpdateDTO dto) {
         return ResponseEntity.ok(service.update(dto, id));
     }

@@ -22,6 +22,9 @@ import { ConcesionesClienteComponent } from './features/cliente/concesiones-clie
 import { SearchComponent } from './features/search-component/search-component';
 import { PanelCementerioComponent } from './features/panel-cementerio-component/panel-cementerio-component';
 import { CarritoComponent } from './features/carrito-component/carrito-component';
+import { RegistroComponent } from './features/registro-component/registro-component';
+import { PoliticaCookiesComponent } from './features/politica-cookies-component/politica-cookies-component';
+import { PoliticaPrivacidadComponent } from './features/politica-privacidad-component/politica-privacidad-component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -109,7 +112,15 @@ export const routes: Routes = [
   { path: 'cementerio/:id', component: PanelCementerioComponent },
   // CARRITO
   { path: 'carrito', component: CarritoComponent },
-  // LOGIN/LOGOUT
+  // AUTH
   { path: 'login', component: LoginComponent, canActivate: [authGuard] },
   { path: 'logout', canActivate: [logoutGuard], component: HomeComponent }, // El component es solo para que no de error, nunca se va a acceder a el
+  {
+    path: 'register',
+    component: RegistroComponent,
+    canActivate: [authGuard],
+  },
+  // POLÍTICAS
+  { path: 'cookies', component: PoliticaCookiesComponent },
+  { path: 'privacidad', component: PoliticaPrivacidadComponent },
 ];
