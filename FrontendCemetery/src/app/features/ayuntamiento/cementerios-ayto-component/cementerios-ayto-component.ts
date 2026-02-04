@@ -1,5 +1,11 @@
 import { Component, computed, ElementRef, inject, signal, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CementerioService } from '../../../core/services/cementerioService';
 import { ZonaService } from '../../../core/services/zonaService';
 import { Zona } from '../../../interfaces/zona/zona';
@@ -15,7 +21,7 @@ import * as bootstrap from 'bootstrap';
 import { Validadores } from '../../../validators/validadores';
 @Component({
   selector: 'app-cementerios-ayto-component',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: './cementerios-ayto-component.html',
   styleUrl: './cementerios-ayto-component.css',
 })
@@ -55,6 +61,8 @@ export class CementeriosAytoComponent {
   clientes = signal<Cliente[]>([]);
   difuntos = signal<Difunto[]>([]);
   servicios = signal<Servicio[]>([]);
+  filtroTexto = signal<string>('');
+  typeSort = signal<string>('');
 
   // Computados
   amountCementerios = computed(() => this.cementerios().length);
@@ -126,6 +134,26 @@ export class CementeriosAytoComponent {
     return Math.ceil(this.amountCementerios() / this.elementosPorPagina) || 1;
   }
 
+  cementeriosFiltrados = computed(() => {
+    // Obtengo la lista completa de cementerios desde el servicio.
+    const todos = this.cementerios();
+    // Normalizo el texto de búsqueda a minúsculas y elimino espacios en blanco.
+    const busqueda = this.filtroTexto().toLowerCase().trim();
+
+    // Si no hay texto de búsqueda, devuelvo la lista completa.
+    if (!busqueda) return todos;
+
+    // Filtro los cementerios comprobando si el nombre o la dirección contienen el texto buscado.
+    return todos.filter(
+      (c) =>
+        c.nombre.toLowerCase().includes(busqueda) ||
+        c.direccion.toLowerCase().includes(busqueda) ||
+        c.email.toLowerCase().includes(busqueda) ||
+        c.telefono.includes(busqueda) ||
+        c.id.toString().includes(busqueda),
+    );
+  });
+
   paginas = computed(() => {
     const total = this.totalPaginas();
     return Array.from({ length: total }, (_, i) => i + 1);
@@ -134,7 +162,7 @@ export class CementeriosAytoComponent {
   get cementeriosPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
-    return this.cementerios().slice(inicio, fin);
+    return this.cementeriosFiltrados().slice(inicio, fin);
   }
 
   cambiarPagina(nuevaPagina: number) {
@@ -617,5 +645,55 @@ export class CementeriosAytoComponent {
       next: (data) => this.servicios.set(data),
       error: (err) => console.error(err),
     });
+  }
+
+  sort(term: string) {
+    switch (term) {
+      case 'id':
+        if (this.typeSort() != 'idAsc') {
+          this.typeSort.set('idAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.id - b.id);
+        } else {
+          this.cementeriosFiltrados().sort((a, b) => b.id - a.id);
+          this.typeSort.set('idDesc');
+        }
+        break;
+      case 'nombre':
+        if (this.typeSort() != 'nombreAsc') {
+          this.typeSort.set('nombreAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.nombre.localeCompare(b.nombre));
+        } else {
+          this.typeSort.set('nombreDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.nombre.localeCompare(a.nombre));
+        }
+        break;
+      case 'd':
+        if (this.typeSort() != 'direccionAsc') {
+          this.typeSort.set('direccionAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.direccion.localeCompare(b.direccion));
+        } else {
+          this.typeSort.set('direccionDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.direccion.localeCompare(a.direccion));
+        }
+        break;
+      case 'e':
+        if (this.typeSort() != 'emailAsc') {
+          this.typeSort.set('emailAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.email.localeCompare(b.email));
+        } else {
+          this.typeSort.set('emailDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.email.localeCompare(a.email));
+        }
+        break;
+      case 't':
+        if (this.typeSort() != 'telefonoAsc') {
+          this.typeSort.set('telefonoAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.telefono.localeCompare(b.telefono));
+        } else {
+          this.typeSort.set('telefonoDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.telefono.localeCompare(a.telefono));
+        }
+        break;
+    }
   }
 }

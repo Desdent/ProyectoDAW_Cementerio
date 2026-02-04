@@ -286,3 +286,15 @@
 .error-msg {
   color: red;
 }
+
+.order {
+  padding-left: 3px;
+}
+
+.order-th {
+  cursor: pointer;
+}
+
+.order-th:hover {
+  filter: brightness(0.9);
+}

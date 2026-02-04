@@ -46,6 +46,8 @@ export class ConcesionesClienteComponent implements OnInit {
   parcelasDisponibles = signal<any[]>([]);
   parcelaSeleccionadaId = signal<number | null>(null);
   difuntoEnParcela = signal<any | null>(null);
+  filtroTexto = signal<string>('');
+  typeSort = signal<string>('');
 
   @ViewChild('modalAddDifunto') addDifunto!: ElementRef;
 
@@ -128,6 +130,25 @@ export class ConcesionesClienteComponent implements OnInit {
     if (this.modalBootstrap) this.modalBootstrap.hide();
     this.resetForm();
   }
+
+  concesionesFiltradas = computed(() => {
+    // Obtengo la lista completa de concesiones desde el servicio.
+    const todos = this.concesiones();
+    // Normalizo el texto de búsqueda a minúsculas y elimino espacios en blanco.
+    const busqueda = this.filtroTexto().toLowerCase().trim();
+
+    // Si no hay texto de búsqueda, devuelvo la lista completa.
+    if (!busqueda) return todos;
+
+    // Filtro las concesiones comprobando si el nombre o la dirección contienen el texto buscado.
+    return todos.filter(
+      (c) =>
+        this.nombresCementerios()[c.id].toLowerCase().includes(busqueda) ||
+        c.fechaInicio.toLowerCase().includes(busqueda) ||
+        c.fechaFin.toLowerCase().includes(busqueda) ||
+        c.id.toString().includes(busqueda),
+    );
+  });
 
   // ─── Parcelas ─────────────────────────────────────────────────────
   /**
@@ -228,10 +249,10 @@ export class ConcesionesClienteComponent implements OnInit {
 
   paginas = computed(() => Array.from({ length: this.totalPaginas() }, (_, i) => i + 1));
 
-  get camposPaginados() {
+  camposPaginados = computed(() => {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
-    return this.concesiones().slice(inicio, inicio + this.elementosPorPagina);
-  }
+    return this.concesionesFiltradas().slice(inicio, inicio + this.elementosPorPagina);
+  });
 
   cambiarPagina(n: number) {
     if (n >= 1 && n <= this.totalPaginas()) this.paginaActual.set(n);
@@ -267,6 +288,51 @@ export class ConcesionesClienteComponent implements OnInit {
       const reader = new FileReader();
       reader.onload = () => this.fotoPreview.set(reader.result as string);
       reader.readAsDataURL(file);
+    }
+  }
+
+  sort(term: string) {
+    switch (term) {
+      case 'id':
+        if (this.typeSort() != 'idAsc') {
+          this.typeSort.set('idAsc');
+          this.concesionesFiltradas().sort((a, b) => a.id - b.id);
+        } else {
+          this.concesionesFiltradas().sort((a, b) => b.id - a.id);
+          this.typeSort.set('idDesc');
+        }
+        break;
+      case 'c':
+        if (this.typeSort() != 'cemAsc') {
+          this.typeSort.set('cemAsc');
+          this.concesionesFiltradas().sort((a, b) =>
+            this.nombresCementerios()[a.id].localeCompare(this.nombresCementerios()[b.id]),
+          );
+        } else {
+          this.typeSort.set('cemDesc');
+          this.concesionesFiltradas().sort((a, b) =>
+            this.nombresCementerios()[b.id].localeCompare(this.nombresCementerios()[a.id]),
+          );
+        }
+        break;
+      case 'fi':
+        if (this.typeSort() != 'feIniAsc') {
+          this.typeSort.set('feIniAsc');
+          this.concesionesFiltradas().sort((a, b) => a.fechaInicio.localeCompare(b.fechaInicio));
+        } else {
+          this.typeSort.set('feIniDesc');
+          this.concesionesFiltradas().sort((a, b) => b.fechaInicio.localeCompare(a.fechaInicio));
+        }
+        break;
+      case 'ff':
+        if (this.typeSort() != 'feFinAsc') {
+          this.typeSort.set('feFinAsc');
+          this.concesionesFiltradas().sort((a, b) => a.fechaFin.localeCompare(b.fechaFin));
+        } else {
+          this.typeSort.set('feFinDesc');
+          this.concesionesFiltradas().sort((a, b) => b.fechaFin.localeCompare(a.fechaFin));
+        }
+        break;
     }
   }
 }

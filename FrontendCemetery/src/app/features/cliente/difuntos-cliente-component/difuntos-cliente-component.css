@@ -283,6 +283,16 @@
   cursor: zoom-in;
 }
 
+img {
+  width: 45px;
+  height: 45px;
+}
+
+.div-imagen {
+  width: 45px;
+  height: 45px;
+}
+
 /* Estado cuando no hay imagen */
 .no-image-placeholder {
   text-align: center;
@@ -298,4 +308,16 @@
 .no-image-placeholder p {
   margin: 0;
   font-size: 0.9rem;
+}
+
+.order {
+  padding-left: 3px;
+}
+
+.order-th {
+  cursor: pointer;
+}
+
+.order-th:hover {
+  filter: brightness(0.9);
 }

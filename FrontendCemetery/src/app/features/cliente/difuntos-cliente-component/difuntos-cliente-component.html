@@ -1,52 +1,116 @@
-<table class="table-custom">
-  <thead>
-    <tr>
-      <th>FOTO</th>
-      <th>NOMBRE COMPLETO</th>
-      <th>AÑO NACIMIENTO</th>
-      <th>AÑO DEFUNCIÓN</th>
-      <th>FECHA ENTIERRO</th>
-      <th>UBICACIÓN</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (d of difuntos(); track d.id) {
-      <tr>
-        <td>
-          @if (d.foto && !shouldShowPlaceholder(d.id)) {
-            <img
-              [src]="rutaBaseFotos + d.foto"
-              (error)="onImageError(d.id, d.foto)"
-              (load)="onImageLoad(d.id)"
-              class="rounded-circle shadow-sm border"
-              width="45"
-              height="45"
-              alt="Foto Familiar"
-            />
-          } @else {
-            <div
-              class="bg-light rounded-circle d-flex align-items-center justify-content-center border"
-              style="width: 45px; height: 45px"
-            >
-              <i class="bi bi-person-fill text-muted"></i>
-            </div>
-          }
-        </td>
-        <td>
-          <div class="text-dark">{{ d.nombre }} {{ d.apellido1 }} {{ d.apellido2 }}</div>
-        </td>
-        <td>
-          <div class="text-dark">{{ d.yearNacimiento }}</div>
-        </td>
-        <td>
-          <div class="text-dark">{{ d.yearDefuncion }}</div>
-        </td>
-        <td>
-          <div class="text-dark">{{ d.fechaEntierro }}</div>
-        </td>
+<div class="data-card">
+  <div class="card-header-custom d-flex justify-content-between align-items-center">
+    <h3>Gestión de Familiares</h3>
+  </div>
+  <div class="card-body-custom">
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar en la tabla..."
+        [(ngModel)]="filtroTexto"
+      />
+    </div>
 
-        <td>Parcela nº{{ d.parcelaId }}</td>
-      </tr>
-    }
-  </tbody>
-</table>
+    <div class="card-body-custom">
+      <div class="table-responsive">
+        <table class="table-custom">
+          <thead>
+            <tr>
+              <th>FOTO</th>
+              <th class="order-th" (click)="sort('nombre')">
+                NOMBRE COMPLETO
+                @if (typeSort() === 'nombreAsc') {
+                  <i class="bi bi-sort-up-alt order"></i>
+                } @else if (typeSort() === 'nombreDesc') {
+                  <i class="bi bi-sort-down order"></i>
+                } @else {
+                  <i class="bi bi-filter order"></i>
+                }
+              </th>
+              <th class="order-th" (click)="sort('an')">
+                AÑO NACIMIENTO
+                @if (typeSort() === 'yearNacAsc') {
+                  <i class="bi bi-sort-up-alt order"></i>
+                } @else if (typeSort() === 'yearNacDesc') {
+                  <i class="bi bi-sort-down order"></i>
+                } @else {
+                  <i class="bi bi-filter order"></i>
+                }
+              </th>
+              <th class="order-th" (click)="sort('ad')">
+                AÑO DEFUNCIÓN
+                @if (typeSort() === 'yearDefAsc') {
+                  <i class="bi bi-sort-up-alt order"></i>
+                } @else if (typeSort() === 'yearDefDesc') {
+                  <i class="bi bi-sort-down order"></i>
+                } @else {
+                  <i class="bi bi-filter order"></i>
+                }
+              </th>
+              <th class="order-th" (click)="sort('fe')">
+                FECHA ENTIERRO
+                @if (typeSort() === 'entierroAsc') {
+                  <i class="bi bi-sort-up-alt order"></i>
+                } @else if (typeSort() === 'entierroDesc') {
+                  <i class="bi bi-sort-down order"></i>
+                } @else {
+                  <i class="bi bi-filter order"></i>
+                }
+              </th>
+              <th class="order-th" (click)="sort('u')">
+                UBICACIÓN
+                @if (typeSort() === 'ubiAsc') {
+                  <i class="bi bi-sort-up-alt order"></i>
+                } @else if (typeSort() === 'ubiDesc') {
+                  <i class="bi bi-sort-down order"></i>
+                } @else {
+                  <i class="bi bi-filter order"></i>
+                }
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (d of difuntosFiltrados(); track d.id) {
+              <tr>
+                <td>
+                  @if (d.foto && !shouldShowPlaceholder(d.id)) {
+                    <img
+                      [src]="rutaBaseFotos + d.foto"
+                      (error)="onImageError(d.id, d.foto)"
+                      (load)="onImageLoad(d.id)"
+                      class="rounded-circle shadow-sm border"
+                      alt="Foto Familiar"
+                    />
+                  } @else {
+                    <div
+                      class="bg-light rounded-circle d-flex align-items-center justify-content-center border div-imagen"
+                    >
+                      <i class="bi bi-person-fill text-muted"></i>
+                    </div>
+                  }
+                </td>
+                <td>
+                  <div class="text-dark">{{ d.nombre }} {{ d.apellido1 }} {{ d.apellido2 }}</div>
+                </td>
+                <td>
+                  <div class="text-dark">{{ d.yearNacimiento }}</div>
+                </td>
+                <td>
+                  <div class="text-dark">{{ d.yearDefuncion }}</div>
+                </td>
+                <td>
+                  <div class="text-dark">{{ d.fechaEntierro }}</div>
+                </td>
+
+                <td>Parcela nº{{ d.parcelaId }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <table class="table-custom"></table>
+    </div>
+  </div>
+</div>

@@ -87,6 +87,8 @@ export class AyuntamientosAdminComponent {
   paginaActual = signal(1);
   modalBootstrap: any;
   provinciaSeleccionadaId = signal<number | null>(null);
+  filtroTexto = signal<string>('');
+  typeSort = signal<string>('');
 
   /**
    * Inicializa el componente cargando la lista completa de ayuntamientos y provincias.
@@ -105,6 +107,26 @@ export class AyuntamientosAdminComponent {
       this.paginaActual.set(nuevaPagina);
     }
   }
+
+  ayusFiltrados = computed(() => {
+    // Obtengo la lista completa de ayuntamientos desde el servicio.
+    const todos = this.ayuntamientoService.ayuntamientos();
+    // Normalizo el texto de búsqueda a minúsculas y elimino espacios en blanco.
+    const busqueda = this.filtroTexto().toLowerCase().trim();
+
+    // Si no hay texto de búsqueda, devuelvo la lista completa.
+    if (!busqueda) return todos;
+
+    // Filtro los ayuntamientos comprobando si el nombre o la dirección contienen el texto buscado.
+    return todos.filter(
+      (c) =>
+        c.nombre.toLowerCase().includes(busqueda) ||
+        c.nombreCiudad.toLowerCase().includes(busqueda) ||
+        c.email.toLowerCase().includes(busqueda) ||
+        c.telefono.includes(busqueda) ||
+        c.id.toString().includes(busqueda),
+    );
+  });
 
   /**
    * Calcula el número total de páginas basándose en la cantidad total de registros.
@@ -130,7 +152,7 @@ export class AyuntamientosAdminComponent {
   get ayuntamientosPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
-    return this.ayuntamientoService.ayuntamientos().slice(inicio, fin);
+    return this.ayusFiltrados().slice(inicio, fin);
   }
 
   /**
@@ -338,5 +360,55 @@ export class AyuntamientosAdminComponent {
       },
       error: (err) => console.error('Error al eliminar', err),
     });
+  }
+
+  sort(term: string) {
+    switch (term) {
+      case 'id':
+        if (this.typeSort() != 'idAsc') {
+          this.typeSort.set('idAsc');
+          this.ayusFiltrados().sort((a, b) => a.id - b.id);
+        } else {
+          this.ayusFiltrados().sort((a, b) => b.id - a.id);
+          this.typeSort.set('idDesc');
+        }
+        break;
+      case 'n':
+        if (this.typeSort() != 'nombreAsc') {
+          this.typeSort.set('nombreAsc');
+          this.ayusFiltrados().sort((a, b) => a.nombre.localeCompare(b.nombre));
+        } else {
+          this.typeSort.set('nombreDesc');
+          this.ayusFiltrados().sort((a, b) => b.nombre.localeCompare(a.nombre));
+        }
+        break;
+      case 'm':
+        if (this.typeSort() != 'muniAsc') {
+          this.typeSort.set('muniAsc');
+          this.ayusFiltrados().sort((a, b) => a.nombreCiudad.localeCompare(b.nombreCiudad));
+        } else {
+          this.typeSort.set('muniDesc');
+          this.ayusFiltrados().sort((a, b) => b.nombreCiudad.localeCompare(a.nombreCiudad));
+        }
+        break;
+      case 'e':
+        if (this.typeSort() != 'emailAsc') {
+          this.typeSort.set('emailAsc');
+          this.ayusFiltrados().sort((a, b) => a.email.localeCompare(b.email));
+        } else {
+          this.typeSort.set('emailDesc');
+          this.ayusFiltrados().sort((a, b) => b.email.localeCompare(a.email));
+        }
+        break;
+      case 't':
+        if (this.typeSort() != 'telefonoAsc') {
+          this.typeSort.set('telefonoAsc');
+          this.ayusFiltrados().sort((a, b) => a.telefono.localeCompare(b.telefono));
+        } else {
+          this.typeSort.set('telefonoDesc');
+          this.ayusFiltrados().sort((a, b) => b.telefono.localeCompare(a.telefono));
+        }
+        break;
+    }
   }
 }

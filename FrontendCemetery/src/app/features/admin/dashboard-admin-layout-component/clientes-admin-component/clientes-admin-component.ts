@@ -63,10 +63,33 @@ export class ClientesAdminComponent {
   paginaActual = signal(1);
   modalBootstrap: any;
   provinciaSeleccionadaId = signal<number | null>(null);
+  filtroTexto = signal<string>('');
+  typeSort = signal<string>('');
 
   constructor() {
     this.inicializarFormularios();
   }
+
+  clientesFiltrados = computed(() => {
+    // Obtengo la lista completa de clientes desde el servicio.
+    const todos = this.clienteService.clientes();
+    // Normalizo el texto de búsqueda a minúsculas y elimino espacios en blanco.
+    const busqueda = this.filtroTexto().toLowerCase().trim();
+
+    // Si no hay texto de búsqueda, devuelvo la lista completa.
+    if (!busqueda) return todos;
+
+    // Filtro los clientes comprobando si el nombre o la dirección contienen el texto buscado.
+    return todos.filter(
+      (c) =>
+        c.nombre.toLowerCase().includes(busqueda) ||
+        (c.apellido1.toLocaleLowerCase + ' ' + c.apellido2).toLowerCase().includes(busqueda) ||
+        c.provincia.toLowerCase().includes(busqueda) ||
+        c.email.toLowerCase().includes(busqueda) ||
+        c.telefono.includes(busqueda) ||
+        c.id.toString().includes(busqueda),
+    );
+  });
 
   /**
    * Crea las instancias de FormGroup con sus validadores.
@@ -132,7 +155,7 @@ export class ClientesAdminComponent {
   get clientesPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
-    return this.clienteService.clientes().slice(inicio, fin);
+    return this.clientesFiltrados().slice(inicio, fin);
   }
 
   // ─── Modales ──────────────────────────────────────────────────────
@@ -333,5 +356,68 @@ export class ClientesAdminComponent {
       },
       error: (err) => console.error('Error al eliminar', err),
     });
+  }
+
+  sort(term: string) {
+    switch (term) {
+      case 'id':
+        if (this.typeSort() != 'idAsc') {
+          this.typeSort.set('idAsc');
+          this.clientesFiltrados().sort((a, b) => a.id - b.id);
+        } else {
+          this.clientesFiltrados().sort((a, b) => b.id - a.id);
+          this.typeSort.set('idDesc');
+        }
+        break;
+      case 'n':
+        if (this.typeSort() != 'nombreAsc') {
+          this.typeSort.set('nombreAsc');
+          this.clientesFiltrados().sort((a, b) => a.nombre.localeCompare(b.nombre));
+        } else {
+          this.typeSort.set('nombreDesc');
+          this.clientesFiltrados().sort((a, b) => b.nombre.localeCompare(a.nombre));
+        }
+        break;
+      case 'a':
+        if (this.typeSort() != 'apellidosAsc') {
+          this.typeSort.set('apellidosAsc');
+          this.clientesFiltrados().sort((a, b) =>
+            (a.apellido1 + ' ' + a.apellido2).localeCompare(b.apellido1 + ' ' + b.apellido2),
+          );
+        } else {
+          this.typeSort.set('apellidosDesc');
+          this.clientesFiltrados().sort((a, b) =>
+            (b.direccion + ' ' + b.apellido2).localeCompare(a.apellido1 + ' ' + a.apellido2),
+          );
+        }
+        break;
+      case 'p':
+        if (this.typeSort() != 'provinciaAsc') {
+          this.typeSort.set('provinciaAsc');
+          this.clientesFiltrados().sort((a, b) => a.provincia.localeCompare(b.provincia));
+        } else {
+          this.typeSort.set('provinciaDesc');
+          this.clientesFiltrados().sort((a, b) => b.provincia.localeCompare(a.provincia));
+        }
+        break;
+      case 'e':
+        if (this.typeSort() != 'emailAsc') {
+          this.typeSort.set('emailAsc');
+          this.clientesFiltrados().sort((a, b) => a.email.localeCompare(b.email));
+        } else {
+          this.typeSort.set('emailDesc');
+          this.clientesFiltrados().sort((a, b) => b.email.localeCompare(a.email));
+        }
+        break;
+      case 't':
+        if (this.typeSort() != 'telefonoAsc') {
+          this.typeSort.set('telefonoAsc');
+          this.clientesFiltrados().sort((a, b) => a.telefono.localeCompare(b.telefono));
+        } else {
+          this.typeSort.set('telefonoDesc');
+          this.clientesFiltrados().sort((a, b) => b.telefono.localeCompare(a.telefono));
+        }
+        break;
+    }
   }
 }

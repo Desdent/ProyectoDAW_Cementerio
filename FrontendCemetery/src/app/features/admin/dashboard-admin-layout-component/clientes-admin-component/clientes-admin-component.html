@@ -8,18 +8,77 @@
 
   <div class="card-body-custom">
     <div class="mb-3">
-      <input type="text" class="form-control" placeholder="Buscar en la tabla..." />
+      <input
+        type="text"
+        class="form-control"
+        placeholder="Buscar en la tabla..."
+        [(ngModel)]="filtroTexto"
+      />
     </div>
     <div class="table-responsive">
       <table class="table-custom">
         <thead>
           <tr>
-            <th>ID</th>
-            <th>NOMBRE</th>
-            <th>APELLIDOS</th>
-            <th>PROVINCIA</th>
-            <th>EMAIL</th>
-            <th>TELEFONO</th>
+            <th class="order-th" (click)="sort('id')">
+              ID
+              @if (typeSort() === 'idAsc') {
+                <i class="bi bi-sort-up-alt order"></i>
+              } @else if (typeSort() === 'idDesc') {
+                <i class="bi bi-sort-down order"></i>
+              } @else {
+                <i class="bi bi-filter order"></i>
+              }
+            </th>
+            <th class="order-th" (click)="sort('n')">
+              NOMBRE
+              @if (typeSort() === 'nombreAsc') {
+                <i class="bi bi-sort-up-alt order"></i>
+              } @else if (typeSort() === 'nombreDesc') {
+                <i class="bi bi-sort-down order"></i>
+              } @else {
+                <i class="bi bi-filter order"></i>
+              }
+            </th>
+            <th class="order-th" (click)="sort('a')">
+              APELLIDOS
+              @if (typeSort() === 'apellidosAsc') {
+                <i class="bi bi-sort-up-alt order"></i>
+              } @else if (typeSort() === 'apellidosDesc') {
+                <i class="bi bi-sort-down order"></i>
+              } @else {
+                <i class="bi bi-filter order"></i>
+              }
+            </th>
+            <th class="order-th" (click)="sort('p')">
+              PROVINCIA
+              @if (typeSort() === 'provAsc') {
+                <i class="bi bi-sort-up-alt order"></i>
+              } @else if (typeSort() === 'provDesc') {
+                <i class="bi bi-sort-down order"></i>
+              } @else {
+                <i class="bi bi-filter order"></i>
+              }
+            </th>
+            <th class="order-th" (click)="sort('e')">
+              EMAIL
+              @if (typeSort() === 'emailAsc') {
+                <i class="bi bi-sort-up-alt order"></i>
+              } @else if (typeSort() === 'emailDesc') {
+                <i class="bi bi-sort-down order"></i>
+              } @else {
+                <i class="bi bi-filter order"></i>
+              }
+            </th>
+            <th class="order-th" (click)="sort('t')">
+              TELÉFONO
+              @if (typeSort() === 'telefonoAsc') {
+                <i class="bi bi-sort-up-alt order"></i>
+              } @else if (typeSort() === 'telefonoDesc') {
+                <i class="bi bi-sort-down order"></i>
+              } @else {
+                <i class="bi bi-filter order"></i>
+              }
+            </th>
             <th class="text-end">Acciones</th>
           </tr>
         </thead>

@@ -48,6 +48,8 @@ export class CementeriosAdminComponent {
   zonaId: number = 0;
   zonaSelected = signal<Zona | null>(null);
   tipos = signal<string[]>([]);
+  filtroTexto = signal<string>('');
+  typeSort = signal<string>('');
 
   @ViewChild('htmlModal') modalElement!: ElementRef;
   @ViewChild('modalVer') modalVerRef!: ElementRef;
@@ -87,6 +89,26 @@ export class CementeriosAdminComponent {
   constructor() {
     this.inicializarFormularios();
   }
+
+  cementeriosFiltrados = computed(() => {
+    // Obtengo la lista completa de cementerios desde el servicio.
+    const todos = this.cementerioService.cementerios();
+    // Normalizo el texto de búsqueda a minúsculas y elimino espacios en blanco.
+    const busqueda = this.filtroTexto().toLowerCase().trim();
+
+    // Si no hay texto de búsqueda, devuelvo la lista completa.
+    if (!busqueda) return todos;
+
+    // Filtro los cementerios comprobando si el nombre o la dirección contienen el texto buscado.
+    return todos.filter(
+      (c) =>
+        c.nombre.toLowerCase().includes(busqueda) ||
+        c.direccion.toLowerCase().includes(busqueda) ||
+        c.email.toLowerCase().includes(busqueda) ||
+        c.telefono.includes(busqueda) ||
+        c.id.toString().includes(busqueda),
+    );
+  });
 
   /**
    * Crea (o resetea) todas las instancias de FormGroup con sus validadores.
@@ -170,7 +192,7 @@ export class CementeriosAdminComponent {
   get cementeriosPaginados() {
     const inicio = (this.paginaActual() - 1) * this.elementosPorPagina;
     const fin = inicio + this.elementosPorPagina;
-    return this.cementerioService.cementerios().slice(inicio, fin);
+    return this.cementeriosFiltrados().slice(inicio, fin);
   }
 
   cambiarPagina(nuevaPagina: number) {
@@ -507,5 +529,55 @@ export class CementeriosAdminComponent {
 
   getAllTipo() {
     this.tipos.set(this.zonaService.tipos());
+  }
+
+  sort(term: string) {
+    switch (term) {
+      case 'id':
+        if (this.typeSort() != 'idAsc') {
+          this.typeSort.set('idAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.id - b.id);
+        } else {
+          this.cementeriosFiltrados().sort((a, b) => b.id - a.id);
+          this.typeSort.set('idDesc');
+        }
+        break;
+      case 'nombre':
+        if (this.typeSort() != 'nombreAsc') {
+          this.typeSort.set('nombreAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.nombre.localeCompare(b.nombre));
+        } else {
+          this.typeSort.set('nombreDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.nombre.localeCompare(a.nombre));
+        }
+        break;
+      case 'd':
+        if (this.typeSort() != 'direccionAsc') {
+          this.typeSort.set('direccionAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.direccion.localeCompare(b.direccion));
+        } else {
+          this.typeSort.set('direccionDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.direccion.localeCompare(a.direccion));
+        }
+        break;
+      case 'e':
+        if (this.typeSort() != 'emailAsc') {
+          this.typeSort.set('emailAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.email.localeCompare(b.email));
+        } else {
+          this.typeSort.set('emailDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.email.localeCompare(a.email));
+        }
+        break;
+      case 't':
+        if (this.typeSort() != 'telefonoAsc') {
+          this.typeSort.set('telefonoAsc');
+          this.cementeriosFiltrados().sort((a, b) => a.telefono.localeCompare(b.telefono));
+        } else {
+          this.typeSort.set('telefonoDesc');
+          this.cementeriosFiltrados().sort((a, b) => b.telefono.localeCompare(a.telefono));
+        }
+        break;
+    }
   }
 }
