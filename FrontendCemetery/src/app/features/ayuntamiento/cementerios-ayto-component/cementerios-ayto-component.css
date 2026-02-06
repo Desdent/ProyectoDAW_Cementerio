@@ -228,6 +228,15 @@
   cursor: zoom-in;
 }
 
+.mapa {
+  max-height: 150px;
+}
+
+.imagenMapa {
+  max-height: 250px;
+  cursor: pointer;
+}
+
 /* Estilo para el botón de la tabla */
 .btn-map-view {
   color: #0d6efd;

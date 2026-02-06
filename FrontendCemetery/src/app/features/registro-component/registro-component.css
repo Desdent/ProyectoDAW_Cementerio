@@ -251,3 +251,7 @@
   border-collapse: separate;
   border-spacing: 0px;
 }
+
+.success {
+  font-size: 4rem;
+}

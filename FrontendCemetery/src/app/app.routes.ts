@@ -10,7 +10,6 @@ import { CementeriosAdminComponent } from './features/admin/dashboard-admin-layo
 import { MainPanelAdminComponent } from './features/admin/dashboard-admin-layout-component/main-panel-admin-component/main-panel-admin-component';
 import { AyuntamientosAdminComponent } from './features/admin/dashboard-admin-layout-component/ayuntamientos-admin-component/ayuntamientos-admin-component';
 import { ClientesAdminComponent } from './features/admin/dashboard-admin-layout-component/clientes-admin-component/clientes-admin-component';
-import { StatsComponent } from './features/admin/dashboard-admin-layout-component/stats-component/stats-component';
 import { MainPanelAytoComponent } from './features/ayuntamiento/main-panel-ayto-component/main-panel-ayto-component';
 import { CementeriosAytoComponent } from './features/ayuntamiento/cementerios-ayto-component/cementerios-ayto-component';
 import { ClientesAytoComponent } from './features/ayuntamiento/clientes-ayto-component/clientes-ayto-component';
@@ -51,10 +50,6 @@ export const routes: Routes = [
       {
         path: 'clientes',
         component: ClientesAdminComponent,
-      },
-      {
-        path: 'stats',
-        component: StatsComponent,
       },
     ],
   },

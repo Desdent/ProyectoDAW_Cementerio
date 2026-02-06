@@ -37,6 +37,11 @@
 }
 
 /* Estilo de la Tabla (Similar al que me pasaste) */
+
+.tabla {
+  max-height: 400px;
+}
+
 .table-custom {
   width: 100%;
   border-collapse: separate;

@@ -30,7 +30,6 @@ public class DifuntoCreateDTO {
     private Year yearDefuncion;
     @NotNull
     private LocalDate fechaEntierro;
-    @NotNull
     // #TODO añadir validador posterior a la fecha de defunción
     private String mensaje;
     private String foto;

@@ -5,30 +5,47 @@
     <div class="collapse navbar-collapse" id="navK">
       <ul class="navbar-nav mx-auto gap-lg-4 text-uppercase">
         <li class="nav-item">
-          @if (!email()) {
-            <a class="nav-link link-navy" routerLink="/register" fragment="como-funciona"
-              >Registro</a
-            >
+          @if (!obtainEmail()) {
+            <a class="nav-link link-navy" routerLink="/register">Registro</a>
           } @else {
-            <a class="nav-link link-navy" routerLink="/perfil" fragment="como-funciona">Panel</a>
+            <a class="nav-link link-navy" routerLink="/perfil">Panel</a>
           }
         </li>
         <li class="nav-item">
-          <a class="nav-link link-navy" routerLink="search" fragment="search">Campos</a>
+          <a class="nav-link link-navy" routerLink="/search">Campos</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link link-navy" routerLink="contacto" fragment="contact">Contacto</a>
+          <a class="nav-link link-navy" routerLink="/contacto">Contacto</a>
         </li>
       </ul>
+
       <div class="d-flex gap-3 align-items-center">
+        <div class="accessibility-group d-flex align-items-center me-2">
+          <button (click)="accesibility.disminuir()" class="btn-acc" title="Reducir fuente">
+            A-
+          </button>
+          <button (click)="accesibility.reset()" class="btn-acc" title="Tamaño original">A</button>
+          <button (click)="accesibility.aumentar()" class="btn-acc" title="Aumentar fuente">
+            A+
+          </button>
+        </div>
+
+        <div class="vr mx-2 text-navy opacity-25 d-none d-lg-block"></div>
+
         @if (obtainEmail() != null) {
           <div class="user-avatar">{{ initials() }}</div>
-          <a routerLink="/perfil" class="login-text">{{ obtainEmail() }}</a>
-          <button class="btn btn-kelpie px-4 py-2" (click)="deleteEmail()" routerLink="/logout">
+          <a routerLink="/perfil" class="login-text text-decoration-none ms-2">{{
+            obtainEmail()
+          }}</a>
+          <button
+            class="btn btn-kelpie px-4 py-2 ms-3"
+            (click)="deleteEmail()"
+            routerLink="/logout"
+          >
             Cerrar Sesión
           </button>
         } @else {
-          <a routerLink="/login" class="login-text">Acceso</a>
+          <a routerLink="/login" class="login-text me-2">Acceso</a>
           <button class="btn btn-kelpie px-4 py-2" routerLink="/register">REGISTRARSE</button>
         }
       </div>

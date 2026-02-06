@@ -38,3 +38,34 @@
   font-size: 0.9rem;
   border: black 1px solid;
 }
+
+/* Contenedor del grupo */
+.accessibility-group {
+  background-color: rgba(0, 48, 73, 0.05); /* Un toque de navy muy suave */
+  border-radius: 8px;
+  padding: 4px;
+  border: 1px solid rgba(0, 48, 73, 0.1);
+}
+
+/* Estilo base de los botones A-, A, A+ */
+.btn-acc {
+  background: transparent;
+  border: none;
+  color: var(--kelpie-navy);
+  font-weight: 700;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+}
+
+/* Hover: Cambia al color granate (burgundy) */
+.btn-acc:hover {
+  background-color: var(--kelpie-burgundy);
+  color: var(--kelpie-cream) !important;
+  transform: translateY(-1px);
+}

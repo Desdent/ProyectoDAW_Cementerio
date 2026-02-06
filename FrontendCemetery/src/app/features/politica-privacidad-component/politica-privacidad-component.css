@@ -1,6 +1,8 @@
 .content-scrollable {
   scrollbar-width: thin;
   scrollbar-color: #6c757d #f8f9fa;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
 .content-scrollable::-webkit-scrollbar {
@@ -24,4 +26,9 @@
 .btn-primary-custom:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.login {
+  max-width: 900px;
+  margin: 0 auto;
 }

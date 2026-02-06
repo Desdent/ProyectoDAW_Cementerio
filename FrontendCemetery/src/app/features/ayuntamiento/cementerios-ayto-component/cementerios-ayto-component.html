@@ -442,11 +442,7 @@
             </div>
             @if (mapaPreview()) {
               <div class="map-preview-wrapper mt-3">
-                <img
-                  [src]="mapaPreview()"
-                  class="img-fluid rounded shadow-sm border"
-                  style="max-height: 150px"
-                />
+                <img [src]="mapaPreview()" class="img-fluid rounded shadow-sm border mapa" />
               </div>
             }
           </div>
@@ -528,8 +524,7 @@
               @if (cementerioVisualizar.mapa) {
                 <img
                   [src]="'http://localhost:8080/uploads/mapas/' + cementerioVisualizar.mapa"
-                  class="img-fluid rounded shadow-sm"
-                  style="max-height: 250px; cursor: pointer"
+                  class="img-fluid rounded shadow-sm imagenMapa"
                   (click)="
                     verMapa({
                       nombre: cementerioVisualizar.nombre,

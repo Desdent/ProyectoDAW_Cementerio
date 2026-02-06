@@ -36,9 +36,14 @@
   border-radius: 15px;
   overflow: hidden;
   border: none;
+  top: 2rem;
 }
 
 .card-header-custom {
   background-color: var(--kelpie-ash);
   color: var(--kelpie-cream);
+}
+
+.success {
+  font-size: 4rem;
 }
